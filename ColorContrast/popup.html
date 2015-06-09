@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>WCAG Color Contrast Analyser Extension's Popup</title>
+    <style>
+      body {
+        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+        font-size: 100%;
+      }
+      h2 {
+        font: normal 150%/100% Garamond, "Times New Roman", serif;
+        white-space: nowrap;
+      } 
+      #colors th {
+        text-align: right;
+        font-weight: normal;
+        padding: 4px;
+      }
+      .example {
+        font: normal 95%/141% helvetica, Verdana, Arial, sans-serif;
+        background-color: #037EAF; 
+        margin-top:10px; 
+      }  
+      .example span{
+        color: #0ff; 
+        padding: 10px;
+        float: inherit;
+
+        display: inline-block;
+        --vertical-align: middle;
+      } 
+      .example img {
+        float:right;
+        padding:5px;
+      }
+    </style>
+
+    <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+     -->
+     <script src="ColorContrast.js"></script>
+
+    <!--script src="popup.js"></script-->
+  </head>
+  <body>
+    <h2 id="specify">Analyse Luminosity Contrast Ratio (WCAG)</h2>
+
+    <table id="colors">
+      <tr>
+        <th><label for="background">Background:</label></th>
+        <td><input type="text" size="10" name="background" id="background" aria-required="true" required value="#037EAF" /></td>
+      </tr>
+      <tr>
+        <th><label for="foreground">Foreground:</label></th>
+        <td><input type="text" size="10" name="foreground" id="foreground" aria-required="true" required value="#0ff" /></td>
+      </tr>
+    </table>
+
+    <div class="example" style="font-size: 18px;">
+      <span>Large text sample - 18 px normal.</span>
+      <img src="Ok.png" class="large" style="padding-top:10px"/>
+    </div>
+
+    <div class="example" style="font-size: 14px;">
+      <span><b>Large text sample - 14 px bold.</b></span>
+      <img src="Ok.png" class="large" style="padding-top:7px"/>
+    </div>
+
+    <div class="example" style="font-size: 12px;">
+      <span>Regular text sample - 12 px normal.</span>
+      <img src="NotOk.png" class="small"/>
+    </div>
+
+  </body>
+</html>
+
