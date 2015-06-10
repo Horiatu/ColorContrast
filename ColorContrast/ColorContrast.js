@@ -35,6 +35,16 @@ var Contrast = function()
                  (Math.max(rgb1.b, rgb2.b) - Math.min(rgb1.b, rgb2.b));
       return Math.abs(Math.round(diff));
     },
+    luminance(hex) {
+      var rgb = _private.rgb(hex);
+      var RsRGB = rgb.r/255;
+      var GsRGB = rgb.g/255;
+      var BsRGB = rgb.b/255;
+      var R = RsRGB <= 0.03928 ? RsRGB/12.92 : Math.pow((RsRGB+0.055)/1.055, 2.4);
+      var G = GsRGB <= 0.03928 ? GsRGB/12.92 : Math.pow((GsRGB+0.055)/1.055, 2.4);
+      var B = BsRGB <= 0.03928 ? BsRGB/12.92 : Math.pow((BsRGB+0.055)/1.055, 2.4);
+      return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+    },
     rgb : function(hex){
       hex = hex.replace('#','');
       var rgb = {
@@ -44,6 +54,7 @@ var Contrast = function()
       };
       return rgb;
     },
+
     colourNameToHex : function (colour) {
       var colours = {"aliceblue":"#f0f8ff","antiquewhite":"#faebd7","aqua":"#00ffff","aquamarine":"#7fffd4","azure":"#f0ffff",
       "beige":"#f5f5dc","bisque":"#ffe4c4","black":"#000000","blanchedalmond":"#ffebcd","blue":"#0000ff","blueviolet":"#8a2be2","brown":"#a52a2a","burlywood":"#deb887",
@@ -96,17 +107,24 @@ var Contrast = function()
     colorNameOrHexToColor : function(str) {
       h1 = str.match(/#(?:[0-9a-f]{3}){1,2}/gi);
       if(h1 && h1.length==1) {
-        if(h1[0].length==4) {
-            h=h1[0];
-            return h[0]+h[1]+h[1]+h[2]+h[2]+h[3]+h[3];
+        h=h1[0];
+        if(h.length==4) {
+          return h[0]+h[1]+h[1]+h[2]+h[2]+h[3]+h[3];
         }
         return str;
       }
       else {
-          return _private.colourNameToHex(str);
+        return _private.colourNameToHex(str);
       }
     },
     
+    contrast : function (hex1, hex2) {
+      var l1 = _private.luminance(hex1) + 0.05;
+      var l2 = _private.luminance(hex2) + 0.05;
+      var l = l1>l2 ? l1/l2 : l2/l1;
+      return l;
+    },
+
     test : function(hex1, hex2){
       var rgb1 = _private.rgb(hex1);
       var rgb2 = _private.rgb(hex2);
