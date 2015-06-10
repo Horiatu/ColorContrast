@@ -7,7 +7,7 @@
         font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
         font-size: 100%;
       }
-      h2 {
+      h1 {
         font: normal 150%/100% Garamond, "Times New Roman", serif;
         white-space: nowrap;
       } 
@@ -25,13 +25,22 @@
         color: #0ff; 
         padding: 10px;
         float: inherit;
-
         display: inline-block;
-        --vertical-align: middle;
       } 
       .example img {
         float:right;
         padding:5px;
+      }
+      #colors {
+        width:100%;
+      }
+      #contrast {
+        text-align:center;
+      }
+      #contrast span{
+        color: gray;
+        font-size: 42px;
+        font: lighter Garamond, "Times New Roman", serif;
       }
     </style>
 
@@ -41,24 +50,26 @@
       -
       - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
      -->
-     <script src="ColorContrast.js"></script>
-
-    <!--script src="popup.js"></script-->
+    <script src="jquery-1.11.3.min.js"></script>
+    
+    <script src="ColorContrast.js"></script>
+    <script src="background.js"></script>
   </head>
   <body>
-    <h2 id="specify">Analyse Luminosity Contrast Ratio (WCAG)</h2>
+    <h1 id="specify">Analyse Luminosity Contrast Ratio (WCAG)</h1>
 
     <table id="colors">
       <tr>
         <th><label for="background">Background:</label></th>
-        <td><input type="text" size="10" name="background" id="background" aria-required="true" required value="#037EAF" /></td>
+        <td><input class="txInput" type="text" size="10" name="background" id="background" aria-required="true" required value="#037EAF" /></td>
+        <td id="contrast" rowspan="2"><span>4.35:1</span></td>
       </tr>
       <tr>
         <th><label for="foreground">Foreground:</label></th>
-        <td><input type="text" size="10" name="foreground" id="foreground" aria-required="true" required value="#0ff" /></td>
+        <td><input class="txInput" type="text" size="10" name="foreground" id="foreground" aria-required="true" required value="#0ff" /></td>
       </tr>
     </table>
-
+    
     <div class="example" style="font-size: 18px;">
       <span>Large text sample - 18 px normal.</span>
       <img src="Ok.png" class="large" style="padding-top:10px"/>
