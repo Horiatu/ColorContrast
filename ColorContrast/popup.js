@@ -1,14 +1,16 @@
 $( document ).ready(function() {
 	var getContrast = function() {
 		
-		var backgroundTxt = ContrastAnalyser.colorNameOrHexToColor($("#background").val());
-		var foregroundTxt = ContrastAnalyser.colorNameOrHexToColor($("#foreground").val());
+		var backgroundVal = $("#background").val();
+		var foregroundVal = $("#foreground").val();
+		var backgroundTxt = ContrastAnalyser.colorNameOrHexToColor(backgroundVal);
+		var foregroundTxt = ContrastAnalyser.colorNameOrHexToColor(foregroundVal);
 		if(backgroundTxt && foregroundTxt) {
-			chrome.storage.sync.set({'background': backgroundTxt}, function() {
-	          console.log("background "+backgroundTxt+' saved');
+			chrome.storage.sync.set({'background': backgroundVal}, function() {
+	          console.log("background "+backgroundVal+' saved');
         	});
-			chrome.storage.sync.set({'foreground': foregroundTxt}, function() {
-	          console.log("foreground "+foregroundTxt+' saved');
+			chrome.storage.sync.set({'foreground': foregroundVal}, function() {
+	          console.log("foreground "+foregroundVal+' saved');
         	});
 
 			$(".example").css("background-color", backgroundTxt);
@@ -17,14 +19,14 @@ $( document ).ready(function() {
 			var cc = ContrastAnalyser.contrast(backgroundTxt, foregroundTxt);
 			console.log( cc );
 
-			$("#contrast span").html(parseFloat(Math.round(cc * 100) / 100).toFixed(2) + " : 1");
+			$("#contrast span").html(parseFloat(Math.round(cc * 10) / 10).toFixed(1) + ":1");
 
-			if(cc>=4.5) {
+			if(cc >= 4.5) {
 				$(".largeOK").show();
 				$(".smallOK").show();
 				$(".large").hide();
 				$(".small").hide();
-			} else if (cc>=3) {
+			} else if (cc >= 3) {
 				$(".largeOK").show();
 				$(".smallOK").hide();
 				$(".large").hide();
@@ -52,4 +54,22 @@ $( document ).ready(function() {
 	$(".txInput").on( "input", function() {
   		getContrast();
 	});
+
+	$('.txInput').contextMenu('inputMenu', {
+      bindings: {
+        'Copy': function(t) {
+          alert('Trigger was '+t.id+'\nAction was Copy');
+        },
+        'CopyCode': function(t) {
+          alert('Trigger was '+t.id+'\nAction was Copy Code');
+        },
+        'Paste': function(t) {
+          alert('Trigger was '+t.id+'\nAction was Paste');
+        },
+        'PickColor': function(t) {
+          alert('Trigger was '+t.id+'\nAction was Pick Color');
+        }
+      }
+    });
+
 });

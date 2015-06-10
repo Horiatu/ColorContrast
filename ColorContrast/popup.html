@@ -3,16 +3,33 @@
   <head>
     <title>WCAG Color Contrast Analyser Extension's Popup</title>
     <style>
+      /* latin */
+      /* http://stackoverflow.com/questions/19210451/packaging-a-font-with-a-google-chrome-extension */
+      @font-face {
+        font-family: 'Nixie One';
+        font-style: normal;
+        font-weight: 400;
+        src: url('Fonts/Nixie One.woff2') format('woff2');
+        }
+      /* latin */
+      @font-face {
+        font-family: 'Poiret One';
+        font-style: normal;
+        font-weight: 400;
+        src: url('Fonts/Poiret One.woff2') format('woff2');
+      }
       body {
         font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
         font-size: 100%;
       }
+
       h1 {
         font: normal 150%/100% Garamond, "Times New Roman", serif;
         white-space: nowrap;
         padding-left: 5px;
         padding-right: 5px;
       } 
+
       #colors th {
         text-align: right;
         font-weight: normal;
@@ -40,9 +57,15 @@
         text-align:center;
       }
       #contrast span{
-        color: gray;
+        color: rgb(69, 69, 69);
         font-size: 42px;
-        font: lighter Garamond, "Times New Roman", serif;
+        font-family: 'Poiret One';
+      }
+      .contextMenu li,
+      #jqContextMenu li {
+        white-space: nowrap;
+        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+        font-size: 12px;
       }
     </style>
 
@@ -53,12 +76,21 @@
       - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
      -->
     <script src="jquery-1.11.3.min.js"></script>
-    
+    <script type="text/javascript" src="ContextMenu.js"></script>   
     <script src="ColorContrast.js"></script>
     <script src="popup.js"></script>
   </head>
   <body>
     <h1 id="specify">WCAG Luminosity Contrast Ratio Analyser</h1>
+
+    <div class="contextMenu" id="inputMenu">
+      <ul>
+        <li id="Copy"><img src="images/copy.png" /> Copy</li>
+        <li id="CopyCode"><img src="images/copy-code.png" /> Copy Code</li>
+        <li id="Paste"><img src="images/paste.png" /> Paste</li>
+        <li id="PickColor"><img src="images/pick-color.png" /> Pick Color</li>
+      </ul>
+    </div>
 
     <table id="colors">
       <tr>
@@ -72,22 +104,22 @@
       </tr>
     </table>
     
-    <div class="example" style="font-size: 18px;">
+    <div class="example" style="font-size: 18px;" title="Minimum Contrast Ratio 3.0:1">
       <span>Large text sample - 18 px normal.</span>
-      <img src="Ok.png" class="largeOK" style="padding-top:10px"/>
-      <img src="NotOk.png" class="large" style="padding-top:10px"/>
+      <img src="Images/Ok.png" class="largeOK" style="padding-top:10px" alt="Pass AA" title="Pass AA"/>
+      <img src="Images/NotOk.png" class="large" style="padding-top:10px" alt="Fail" title="Fail"/>
     </div>
 
-    <div class="example" style="font-size: 14px;">
+    <div class="example" style="font-size: 14px;" title="Minimum Contrast Ratio 3.0:1">
       <span><b>Large text sample - 14 px bold.</b></span>
-      <img src="Ok.png" class="largeOK" style="padding-top:7px"/>
-      <img src="NotOk.png" class="large" style="padding-top:7px"/>
+      <img src="Images/Ok.png" class="largeOK" style="padding-top:7px" alt="Pass AA" title="Pass AA"/>
+      <img src="Images/NotOk.png" class="large" style="padding-top:7px" alt="Fail" title="Fail"/>
     </div>
 
-    <div class="example" style="font-size: 12px;">
+    <div class="example" style="font-size: 12px;" title="Minimum Contrast Ratio 4.5:1">
       <span>Regular text sample - 12 px normal.</span>
-      <img src="Ok.png" class="smallOK"/>
-      <img src="NotOk.png" class="small"/>
+      <img src="Images/Ok.png" class="smallOK" alt="Pass AA and AAA" title="Pass AA and AAA"/>
+      <img src="Images/NotOk.png" class="small" alt="Fail" title="Fail"/>
     </div>
 
   </body>
