@@ -15,7 +15,7 @@
   Contrast.match(['#ffffff','#ffffcc'], ['#000000', '#336699']);
 */
 
-var Contrast = function()
+var ContrastAnalyser = function()
 {
   // private functions and properties
   var _private =

@@ -10,6 +10,8 @@
       h1 {
         font: normal 150%/100% Garamond, "Times New Roman", serif;
         white-space: nowrap;
+        padding-left: 5px;
+        padding-right: 5px;
       } 
       #colors th {
         text-align: right;
@@ -56,7 +58,7 @@
     <script src="background.js"></script>
   </head>
   <body>
-    <h1 id="specify">Analyse Luminosity Contrast Ratio (WCAG)</h1>
+    <h1 id="specify">WCAG Luminosity Contrast Ratio Analyser</h1>
 
     <table id="colors">
       <tr>
@@ -72,16 +74,19 @@
     
     <div class="example" style="font-size: 18px;">
       <span>Large text sample - 18 px normal.</span>
-      <img src="Ok.png" class="large" style="padding-top:10px"/>
+      <img src="Ok.png" class="largeOK" style="padding-top:10px"/>
+      <img src="NotOk.png" class="large" style="padding-top:10px"/>
     </div>
 
     <div class="example" style="font-size: 14px;">
       <span><b>Large text sample - 14 px bold.</b></span>
-      <img src="Ok.png" class="large" style="padding-top:7px"/>
+      <img src="Ok.png" class="largeOK" style="padding-top:7px"/>
+      <img src="NotOk.png" class="large" style="padding-top:7px"/>
     </div>
 
     <div class="example" style="font-size: 12px;">
       <span>Regular text sample - 12 px normal.</span>
+      <img src="Ok.png" class="smallOK"/>
       <img src="NotOk.png" class="small"/>
     </div>
 
