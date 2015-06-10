@@ -4,11 +4,15 @@ $( document ).ready(function() {
 		var backgroundTxt = ContrastAnalyser.colorNameOrHexToColor($("#background").val());
 		var foregroundTxt = ContrastAnalyser.colorNameOrHexToColor($("#foreground").val());
 		if(backgroundTxt && foregroundTxt) {
+			chrome.storage.sync.set({'background': backgroundTxt}, function() {
+	          console.log("background "+backgroundTxt+' saved');
+        	});
+			chrome.storage.sync.set({'foreground': foregroundTxt}, function() {
+	          console.log("foreground "+foregroundTxt+' saved');
+        	});
+
 			$(".example").css("background-color", backgroundTxt);
 			$(".example span").css("color", foregroundTxt);
-
-			console.log( "background "+backgroundTxt );
-			console.log( "foreground "+foregroundTxt );
 
 			var cc = ContrastAnalyser.contrast(backgroundTxt, foregroundTxt);
 			console.log( cc );
@@ -34,7 +38,17 @@ $( document ).ready(function() {
 		};
 	};
 
-	getContrast();
+	chrome.storage.sync.get(['background', 'foreground'], function(a) {
+		console.log('Restore '+a['background']+' '+a['foreground']);
+		if(a['background']) {
+			$("#background").val(a['background']);
+		}
+		if(a['foreground']) {
+			$("#foreground").val(a['foreground']);
+		}
+		getContrast();
+	});
+
 	$(".txInput").on( "input", function() {
   		getContrast();
 	});
