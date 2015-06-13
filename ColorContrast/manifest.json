@@ -1,21 +1,31 @@
 {
   "manifest_version": 2,
 
-  "name": "WCAG Color Contrast Analyser",
+  "name": "WCAG Luminosity Contrast Ratio Analyser",
   "description": "Color Contrast Analyser for WCAG 2.0 compliance",
   "version": "1.0",
 
-  "background":
-  {
-      "scripts": ["jquery-1.11.3.min.js", "ColorContrast.js", "ContextMenu.js", "popup.js"]
-  },
   "browser_action": {
     "default_icon": "Images/icon.png",
     "default_popup": "popup.html"
   },
+
+  "icons": { 
+    "16": "images/logos/16.png", 
+    "48":  "images/logos/48.png", 
+    "128": "images/logos/128.png" 
+    },
+
+  "background":
+  {
+      //"scripts": [ "jquery-1.11.3.min.js", "ColorPicker.js", "background.js" ]
+      "page" : "background.html"
+  },
+
   "permissions": [
-    "activeTab", "storage"
+    "activeTab", "storage", "clipboardRead", "clipboardWrite"
   ],
+
   "web_accessible_resources": [
     "font/*.woff2"
   ]

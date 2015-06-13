@@ -105,7 +105,8 @@ var ContrastAnalyser = function()
   var _public =
   {
     colorNameOrHexToColor : function(str) {
-      h1 = str.match(/#(?:[0-9a-f]{3}){1,2}/gi);
+      str = str.trim();
+      h1 = str.match(/#(?:[0-9a-f]{3}){1,2}$/gi);
       if(h1 && h1.length==1) {
         h=h1[0];
         if(h.length==4) {
