@@ -45,13 +45,13 @@ Background.getColor = function(x, y, eventType)
       var color   = null;
       var context = canvas.getContext("2d");
 
-      canvas.height = image.naturalHeight;
-      canvas.width  = image.naturalWidth;
+      canvas.height = 1; 
+      canvas.width  = 1; 
 
-      context.clearRect(0, 0, image.naturalWidth, image.naturalHeight);
-      context.drawImage(image, 0, 0);
-
-      color = Background.convertRGBToHex(context.getImageData(x, y, 1, 1).data);
+      context.clearRect(0, 0, 1, 1);
+      context.drawImage(image, x, y, 1, 1, 0, 0, 1, 1);
+   
+      color = Background.convertRGBToHex(context.getImageData(0, 0, 1, 1).data);
 
       chrome.tabs.executeScript(null, { "code": "ColorPicker.setColor('" + color + "', '" + eventType + "')" });
     };
@@ -207,8 +207,8 @@ Background.message = function(message, sender, sendResponse)
   // If the message type is to get the current color
   if(message.type == "get-color")
   {
-  	console.log(Background.getColor(message.x, message.y, message.eventType));
-    //sendResponse(Background.getColor(message.x, message.y, message.eventType));
+  	//console.log(Background.getColor(message.x, message.y, message.eventType));
+    sendResponse(Background.getColor(message.x, message.y, message.eventType));
   }
 };
 
@@ -273,4 +273,3 @@ Background.validateLocalHTML = function(tabURL, tabIndex, validateURL)
     chrome.tabs.onUpdated.addListener(tabLoaded);
   });
 };
-

@@ -35,11 +35,12 @@ var ContrastAnalyser = function()
                  (Math.max(rgb1.b, rgb2.b) - Math.min(rgb1.b, rgb2.b));
       return Math.abs(Math.round(diff));
     },
-    luminance(hex) {
+    luminance : function(hex) {
+      // http://www.w3.org/Graphics/Color/sRGB.html
       var rgb = _private.rgb(hex);
-      var RsRGB = rgb.r/255;
-      var GsRGB = rgb.g/255;
-      var BsRGB = rgb.b/255;
+      var RsRGB = rgb.r/255.0;
+      var GsRGB = rgb.g/255.0;
+      var BsRGB = rgb.b/255.0;
       var R = RsRGB <= 0.03928 ? RsRGB/12.92 : Math.pow((RsRGB+0.055)/1.055, 2.4);
       var G = GsRGB <= 0.03928 ? GsRGB/12.92 : Math.pow((GsRGB+0.055)/1.055, 2.4);
       var B = BsRGB <= 0.03928 ? BsRGB/12.92 : Math.pow((BsRGB+0.055)/1.055, 2.4);
