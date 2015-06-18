@@ -1,25 +1,5 @@
 $( document ).ready(function() {
 
-	/*
-	toggleFeatureOnTab = function(featureItem, tab, scriptFile, scriptCode)//, closeOverlay)
-	{
-  		var feature = featureItem.attr("id");
-
-  		addScriptsToTab(tab, scriptFile, scriptCode, function()
-  		{
-    		//chrome.extension.getBackgroundPage().WebDeveloper.Storage.toggleFeatureOnTab(feature, tab);
-
-    		featureItem.toggleClass("active");
-
-    		//// If the overlay should be closed
-    		//if(closeOverlay)
-    		//{
-      		//	WebDeveloper.Overlay.close();
-    		//}
-  		});
-	},
-	*/
-
 	getSelectedTab = function(callback)
 	{
   		chrome.tabs.query({ "active": true, "currentWindow": true }, function(tabs)
@@ -49,8 +29,8 @@ $( document ).ready(function() {
   		return true;
 	},
 
-	getContrast = function(id) {
-		
+	getContrast = function(id) 
+	{
 		var backgroundVal = $("#background").val().trim();
 		var foregroundVal = $("#foreground").val().trim();
 		var backgroundTxt = ContrastAnalyser.colorNameOrHexToColor(backgroundVal);
@@ -84,7 +64,7 @@ $( document ).ready(function() {
 				$(".large").hide();
 				$(".small").hide();
 			} else if (cc >= 3.0) {
-				$("#contrast span").css("text-shadow", "2px 2px 2px orange");
+				$("#contrast span").css("text-shadow", "2px 2px 2px orangered");
 				$(".largeOK").show();
 				$(".smallOK").hide();
 				$(".large").hide();
@@ -107,6 +87,34 @@ $( document ).ready(function() {
 		};
 	};
 
+	pickAction = function(t) 
+	{
+		console.log(t.currentTarget.id);
+	    getSelectedTab(function(tab)
+  		{
+  			if(isValidTab(tab)) {
+  				addScriptsToTab(tab, 
+  					"ColorPicker.js", 
+  					"ColorPicker.displayColorPicker(true, document);", 
+  					function() {
+  						//window.close();
+  					}
+  				);
+			}
+        });
+	};
+
+	copyCode = function(t) 
+	{
+		console.log(t.currentTarget.id);
+        var o = $(t.currentTarget).closest('tr').find("input");
+	    var initial = o.val();
+    	o.val(ContrastAnalyser.colorNameOrHexToColor(initial));
+		o.focus(); o.select();
+        document.execCommand("Copy", false, null);
+	    o.val(initial);
+	};
+
 	chrome.storage.sync.get(['background', 'foreground'], function(a) {
 		console.log('Restore '+a['background']+' '+a['foreground']);
 		if(a['background']) {
@@ -122,43 +130,25 @@ $( document ).ready(function() {
   		getContrast(e.currentTarget.id);
  	});
 
-	$('.txInput').contextMenu('inputMenu', {
-      bindings: {
-        'Copy': function(t) {
-          //alert('Trigger was '+t.id+'\nAction was Copy');
-			t.focus(); t.select();
-          	document.execCommand("Copy", false, null);
-        },
-        'CopyCode': function(t) {
-        	var o = $('#'+t.id);
-        	var initial = o.val();
-        	o.val(ContrastAnalyser.colorNameOrHexToColor(initial));
-			t.focus(); t.select();
-          	document.execCommand("Copy", false, null);
-          	o.val(initial);
-        },
-        'Toggle': function(t) {
-        	var backgroundVal = $("#background").val().trim();
-			var foregroundVal = $("#foreground").val().trim();
-			$("#background").val(foregroundVal);
-			getContrast("background");
-			$("#foreground").val(backgroundVal);
-			getContrast("foreground");
-        },
-        'ColorPicker': function(t) {
-	        getSelectedTab(function(tab)
-  			{
-  				if(isValidTab(tab)) {
-  					addScriptsToTab(tab, 
-  						"ColorPicker.js", 
-  						"ColorPicker.displayColorPicker(true, document);", 
-  						function() {
-  						});
-				}
-        	});
+	$('.pick').on('click', pickAction);
+	$('.code').on('click', copyCode);
+	$('#toggle').on('click', function(t) {
+        var backgroundVal = $("#background").val().trim();
+		var foregroundVal = $("#foreground").val().trim();
+		$("#background").val(foregroundVal);
+		getContrast("background");
+		$("#foreground").val(backgroundVal);
+		getContrast("foreground");
     	}
-      }
-    });
+    );
+
+	$('.btn img').on('mouseenter', function(t) {
+		t.currentTarget["src"] = t.currentTarget["src"].replace(".png",".color.png");
+	});
+
+	$('.btn img').on('mouseleave', function(t) {
+		t.currentTarget["src"] = t.currentTarget["src"].replace(".color.png",".png");
+	});
 
 	addScriptToTab = function(tab, script, callback)
 	{

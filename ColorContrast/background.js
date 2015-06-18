@@ -202,13 +202,13 @@ Background.initializeValidationTab = function(url, data)
 };
 
 // Handles any background messages
-Background.message = function(message, sender, sendResponse)
+Background.message = function(msg, sender, sendResponse)
 {
-  // If the message type is to get the current color
-  if(message.type == "get-color")
+  // If the msg type is to get the current color
+  if(msg.type == "get-color")
   {
-  	//console.log(Background.getColor(message.x, message.y, message.eventType));
-    sendResponse(Background.getColor(message.x, message.y, message.eventType));
+    var color = Background.getColor(msg.x, msg.y, msg.eventType);
+  	sendResponse(color);
   }
 };
 
@@ -233,7 +233,7 @@ Background.openGeneratedTab = function(tabURL, tabIndex, data, locale)
     chrome.tabs.onUpdated.addListener(tabLoaded);
   });
 };
-
+/*
 // Validates the CSS of the local page
 Background.validateLocalCSS = function(tabURL, tabIndex, css)
 {
@@ -273,3 +273,4 @@ Background.validateLocalHTML = function(tabURL, tabIndex, validateURL)
     chrome.tabs.onUpdated.addListener(tabLoaded);
   });
 };
+*/

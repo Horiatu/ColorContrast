@@ -70,7 +70,7 @@
         text-align: right;
       }
       #contrast span{
-        color: rgb(69, 69, 69);
+        color: white;--rgb(69, 69, 69);
         font-size: 42px;
         font-family: 'Poiret One';
         text-shadow: 2px 2px 2px cornflowerblue;
@@ -86,7 +86,22 @@
         font-weight: bold;
       }
       .error{
-        background-color: lightpink;
+        background-color: rgb(216, 216, 216);
+      }
+      .btn img {
+        vertical-align: middle;
+        cursor: pointer;
+      }
+      .pick{
+        margin-left: -46px;
+      }
+      .code{
+        margin-left: -29px;
+      }
+      #toggle{
+        margin-left: -8px;
+        padding-top:17px;
+        padding-bottom:17px;
       }
     </style>
 
@@ -96,11 +111,10 @@
       -
       - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
      -->
-    <script src="jquery-1.11.3.min.js"></script>
-    <script type="text/javascript" src="ContextMenu.js"></script>   
-    <script src="ColorContrast.js"></script>
-    <script src="ColorPicker.js"></script>
-    <script src="popup.js"></script>
+    <script type="text/javascript" src="jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="ColorContrast.js"></script>
+    <script type="text/javascript" src="ColorPicker.js"></script>
+    <script type="text/javascript" src="popup.js"></script>
   </head>
   <body>
     <h1 id="specify">
@@ -110,24 +124,20 @@
     </tr></table>
     </h1>
 
-    <div class="contextMenu" id="inputMenu">
-      <ul>
-        <li id="Copy"><img src="images/copy.png" /> Copy</li>
-        <li id="CopyCode"><img src="images/copy-code.png" /> Copy Code</li>
-        <li id="Toggle"><img src="images/toggle.png" /> Toggle</li>
-        <li id="ColorPicker"><img src="images/pick-color.png" /> Pick Color</li>
-      </ul>
-    </div>
-
     <table id="colors">
       <tr>
         <th><label for="background">Background:</label></th>
         <td><input class="txInput" type="text" size="20" name="background" id="background" aria-required="true" required value="#037EAF" /></td>
+        <td><div class="btn"><img class="pick" id="bg" src="images/pick-color.png" alt="pick color" title="pick color"></img></div></td>
+        <td><div class="btn"><img class="code" id="bgCode" src="images/copy-code.png" alt="copy code" title="copy code"></img></div></td>
+        <td rowspan="2"><div class="btn"><img id="toggle" src="images/toggle.png" alt="toggle" title="toggle colors"></img></div></td>
         <td id="contrast" rowspan="2"><span>4.35:1</span></td>
       </tr>
       <tr>
         <th><label for="foreground">Foreground:</label></th>
         <td><input class="txInput" type="text" size="20" name="foreground" id="foreground" aria-required="true" required value="#0ff" /></td>
+        <td><div class="btn"><img class="pick" id="fr" src="images/pick-color.png" alt="pick color" title="pick color"></img><div></td>
+        <td><div class="btn"><img class="code" id="frCode" src="images/copy-code.png" alt="copy code" title="copy code"></img></div></td>
       </tr>
     </table>
     

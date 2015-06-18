@@ -1,22 +1,7 @@
-console.log("ColorPicker loading");
-
 var ColorPicker = ColorPicker || {};
 ColorPicker.colorPickerToolbar = null;
 ColorPicker.colorDiv = null;
 ColorPicker.colorTxt = null;
-
-// Handles the click event
-ColorPicker.click = function(event)
-{
-  // If the click was not a right click
-  if(event.button != 2)
-  {
-    ColorPicker.getColor(event, "selected");
-
-    event.stopPropagation();
-    event.preventDefault();
-  }
-};
 
 ColorPicker.getDocumentBodyElement = function(contentDocument)
 {
@@ -49,9 +34,11 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
   if(!contentDocument.getElementById("colorPickerDiv")) {
     ColorPicker.colorPickerToolbar = contentDocument.createElement("Div");
     ColorPicker.colorPickerToolbar.setAttribute("id", "colorPickerDiv");
-    ColorPicker.colorPickerToolbar.setAttribute("style", "position: fixed; width:100px; right: 10px; bottom:10px; background-color:white; padding:2px; border-style:inset; visibility:visible;");
-    //ColorPicker.colorPickerToolbar.innerHTML = "ColorPicker";
-
+    ColorPicker.colorPickerToolbar.setAttribute("style", 
+      "position: fixed; padding:2px; "+
+      "width:100px; right: 10px; bottom:10px; "+
+      "background-color:white; border-style:inset; visibility:visible;");
+    
     ColorPicker.colorDiv = contentDocument.createElement("Div");
     ColorPicker.colorDiv.setAttribute("id", "colorDiv");
     ColorPicker.colorDiv.setAttribute("style", "position: fixed; width:18px; height:18px;");
@@ -62,24 +49,14 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
     ColorPicker.colorTxt.setAttribute("style", "font-weight:bold; width:50px; margin-left:24px; margin-right:4px;");
     ColorPicker.colorPickerToolbar.appendChild(ColorPicker.colorTxt);
 
-
     ColorPicker.getDocumentBodyElement(contentDocument).appendChild(ColorPicker.colorPickerToolbar);
   }
 
-  //ColorPicker.toolbarDocument = colorPickerToolbar.contentDocument;
-  //styleSheet                                   = ColorPicker.toolbarDocument.createElement("link");
   window.ColorPickerEvents                       = window.ColorPickerEvents || {};
   window.ColorPickerEvents.ColorPicker           = window.ColorPickerEvents.ColorPicker || {};
   window.ColorPickerEvents.ColorPicker.click     = ColorPicker.click;
   window.ColorPickerEvents.ColorPicker.mouseMove = ColorPicker.mouseMove;
 
-  //styleSheet.setAttribute("rel", "stylesheet");
-  //styleSheet.setAttribute("href", Common.getChromeURL("toolbar/color-picker-toolbar.css"));
-  //Common.getDocumentHeadElement(ColorPicker.toolbarDocument).appendChild(styleSheet);
-
-  //Common.getDocumentBodyElement(ColorPicker.toolbarDocument).innerHTML = toolbarHTML;
-
-  //ColorPicker.toolbarDocument.querySelector("img").setAttribute("src", Common.getChromeURL("toolbar/images/logo.png"));
   contentDocument.addEventListener("click", window.ColorPickerEvents.ColorPicker.click, true);
   contentDocument.addEventListener("mousemove", window.ColorPickerEvents.ColorPicker.mouseMove, false);
 };
@@ -113,7 +90,7 @@ ColorPicker.getColor = function(event, type)
     // If the owner document is set
     if(ownerDocument)
     {
-      var colorPicker = ownerDocument.getElementById("color-picker-toolbar");
+      var colorPicker = ownerDocument.getElementById("colorPickerDiv");
       var tagName     = eventTarget.tagName;
 
       // If the event target is not the color picker, the color picker is not an ancestor of the event target and the event target is not a scrollbar
@@ -152,6 +129,18 @@ ColorPicker.isAncestor = function(element, ancestorElement)
 };
 
 
+// Handles the click event
+ColorPicker.click = function(event)
+{
+  if(event.button != 2)
+  {
+    ColorPicker.getColor(event, "selected");
+
+    event.stopPropagation();
+    event.preventDefault();
+  }
+};
+
 // Handles the mouse move event
 ColorPicker.mouseMove = function(event)
 {
@@ -161,7 +150,7 @@ ColorPicker.mouseMove = function(event)
 // Removes the color picker
 ColorPicker.removeColorPicker = function(contentDocument)
 {
-  Common.removeMatchingElements("#web-developer-color-picker-toolbar", contentDocument);
+  Common.removeMatchingElements("#colorPickerDiv", contentDocument);
 
   contentDocument.removeEventListener("click", window.ColorPickerEvents.ColorPicker.click, true);
   contentDocument.removeEventListener("mousemove", window.ColorPickerEvents.ColorPicker.mouseMove, false);
