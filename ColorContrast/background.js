@@ -36,27 +36,27 @@ $.getContext = function() {
 
   chrome.tabs.captureVisibleTab(null, function(dataUrl)
   {
-    var image = new Image();
+    Background.image = new Image();
 
-    image.onload = function()
+    Background.image.onload = function()
     {
       var canvas  = document.createElement("canvas");
       Background.context = canvas.getContext("2d");
 
-      canvas.height = image.naturalHeight;
-      canvas.width  = image.naturalWidth;
+      canvas.height = Background.image.naturalHeight;
+      canvas.width  = Background.image.naturalWidth;
 
-      Background.context.clearRect(0, 0, image.naturalWidth, image.naturalHeight);
-      Background.context.drawImage(image, 0, 0);
+      Background.context.clearRect(0, 0, Background.image.naturalWidth, Background.image.naturalHeight);
+      Background.context.drawImage(Background.image, 0, 0);
 
       deferred.resolve();
     };
 
-    image.onerror = function() {
+    Background.image.onerror = function() {
       deferred.reject();
     };
 
-    image.src = dataUrl;
+    Background.image.src = dataUrl;
 
   });
 
@@ -64,6 +64,7 @@ $.getContext = function() {
 }
 
 Background.context = null;
+Background.image = null;
 Background.promise = null; 
 
 // Gets the current color
@@ -76,14 +77,36 @@ Background.getColor = function(x, y, eventType)
 
   Background.promise.then(
     function() {
-
+      var deep=5;
       var color = Background.convertRGBToHex(Background.context.getImageData(x, y, 1, 1).data);
-      //console.log(color);
+      
+      var colors = "";
+      var cr ='[';
+      for (i=-deep; i<=deep; i++) {
+        xi = x+i;
+        var cc = cr+"[";
+        for (j=-deep; j<=deep; j++) {
+          yj = y+j;
+          if(xi<0 || xi>=Background.image.naturalWidth || yj<0 || yj>=Background.image.naturalHeight)
+          {
+            colors+=cc + 'null';
+          }
+          else {
+            colors+=cc + "'"+Background.convertRGBToHex(Background.context.getImageData(xi, yj, 1, 1).data)+"'";
+          }
+          cc = ',';
+        }
+        colors+="]";
+        cr=',';
+      }
+      colors+="]";
+      //console.log(colors);
       try {
         chrome.tabs.executeScript(null, { "code": "ColorPicker.setColor('" + color + "', '" + eventType + "')" });
+        chrome.tabs.executeScript(null, { "code": "ColorPicker.setColors(" + colors + ", '" + eventType + "')" });
       }
       catch(err) {
-        console.log(err);
+        //console.log(err);
       }
     }
   );
@@ -248,7 +271,7 @@ Background.message = function(msg, sender, sendResponse)
 
 chrome.extension.onMessage.addListener(Background.message);
 
-// Opens a generated tab
+/* / Opens a generated tab
 Background.openGeneratedTab = function(tabURL, tabIndex, data, locale)
 {
   chrome.tabs.create({ "index": tabIndex + 1, "url": tabURL }, function(openedTab)

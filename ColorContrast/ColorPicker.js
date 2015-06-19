@@ -1,5 +1,6 @@
 var ColorPicker = ColorPicker || {};
 ColorPicker.colorPickerToolbar = null;
+ColorPicker.colorPickerViewer = null;
 ColorPicker.colorDiv = null;
 ColorPicker.colorTxt = null;
 
@@ -32,11 +33,22 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
   //console.log(contentDocument);
 
   if(!contentDocument.getElementById("colorPickerDiv")) {
+    ColorPicker.colorPickerViewer = contentDocument.createElement("Div");
+    ColorPicker.colorPickerViewer.setAttribute("id", "colorPickerViewer");
+    ColorPicker.colorPickerViewer.setAttribute("style", 
+      "position: fixed; padding:2px; "+
+      //"width:100px; "+
+      "background-color:transparent; border-style:none; visibility:visible;");
+    ColorPicker.getDocumentBodyElement(contentDocument).appendChild(ColorPicker.colorPickerViewer);
+
+
+
     ColorPicker.colorPickerToolbar = contentDocument.createElement("Div");
     ColorPicker.colorPickerToolbar.setAttribute("id", "colorPickerDiv");
     ColorPicker.colorPickerToolbar.setAttribute("style", 
       "position: fixed; padding:2px; "+
-      "width:100px; right: 10px; bottom:10px; "+
+      "width:100px; "+
+      "right: 10px; bottom:10px; "+
       "background-color:white; border-style:inset; visibility:visible;");
     
     ColorPicker.colorDiv = contentDocument.createElement("Div");
@@ -73,8 +85,6 @@ ColorPicker.displayColorPicker = function(display, contentDocument, toolbarHTML)
   {
     try { ColorPicker.removeColorPicker(contentDocument); } catch(err) {};
   }
-
-  //Common.toggleStyleSheet("toolbar/color-picker.css", "web-developer-color-picker-styles", contentDocument, false);
 };
 
 ColorPicker.refresh = function() 
@@ -95,14 +105,19 @@ ColorPicker.getColor = function(event, type)
     // If the owner document is set
     if(ownerDocument)
     {
-      var colorPicker = ownerDocument.getElementById("colorPickerDiv");
       var tagName     = eventTarget.tagName;
 
       // If the event target is not the color picker, the color picker is not an ancestor of the event target and the event target is not a scrollbar
       if(eventTarget != colorPicker && !ColorPicker.isAncestor(eventTarget, colorPicker) && tagName && tagName.toLowerCase() != "scrollbar")
       {
+        var colorPicker = ownerDocument.getElementById("colorPickerViewer");
+        colorPicker.style.left = event.clientX+16+"px";
+        colorPicker.style.top  = event.clientY+16+"px";
         chrome.extension.sendMessage({type: "get-color", x: event.clientX, y: event.clientY, eventType: type});
         //console.log(event);
+
+        var colorViewer = ownerDocument.getElementById("colorPickerViewer");
+
       }
     }
   }
@@ -166,8 +181,30 @@ ColorPicker.removeColorPicker = function(contentDocument)
 // Sets the color
 ColorPicker.setColor = function(color, type)
 {
-  //console.log(color + "', '" + type);
-  //ColorPicker.colorPickerToolbar.innerHTML = color;
   ColorPicker.colorDiv.setAttribute("style", "position:fixed; width:18px; height:18px; background-color:" + color + ";");
   ColorPicker.colorTxt.innerHTML = color;
+};
+ColorPicker.setColors = function(colors, type)
+{
+  var deep = colors.length;
+  m=(deep-1)/2;
+  //console.log(deep);
+  var s='<table style="border-collapse:collapse;">';
+  for(i=0; i<deep; i++) {
+
+    s+='<tr>';
+    
+    for(j=0; j<deep; j++) {
+      color=colors[j][i];
+      if(!color) {
+        color='transparent';
+      }
+      var b=(i==m && j==m)?'red':'gray';
+      s+='<td style="padding:0px;border:1px solid '+b+'; "><div style="padding:0px; width:11px; height:11px; background-color:'+color+';"></div></td>';
+    }
+
+    s+='</tr>';
+  }
+  s+='</table>';
+  ColorPicker.colorPickerViewer.innerHTML = s;
 };
