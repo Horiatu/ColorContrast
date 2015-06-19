@@ -30,32 +30,63 @@ Background.convertRGBToHex = function(rgb)
   return "#" + red + green + blue;
 };
 
-// Gets the current color
-Background.getColor = function(x, y, eventType)
-{
+$.getContext = function() {
+
+  var deferred = $.Deferred();
+
   chrome.tabs.captureVisibleTab(null, function(dataUrl)
   {
     var image = new Image();
 
-    image.src = dataUrl;
-
     image.onload = function()
     {
       var canvas  = document.createElement("canvas");
-      var color   = null;
-      var context = canvas.getContext("2d");
+      Background.context = canvas.getContext("2d");
 
-      canvas.height = 1; 
-      canvas.width  = 1; 
+      canvas.height = image.naturalHeight;
+      canvas.width  = image.naturalWidth;
 
-      context.clearRect(0, 0, 1, 1);
-      context.drawImage(image, x, y, 1, 1, 0, 0, 1, 1);
-   
-      color = Background.convertRGBToHex(context.getImageData(0, 0, 1, 1).data);
+      Background.context.clearRect(0, 0, image.naturalWidth, image.naturalHeight);
+      Background.context.drawImage(image, 0, 0);
 
-      chrome.tabs.executeScript(null, { "code": "ColorPicker.setColor('" + color + "', '" + eventType + "')" });
+      deferred.resolve();
     };
+
+    image.onerror = function() {
+      deferred.reject();
+    };
+
+    image.src = dataUrl;
+
   });
+
+  return deferred.promise();
+}
+
+Background.context = null;
+Background.promise = null; 
+
+// Gets the current color
+Background.getColor = function(x, y, eventType)
+{
+  if(!Background.context || eventType=='selected')
+  {
+    Background.promise = $.getContext();
+  }
+
+  Background.promise.then(
+    function() {
+
+      var color = Background.convertRGBToHex(Background.context.getImageData(x, y, 1, 1).data);
+      //console.log(color);
+      try {
+        chrome.tabs.executeScript(null, { "code": "ColorPicker.setColor('" + color + "', '" + eventType + "')" });
+      }
+      catch(err) {
+        console.log(err);
+      }
+    }
+  );
 
   return {};
 };
@@ -207,8 +238,11 @@ Background.message = function(msg, sender, sendResponse)
   // If the msg type is to get the current color
   if(msg.type == "get-color")
   {
-    var color = Background.getColor(msg.x, msg.y, msg.eventType);
-  	sendResponse(color);
+    sendResponse(Background.getColor(msg.x, msg.y, msg.eventType));
+  }
+  else if(msg.type == "get-canvas")
+  {
+    Background.context = null;
   }
 };
 

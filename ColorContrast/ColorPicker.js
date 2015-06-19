@@ -71,11 +71,16 @@ ColorPicker.displayColorPicker = function(display, contentDocument, toolbarHTML)
   }
   else
   {
-    ColorPicker.removeColorPicker(contentDocument);
+    try { ColorPicker.removeColorPicker(contentDocument); } catch(err) {};
   }
 
   //Common.toggleStyleSheet("toolbar/color-picker.css", "web-developer-color-picker-styles", contentDocument, false);
 };
+
+ColorPicker.refresh = function() 
+{
+  chrome.extension.sendMessage({type: "get-canvas"});
+}
 
 // Gets the color
 ColorPicker.getColor = function(event, type)

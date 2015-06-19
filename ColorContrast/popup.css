@@ -1,0 +1,100 @@
+      /* latin */
+      /* http://stackoverflow.com/questions/19210451/packaging-a-font-with-a-google-chrome-extension */
+      @font-face {
+        font-family: 'Nixie One';
+        font-style: normal;
+        font-weight: 400;
+        src: url('Fonts/Nixie One.woff2') format('woff2');
+        }
+      /* latin */
+      @font-face {
+        font-family: "Poiret One";
+        font-weight: 400;
+        src: url('Fonts/Poiret One.woff2') format('woff2');
+      }
+      /* latin */
+      @font-face {
+        font-family: 'Source Code Pro';
+        font-style: normal;
+        font-weight: 400;
+        src: url('fonts/SourceCodePro.woff2') format('woff2');
+      }
+
+      body {
+        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+        font-style: normal;
+        font-size: 100%;
+      }
+
+      h1 {
+        font-family: "Poiret One";
+        text-shadow: 2px 2px 2px darkgrey;
+        font-size: 22px;
+        font-weight: bold;
+        white-space: nowrap;
+      } 
+      h1 span {
+        padding-left: 8px;
+      }
+
+      #colors th {
+        text-align: right;
+        font-weight: normal;
+        padding: 4px;
+      }
+      .example {
+        font: normal 95%/141% helvetica, Verdana, Arial, sans-serif;
+        background-color: #037EAF; 
+        margin-top:10px; 
+      }  
+      .example span{
+        color: #0ff; 
+        padding: 10px;
+        float: inherit;
+        display: inline-block;
+      } 
+      .example img {
+        float:right;
+        padding:5px;
+      }
+      #colors {
+        width:100%;
+      }
+      #contrast {
+        width: 100%;
+        text-align: right;
+      }
+      #contrast span{
+        color: white;--rgb(69, 69, 69);
+        font-size: 42px;
+        font-family: 'Poiret One';
+        text-shadow: 2px 2px 2px cornflowerblue;
+      }
+      .contextMenu li,
+      #jqContextMenu li {
+        white-space: nowrap;
+        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+        font-size: 12px;
+      }
+      .txInput{
+        font-family: 'Source Code Pro';
+        font-weight: bold;
+      }
+      .error{
+        background-color: rgb(216, 216, 216);
+      }
+      .btn img {
+        vertical-align: middle;
+        cursor: pointer;
+      }
+      .pick{
+        margin-left: -46px;
+      }
+      .code{
+        margin-left: -29px;
+      }
+      #toggle{
+        margin-left: -8px;
+        padding-top:17px;
+        padding-bottom:17px;
+      }

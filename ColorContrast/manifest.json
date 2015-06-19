@@ -18,12 +18,12 @@
 
   "background":
   {
-      "scripts": [ "background.js" ]
-      //"page" : "background.html"
+      //"scripts": [ "background.js" ]
+      "page" : "background.html"
   },
 
   "permissions": [
-    "activeTab", "<all_urls>", "storage", "clipboardRead", "clipboardWrite"
+    "tabs", "activeTab", "<all_urls>", "storage", "clipboardRead", "clipboardWrite"
   ],
 
   "web_accessible_resources": [
