@@ -95,7 +95,7 @@ $( document ).ready(function() {
   			if(isValidTab(tab)) {
   				addScriptsToTab(tab, 
   					"ColorPicker.js", 
-  					"ColorPicker.displayColorPicker(false, document);"+
+ 					"ColorPicker.displayColorPicker(false, document);"+
   					"ColorPicker.displayColorPicker(true, document);"+
   					"ColorPicker.refresh();", 
   					function() {

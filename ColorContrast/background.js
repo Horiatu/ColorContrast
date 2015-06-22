@@ -77,7 +77,7 @@ Background.getColor = function(x, y, eventType)
 
   Background.promise.then(
     function() {
-      var deep=5;
+      var deep=3;
       var color = Background.convertRGBToHex(Background.context.getImageData(x, y, 1, 1).data);
       
       var colors = "";

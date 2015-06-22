@@ -28,17 +28,15 @@ ColorPicker.getDocumentBodyElement = function(contentDocument)
 // Creates the color picker
 ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
 {
-  console.log('create ColorPicker');
-
-  //console.log(contentDocument);
+  console.log(contentDocument);
 
   if(!contentDocument.getElementById("colorPickerDiv")) {
     ColorPicker.colorPickerViewer = contentDocument.createElement("Div");
     ColorPicker.colorPickerViewer.setAttribute("id", "colorPickerViewer");
     ColorPicker.colorPickerViewer.setAttribute("style", 
       "position: fixed; padding:2px; "+
-      //"width:100px; "+
-      "background-color:transparent; border-style:none; visibility:visible;");
+      "border: 1px solid gray; border-radius: 35px; overflow: hidden;"+
+      "visibility:visible;");
     ColorPicker.getDocumentBodyElement(contentDocument).appendChild(ColorPicker.colorPickerViewer);
 
 
@@ -111,8 +109,8 @@ ColorPicker.getColor = function(event, type)
       if(eventTarget != colorPicker && !ColorPicker.isAncestor(eventTarget, colorPicker) && tagName && tagName.toLowerCase() != "scrollbar")
       {
         var colorPicker = ownerDocument.getElementById("colorPickerViewer");
-        colorPicker.style.left = event.clientX+16+"px";
-        colorPicker.style.top  = event.clientY+16+"px";
+        colorPicker.style.left = event.clientX+8+"px";
+        colorPicker.style.top  = event.clientY+8+"px";
         chrome.extension.sendMessage({type: "get-color", x: event.clientX, y: event.clientY, eventType: type});
         //console.log(event);
 
@@ -184,23 +182,27 @@ ColorPicker.setColor = function(color, type)
   ColorPicker.colorDiv.setAttribute("style", "position:fixed; width:18px; height:18px; background-color:" + color + ";");
   ColorPicker.colorTxt.innerHTML = color;
 };
+
+//var colorM = null;
 ColorPicker.setColors = function(colors, type)
 {
   var deep = colors.length;
   m=(deep-1)/2;
-  //console.log(deep);
+  //colorM = colors[m][m];
   var s='<table style="border-collapse:collapse;">';
   for(i=0; i<deep; i++) {
-
     s+='<tr>';
     
     for(j=0; j<deep; j++) {
+      //if(colorM != colors[m][m]) return;
       color=colors[j][i];
       if(!color) {
         color='transparent';
       }
-      var b=(i==m && j==m)?'red':'gray';
-      s+='<td style="padding:0px;border:1px solid '+b+'; "><div style="padding:0px; width:11px; height:11px; background-color:'+color+';"></div></td>';
+      var ctx = i==m && j==m;
+      var b=(ctx)?'red':'rgba(100, 100, 100, 0.2)';
+      s+='<td style="padding:0px; border:'+(ctx?2:1)+'px solid '+b+'; ">'+
+      '<div style="padding:0px; width:7px; height:7px; background-color:'+color+';"></div></td>';
     }
 
     s+='</tr>';
