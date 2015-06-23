@@ -59,7 +59,7 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
     i.setAttribute("alt","");
     i.setAttribute("width","59px");
     i.setAttribute("height","59px");
-    i.setAttribute("src",chrome.extension.getURL("Images/magnifierGlass.png"));
+    i.setAttribute("src",chrome.extension.getURL("Images/circle.png"));
     d.appendChild(i);
     
     ColorPicker.colorPickerViewer.appendChild(d);
@@ -87,13 +87,8 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
     ColorPicker.getDocumentBodyElement(contentDocument).appendChild(ColorPicker.colorPickerToolbar);
   }
 
-  window.ColorPickerEvents                       = window.ColorPickerEvents || {};
-  window.ColorPickerEvents.ColorPicker           = window.ColorPickerEvents.ColorPicker || {};
-  window.ColorPickerEvents.ColorPicker.click     = ColorPicker.click;
-  window.ColorPickerEvents.ColorPicker.mouseMove = ColorPicker.mouseMove;
-
-  contentDocument.addEventListener("click", window.ColorPickerEvents.ColorPicker.click, true);
-  contentDocument.addEventListener("mousemove", window.ColorPickerEvents.ColorPicker.mouseMove, false);
+  contentDocument.addEventListener("click", ColorPicker.click, true);
+  contentDocument.addEventListener("mousemove", ColorPicker.mouseMove, false);
 };
 
 ColorPicker.removeColorPicker = function(contentDocument)
@@ -103,10 +98,8 @@ ColorPicker.removeColorPicker = function(contentDocument)
   $("#colorPickerDiv").remove();
   $("#colorPickerViewer").remove();
 
-  contentDocument.removeEventListener("click", window.ColorPickerEvents.ColorPicker.click, true);
-  contentDocument.removeEventListener("mousemove", window.ColorPickerEvents.ColorPicker.mouseMove, false);
-
-  window.ColorPickerEvents.ColorPicker = null;
+  contentDocument.removeEventListener("click", ColorPicker.click, true);
+  contentDocument.removeEventListener("mousemove", ColorPicker.mouseMove, false);
 };
 
 ColorPicker.displayColorPicker = function(display, contentDocument)
@@ -118,7 +111,7 @@ ColorPicker.displayColorPicker = function(display, contentDocument)
   }
   else
   {
-    try { ColorPicker.removeColorPicker(contentDocument); } catch(err) {};
+    try { ColorPicker.removeColorPicker(contentDocument); } catch(err) {console.log(err);};
   }
 };
 
@@ -235,9 +228,5 @@ ColorPicker.setColors = function(colors, type)
 
     s+='</tr>';
   }
-  //s+='</table>';
-  //s+='<div style="width:62px; height:62px; position:absolute; top:-1px; left:-1px;">'+
-  //'<img width="59px" height="59px" src='+chrome.extension.getURL("Images/magnifierGlass.png")+' />'+
-  //'</div>';
   ColorPicker.colorPickerViewer.childNodes[0].innerHTML = s;
 };

@@ -43,10 +43,10 @@ $( document ).ready(function() {
 			}
 
 			chrome.storage.sync.set({'background': backgroundVal}, function() {
-	          console.log("background "+backgroundVal+' saved');
+	          //console.log("background "+backgroundVal+' saved');
         	});
 			chrome.storage.sync.set({'foreground': foregroundVal}, function() {
-	          console.log("foreground "+foregroundVal+' saved');
+	          //console.log("foreground "+foregroundVal+' saved');
         	});
 
 			$(".example").css("background-color", backgroundTxt);
@@ -89,22 +89,21 @@ $( document ).ready(function() {
 
 	pickAction = function(t) 
 	{
-		console.log(t.currentTarget.id);
+		//console.log(t.currentTarget.id);
 	    getSelectedTab(function(tab)
   		{
   			if(isValidTab(tab)) {
-  				addScriptToTab(tab, { allFrames: true, "file": "jquery-1.11.3.min.js" }, function()
-  				{
-  					addScriptsToTab(tab, 
-  						"ColorPicker.js", 
- 						"ColorPicker.displayColorPicker(false, document);"+
-  						"ColorPicker.displayColorPicker(true, document);"+
-  						"ColorPicker.refresh();", 
-  						function() {
-  							//window.close();
+  				$.when.apply($, $.addScripts(tab, [
+  					{mode: "file", script: "jquery-1.11.3.min.js"},
+  					{mode: "file", script: "ColorPicker.js"},
+  					{mode: "code", script: "ColorPicker.displayColorPicker(false, document);"},
+  					{mode: "code", script: "ColorPicker.displayColorPicker(true, document);"},
+  					{mode: "code", script: "ColorPicker.refresh();"}
+  					])).done(function() {
+  						console.log('done');
+  						//window.close();
   						}
   					);
-  				});
 			}
         });
 	};
@@ -121,7 +120,7 @@ $( document ).ready(function() {
 	};
 
 	chrome.storage.sync.get(['background', 'foreground'], function(a) {
-		console.log('Restore '+a['background']+' '+a['foreground']);
+		//console.log('Restore '+a['background']+' '+a['foreground']);
 		if(a['background']) {
 			$("#background").val(a['background']);
 		}
@@ -155,17 +154,33 @@ $( document ).ready(function() {
 		t.currentTarget["src"] = t.currentTarget["src"].replace(".color.png",".png");
 	});
 
-	addScriptToTab = function(tab, script, callback)
-	{
-  		chrome.tabs.executeScript(tab.id, script, callback);
-	},
+	$.addScript = function(tab, script) {
+		var dfd = $.Deferred();
+		switch(script.mode) {
+			case "file" :
+				chrome.tabs.executeScript(tab.id, { allFrames: true, "file": script.script }, 
+				function() {
+					dfd.notify(script.mode +': '+script.script);
+					dfd.resolve();
+				});
+				break;
+			case "code" :
+				chrome.tabs.executeScript(tab.id, { allFrames: true, "code": script.script }, 
+				function() {
+					dfd.notify(script.mode +': '+script.script);
+					dfd.resolve();
+				});
+				break;
+			};
+		return dfd.promise();
+		};
 
-	addScriptsToTab = function(tab, scriptFile, scriptCode, callback)
-	{
-  		addScriptToTab(tab, { allFrames: true, "file": scriptFile }, function()
-  		{
-    		addScriptToTab(tab, { allFrames: true, "code": scriptCode }, callback);
-  		});
-	};
+	$.addScripts = function(tab, scripts) {
+		var d=[];
+		$(scripts).each(function(i, s) {
+			d.push($.addScript(tab, s).then(function(){}, function(err) { console.log("Error: "+err);}, function(tr) {console.log(tr);}));
+		});
+		return d;//$.when(d).promise();
+	}
 
 });
