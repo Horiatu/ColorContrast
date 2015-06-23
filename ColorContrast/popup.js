@@ -93,15 +93,18 @@ $( document ).ready(function() {
 	    getSelectedTab(function(tab)
   		{
   			if(isValidTab(tab)) {
-  				addScriptsToTab(tab, 
-  					"ColorPicker.js", 
- 					"ColorPicker.displayColorPicker(false, document);"+
-  					"ColorPicker.displayColorPicker(true, document);"+
-  					"ColorPicker.refresh();", 
-  					function() {
-  						//window.close();
-  					}
-  				);
+  				addScriptToTab(tab, { allFrames: true, "file": "jquery-1.11.3.min.js" }, function()
+  				{
+  					addScriptsToTab(tab, 
+  						"ColorPicker.js", 
+ 						"ColorPicker.displayColorPicker(false, document);"+
+  						"ColorPicker.displayColorPicker(true, document);"+
+  						"ColorPicker.refresh();", 
+  						function() {
+  							//window.close();
+  						}
+  					);
+  				});
 			}
         });
 	};
@@ -159,9 +162,9 @@ $( document ).ready(function() {
 
 	addScriptsToTab = function(tab, scriptFile, scriptCode, callback)
 	{
-  		addScriptToTab(tab, { "file": scriptFile }, function()
+  		addScriptToTab(tab, { allFrames: true, "file": scriptFile }, function()
   		{
-    		addScriptToTab(tab, { "code": scriptCode }, callback);
+    		addScriptToTab(tab, { allFrames: true, "code": scriptCode }, callback);
   		});
 	};
 

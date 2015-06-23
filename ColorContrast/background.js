@@ -1,4 +1,4 @@
-console.log('Background loading');
+//console.log('Background loading');
 
 var Background = Background || {};
 

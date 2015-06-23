@@ -27,6 +27,9 @@
   ],
 
   "web_accessible_resources": [
-    "font/*.woff2"
+    "jquery-2.1.0.min.js",
+    "font/*.woff2",
+    "Images/magnifierGlass.png",
+    "Images/Cursors/pickColor.cur"
   ]
 }

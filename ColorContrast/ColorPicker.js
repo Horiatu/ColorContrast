@@ -25,21 +25,46 @@ ColorPicker.getDocumentBodyElement = function(contentDocument)
   return contentDocument.documentElement;
 };
 
-// Creates the color picker
 ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
 {
-  console.log(contentDocument);
+  if(!contentDocument.getElementById("colorPickerCursor")) {
+    //var css = '<link id="colorPickerCursor" rel="stylesheet" type="text/css" href="'+chrome.extension.getURL('Images/Cursors/pickColor.css?0.3.0')+'" />';
+    var css = '<Style id="colorPickerCursor">\n'+
+    ' * { cursor: url('+chrome.extension.getURL("Images/Cursors/pickColor.cur")+'), crosshair; }\n'+
+    '</Style>';
+    if ($("head").length == 0) { 
+      $("body").before(css);
+    } else {
+      $("head").append(css);
+    }
+  }
 
   if(!contentDocument.getElementById("colorPickerDiv")) {
     ColorPicker.colorPickerViewer = contentDocument.createElement("Div");
     ColorPicker.colorPickerViewer.setAttribute("id", "colorPickerViewer");
     ColorPicker.colorPickerViewer.setAttribute("style", 
-      "position: fixed; padding:2px; "+
-      "border: 1px solid gray; border-radius: 35px; overflow: hidden;"+
-      "visibility:visible;");
+      "position: fixed; padding:0px; z-index:10000; "+
+      "border: 1px solid gray; border-radius: 37px; overflow: hidden;");
+    
+    var t = contentDocument.createElement("Table");
+    t.setAttribute("cellspacing", "1");
+    t.setAttribute("style", "border-collapse:collapse; margin:0; padding:0; box-sizing:content-box !important; -webkit-box-sizing:content-box !important;");
+    t.setAttribute("id", "colorPickerViewerTable");
+    ColorPicker.colorPickerViewer.appendChild(t);
+
+    var d = contentDocument.createElement("div");
+    d.setAttribute("style", "width:59px; height:59px; position:absolute; top:-1px; left:-1px;");
+    var i = contentDocument.createElement("img");
+    
+    i.setAttribute("alt","");
+    i.setAttribute("width","59px");
+    i.setAttribute("height","59px");
+    i.setAttribute("src",chrome.extension.getURL("Images/magnifierGlass.png"));
+    d.appendChild(i);
+    
+    ColorPicker.colorPickerViewer.appendChild(d);
+
     ColorPicker.getDocumentBodyElement(contentDocument).appendChild(ColorPicker.colorPickerViewer);
-
-
 
     ColorPicker.colorPickerToolbar = contentDocument.createElement("Div");
     ColorPicker.colorPickerToolbar.setAttribute("id", "colorPickerDiv");
@@ -71,13 +96,25 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
   contentDocument.addEventListener("mousemove", window.ColorPickerEvents.ColorPicker.mouseMove, false);
 };
 
-// Displays the color picker
-ColorPicker.displayColorPicker = function(display, contentDocument, toolbarHTML)
+ColorPicker.removeColorPicker = function(contentDocument)
+{
+  $("#colorPickerCursor").remove();
+
+  $("#colorPickerDiv").remove();
+  $("#colorPickerViewer").remove();
+
+  contentDocument.removeEventListener("click", window.ColorPickerEvents.ColorPicker.click, true);
+  contentDocument.removeEventListener("mousemove", window.ColorPickerEvents.ColorPicker.mouseMove, false);
+
+  window.ColorPickerEvents.ColorPicker = null;
+};
+
+ColorPicker.displayColorPicker = function(display, contentDocument)
 {
   // If displaying the color picker
   if(display)
   {
-    ColorPicker.createColorPicker(contentDocument, toolbarHTML);
+    ColorPicker.createColorPicker(contentDocument);
   }
   else
   {
@@ -165,17 +202,6 @@ ColorPicker.mouseMove = function(event)
   ColorPicker.getColor(event, "hover");
 };
 
-// Removes the color picker
-ColorPicker.removeColorPicker = function(contentDocument)
-{
-  Common.removeMatchingElements("#colorPickerDiv", contentDocument);
-
-  contentDocument.removeEventListener("click", window.ColorPickerEvents.ColorPicker.click, true);
-  contentDocument.removeEventListener("mousemove", window.ColorPickerEvents.ColorPicker.mouseMove, false);
-
-  window.ColorPickerEvents.ColorPicker = null;
-};
-
 // Sets the color
 ColorPicker.setColor = function(color, type)
 {
@@ -189,7 +215,7 @@ ColorPicker.setColors = function(colors, type)
   var deep = colors.length;
   m=(deep-1)/2;
   //colorM = colors[m][m];
-  var s='<table style="border-collapse:collapse;">';
+  var s='';//<table style="border-collapse:collapse;" cellspacing="1" >';
   for(i=0; i<deep; i++) {
     s+='<tr>';
     
@@ -197,16 +223,21 @@ ColorPicker.setColors = function(colors, type)
       //if(colorM != colors[m][m]) return;
       color=colors[j][i];
       if(!color) {
-        color='transparent';
+        color='indigo';
       }
-      var ctx = i==m && j==m;
-      var b=(ctx)?'red':'rgba(100, 100, 100, 0.2)';
-      s+='<td style="padding:0px; border:'+(ctx?2:1)+'px solid '+b+'; ">'+
-      '<div style="padding:0px; width:7px; height:7px; background-color:'+color+';"></div></td>';
+      var centre = i==m && j==m;
+      s+='<td style="padding:0px; border:1px solid rgba(100, 100, 100, 0.5); width:7px; height:7px; background-color:'+color+';">';
+      if(centre) {
+        s+='<div style="padding:0px; width:5px; height:5px; border:1px solid rgba(255, 0, 0, 0.5); background-color:transparent;"></div>';
+      }
+      s+='</td>';
     }
 
     s+='</tr>';
   }
-  s+='</table>';
-  ColorPicker.colorPickerViewer.innerHTML = s;
+  //s+='</table>';
+  //s+='<div style="width:62px; height:62px; position:absolute; top:-1px; left:-1px;">'+
+  //'<img width="59px" height="59px" src='+chrome.extension.getURL("Images/magnifierGlass.png")+' />'+
+  //'</div>';
+  ColorPicker.colorPickerViewer.childNodes[0].innerHTML = s;
 };
