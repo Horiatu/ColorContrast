@@ -1,32 +1,35 @@
 $( document ).ready(function() {
 
-	getSelectedTab = function(callback)
+	$.getSelectedTab = function()
 	{
+		var dfd = $.Deferred();
+
   		chrome.tabs.query({ "active": true, "currentWindow": true }, function(tabs)
   		{
-    		callback(tabs[0]);
+    		dfd.resolve(tabs[0]);
   		});
+
+  		return dfd.promise();
 	},
 
-	isValidTab = function(tab)
+	$.validateTab = function(tab)
 	{
+		var dfd = $.Deferred();
   		var url = tab.url;
 
-  		// If this is a chrome URL
   		if(url.indexOf("chrome://") === 0 || url.indexOf("chrome-extension://") === 0)
   		{
-    		alert("Warning: Does not work on internal browser pages.");
-
-    		return false;
+    		dfd.reject("Warning: Does not work on internal browser pages.");
   		}
   		else if(url.indexOf("https://chrome.google.com/extensions/") === 0 || url.indexOf("https://chrome.google.com/webstore/") === 0)
   		{
-    		alert("Warning: Does not work on the Chrome Extension Gallery.");
-
-    		return false;
+    		dfd.reject("Warning: Does not work on the Chrome Extension Gallery.");
+  		}
+  		else {
+  			dfd.resolve();
   		}
 
-  		return true;
+  		return dfd.promise();
 	},
 
 	getContrast = function(id) 
@@ -90,21 +93,27 @@ $( document ).ready(function() {
 	pickAction = function(t) 
 	{
 		//console.log(t.currentTarget.id);
-	    getSelectedTab(function(tab)
+	    $.getSelectedTab().done(function(tab)
   		{
-  			if(isValidTab(tab)) {
-  				$.when.apply($, $.addScripts(tab, [
-  					{mode: "file", script: "jquery-1.11.3.min.js"},
-  					{mode: "file", script: "ColorPicker.js"},
-  					{mode: "code", script: "ColorPicker.displayColorPicker(false, document);"},
-  					{mode: "code", script: "ColorPicker.displayColorPicker(true, document);"},
-  					{mode: "code", script: "ColorPicker.refresh();"}
-  					])).done(function() {
-  						console.log('done');
-  						//window.close();
-  						}
-  					);
-			}
+  			$.validateTab(tab).always( 
+  				function(err) {
+  					if(err) {
+  						alert(err);
+  					} else {
+  						$.when.apply($, $.addScripts(tab, [
+  							{mode: "file", script: "jquery-1.11.3.min.js"},
+  							{mode: "file", script: "ColorPicker.js"},
+  							{mode: "code", script: "ColorPicker.displayColorPicker(false, document);\n"+
+  							                       "ColorPicker.displayColorPicker(true, document);\n"+
+  							                       "ColorPicker.refresh();"}
+  							])).done(function() {
+  								console.log('done');
+  								//window.close();
+  								}
+  							);
+  					}
+				}
+			);
         });
 	};
 
@@ -160,15 +169,13 @@ $( document ).ready(function() {
 			case "file" :
 				chrome.tabs.executeScript(tab.id, { allFrames: true, "file": script.script }, 
 				function() {
-					dfd.notify(script.mode +': '+script.script);
-					dfd.resolve();
+					dfd.resolve(script.mode +': '+script.script);
 				});
 				break;
 			case "code" :
 				chrome.tabs.executeScript(tab.id, { allFrames: true, "code": script.script }, 
 				function() {
-					dfd.notify(script.mode +': '+script.script);
-					dfd.resolve();
+					dfd.resolve(script.mode +': '+script.script);
 				});
 				break;
 			};
@@ -178,9 +185,9 @@ $( document ).ready(function() {
 	$.addScripts = function(tab, scripts) {
 		var d=[];
 		$(scripts).each(function(i, s) {
-			d.push($.addScript(tab, s).then(function(){}, function(err) { console.log("Error: "+err);}, function(tr) {console.log(tr);}));
+			d.push($.addScript(tab, s).then( function(msg) {console.log(msg);} ));
 		});
-		return d;//$.when(d).promise();
+		return d;
 	}
 
 });
