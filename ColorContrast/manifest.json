@@ -18,8 +18,8 @@
 
   "background":
   {
-      //"scripts": [ "background.js" ]
-      "page" : "background.html"
+      "page" : "background.html",
+      "persistent": true
   },
 
   "options_page": "options.html",

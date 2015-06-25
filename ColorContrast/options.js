@@ -1,12 +1,7 @@
 // Saves options to localStorage.
     function save_options() {
-        if (!window.localStorage) {
-            alert("Error local storage is unavailable.");
-            window.close();
-        }
-
-        magnifyGlass = document.getElementById('magnifyGlassDisk').checked ? 'circle' : 'magnifyGlass';
-        window.localStorage.magnifierGlass =  magnifyGlass;
+        magnifyGlass = document.getElementById('magnifyGlassDisk').checked ? 'circle' : 'magnifierGlass';
+        chrome.storage.sync.set({'magnifierGlass': magnifyGlass});
 
         // Update status to let user know options were saved.
         var status = document.getElementById("status");
@@ -19,9 +14,15 @@
 
 // Restores select box state to saved value from localStorage.
 function restore_options() {
-    disk = window.localStorage.magnifierGlass === 'circle';
-    document.getElementById('magnifyGlassDisk').checked = disk;
-    document.getElementById('magnifyGlass').checked = !disk;
+    chrome.storage.sync.get(['magnifierGlass'], 
+        function(a) {
+            if(a['magnifierGlass']) {
+                disk = a['magnifierGlass'] === 'circle';
+                document.getElementById('magnifyGlassDisk').checked = disk;
+                document.getElementById('magnifyGlass').checked = !disk;
+            }
+        }
+    );
 }
 
 // On document load

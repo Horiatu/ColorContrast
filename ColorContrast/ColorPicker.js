@@ -52,18 +52,26 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
     t.setAttribute("id", "colorPickerViewerTable");
     ColorPicker.colorPickerViewer.appendChild(t);
 
-    var d = contentDocument.createElement("div");
-    d.setAttribute("style", "width:59px; height:59px; position:absolute; top:-1px; left:-1px;");
-    var i = contentDocument.createElement("img");
+    chrome.storage.sync.get(['magnifierGlass'], 
+      function(a) {
+          if(a['magnifierGlass']) {
+            var d = contentDocument.createElement("div");
+            d.setAttribute("style", "width:59px; height:59px; position:absolute; top:-1px; left:-1px;");
+            var i = contentDocument.createElement("img");
     
-    i.setAttribute("alt","");
-    i.setAttribute("width","59px");
-    i.setAttribute("height","59px");
-    i.setAttribute("src",chrome.extension.getURL("Images/circle.png"));
-    d.appendChild(i);
-    
-    ColorPicker.colorPickerViewer.appendChild(d);
+            i.setAttribute("alt","");
+            i.setAttribute("width","59px");
+            i.setAttribute("height","59px");
 
+            console.log(a['magnifierGlass']);
+            i.setAttribute("src",chrome.extension.getURL("Images/"+a['magnifierGlass']+".png"));
+            d.appendChild(i);
+
+            ColorPicker.colorPickerViewer.appendChild(d);
+          }
+        }
+      );
+    
     ColorPicker.getDocumentBodyElement(contentDocument).appendChild(ColorPicker.colorPickerViewer);
 
     ColorPicker.colorPickerToolbar = contentDocument.createElement("Div");
