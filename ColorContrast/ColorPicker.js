@@ -30,7 +30,7 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
   if(!contentDocument.getElementById("colorPickerCursor")) {
     //var css = '<link id="colorPickerCursor" rel="stylesheet" type="text/css" href="'+chrome.extension.getURL('Images/Cursors/pickColor.css?0.3.0')+'" />';
     var css = '<Style id="colorPickerCursor">\n'+
-    ' * { cursor: url('+chrome.extension.getURL("Images/Cursors/pickColor.cur")+'), crosshair; }\n'+
+    ' * { cursor: url('+chrome.extension.getURL("Images/Cursors/pickColor.cur")+'), crosshair !important; }\n'+
     '</Style>';
     if ($("head").length == 0) { 
       $("body").before(css);
@@ -89,6 +89,8 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
 
   contentDocument.addEventListener("click", ColorPicker.click, true);
   contentDocument.addEventListener("mousemove", ColorPicker.mouseMove, false);
+
+  $.removeTitles();
 };
 
 ColorPicker.removeColorPicker = function(contentDocument)
@@ -100,6 +102,7 @@ ColorPicker.removeColorPicker = function(contentDocument)
 
   contentDocument.removeEventListener("click", ColorPicker.click, true);
   contentDocument.removeEventListener("mousemove", ColorPicker.mouseMove, false);
+  $.restoreTitles();
 };
 
 ColorPicker.displayColorPicker = function(display, contentDocument)
@@ -230,3 +233,22 @@ ColorPicker.setColors = function(colors, type)
   }
   ColorPicker.colorPickerViewer.childNodes[0].innerHTML = s;
 };
+
+$.removeTitles = function() {
+  $('[title]').bind('mousemove.hideTooltips', function () {
+      $this = $(this);
+      if($this.attr('title') && $this.attr('title') != '') { 
+        $this.data('title', $this.attr('title'));
+        // Using null here wouldn't work in IE, but empty string works just fine.
+        $this.attr('title', '');
+      }
+  }).bind('mouseout.hideTooltips', function () {
+      $this = $(this);
+      $this.attr('title', $this.data('title'));
+  });
+}
+
+$.restoreTitles = function() {
+  $('[title]').unbind('mousemove.hideTooltips').unbind('mouseout.hideTooltips');
+  $('*[data-title!=undefined]').attr('title', $this.data('title'));
+}

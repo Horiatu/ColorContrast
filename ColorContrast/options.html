@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <title>WCAG Luminosity Contrast Ratio Analyser - Options</title>
+    <link type="text/css" rel="stylesheet" href="inc/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="inc/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+
+    <script src="jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="inc/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="options.js"></script>
+    <!--script src="inc/flattr/load.js"></script-->
+
+    <style>
+      .jumbotron h1, .jumbotron .h1 {
+        font-size: 40px;
+      }
+      .example {
+        background-color: #C7C7C7;
+        padding: 5px 30px;
+      }
+      .example img {
+        width:50px;
+        height:50px;
+      }
+
+    </style>
+
+  </head>
+
+  <body id="options-body">
+    <div>
+      <div class="jumbotron">
+        <h1>WCAG Luminosity Contrast Ratio Analyser</h1>
+        <p>Settings page</p>
+      </div>
+
+      <div class="col-sm-6 col-md-6">
+        <div style="padding-left: 60px;">
+          <fieldset>
+            <legend>Magnify Look</legend>
+            <div class="controls">
+              <table><tr>
+                <td>
+                <div class="checkbox"><label class="">
+                  <div><input type="radio" name="magnifyGlass" value="magnifyGlass" id="magnifyGlass">
+                  Magnify Glass</div>
+                  <div class="example"><img src="Images/magnifierGlass.png"/></div>
+                </label></div>
+                </td><td>
+                <div class="checkbox"><label class="">
+                  <div><input type="radio" name="magnifyGlass" value="circle" id="magnifyGlassDisk">
+                  Disk</div>
+                  <div class="example"><img src="Images/circle.png"/></div>
+                </label></div>
+                </td>
+              </tr></table>
+            </div>
+          </fieldset>
+        </div>
+  
+        <div style="margin-left: 60px; margin-top: 30px;">
+          <hr/>
+          <button id="saveButton" class="btn btn-success">Save settings</button>
+          <span id="status"></span>
+        </div>
+      </div>
+    </div>
+  </body>
+
+</html>

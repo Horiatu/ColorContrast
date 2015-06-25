@@ -119,7 +119,7 @@ $( document ).ready(function() {
 
 	copyCode = function(t) 
 	{
-		console.log(t.currentTarget.id);
+		//console.log(t.currentTarget.id);
         var o = $(t.currentTarget).closest('tr').find("input");
 	    var initial = o.val();
     	o.val(ContrastAnalyser.colorNameOrHexToColor(initial));
@@ -127,6 +127,8 @@ $( document ).ready(function() {
         document.execCommand("Copy", false, null);
 	    o.val(initial);
 	};
+
+
 
 	chrome.storage.sync.get(['background', 'foreground'], function(a) {
 		//console.log('Restore '+a['background']+' '+a['foreground']);
@@ -185,7 +187,7 @@ $( document ).ready(function() {
 	$.addScripts = function(tab, scripts) {
 		var d=[];
 		$(scripts).each(function(i, s) {
-			d.push($.addScript(tab, s).then( function(msg) {console.log(msg);} ));
+			d.push($.addScript(tab, s).then( function(msg) { console.log(msg); } ));
 		});
 		return d;
 	}

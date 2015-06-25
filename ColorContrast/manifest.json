@@ -22,6 +22,8 @@
       "page" : "background.html"
   },
 
+  "options_page": "options.html",
+
   "permissions": [
     "tabs", "activeTab", "<all_urls>", "storage", "clipboardRead", "clipboardWrite"
   ],
