@@ -98,7 +98,7 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
   contentDocument.addEventListener("click", ColorPicker.click, true);
   contentDocument.addEventListener("mousemove", ColorPicker.mouseMove, false);
 
-  $.removeTitles();
+  removeTitles();
 };
 
 ColorPicker.removeColorPicker = function(contentDocument)
@@ -110,7 +110,7 @@ ColorPicker.removeColorPicker = function(contentDocument)
 
   contentDocument.removeEventListener("click", ColorPicker.click, true);
   contentDocument.removeEventListener("mousemove", ColorPicker.mouseMove, false);
-  $.restoreTitles();
+  restoreTitles();
 };
 
 ColorPicker.displayColorPicker = function(display, contentDocument)
@@ -144,14 +144,24 @@ ColorPicker.getColor = function(event, type)
     // If the owner document is set
     if(ownerDocument)
     {
-      var tagName     = eventTarget.tagName;
+      var tagName = eventTarget.tagName;
 
       // If the event target is not the color picker, the color picker is not an ancestor of the event target and the event target is not a scrollbar
       if(eventTarget != colorPicker && !ColorPicker.isAncestor(eventTarget, colorPicker) && tagName && tagName.toLowerCase() != "scrollbar")
       {
         var colorPicker = ownerDocument.getElementById("colorPickerViewer");
-        colorPicker.style.left = event.clientX+8+"px";
-        colorPicker.style.top  = event.clientY+8+"px";
+        var w = window.innerWidth-100;
+        var h = window.innerHeight-100;
+        if(event.clientX < w) {
+          colorPicker.style.left = event.clientX+4+"px";
+        } else {
+          colorPicker.style.left = event.clientX-62+"px";
+        }
+        if(event.clientY < h) {
+          colorPicker.style.top = event.clientY+4+"px";
+        } else {
+          colorPicker.style.top = event.clientY-62+"px";
+        } 
         chrome.extension.sendMessage({type: "get-color", x: event.clientX, y: event.clientY, eventType: type});
         //console.log(event);
 
@@ -242,12 +252,12 @@ ColorPicker.setColors = function(colors, type)
   ColorPicker.colorPickerViewer.childNodes[0].innerHTML = s;
 };
 
-$.removeTitles = function() {
+removeTitles = function() {
+  //return;
   $('[title]').bind('mousemove.hideTooltips', function () {
       $this = $(this);
       if($this.attr('title') && $this.attr('title') != '') { 
         $this.data('title', $this.attr('title'));
-        // Using null here wouldn't work in IE, but empty string works just fine.
         $this.attr('title', '');
       }
   }).bind('mouseout.hideTooltips', function () {
@@ -256,7 +266,8 @@ $.removeTitles = function() {
   });
 }
 
-$.restoreTitles = function() {
+restoreTitles = function() {
+  //return;
   $('[title]').unbind('mousemove.hideTooltips').unbind('mouseout.hideTooltips');
-  $('*[data-title!=undefined]').attr('title', $this.data('title'));
+  $('*[data-title!=undefined]').attr('title', $(this).data('title'));
 }

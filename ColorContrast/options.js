@@ -1,25 +1,35 @@
 // Saves options to localStorage.
-    function save_options() {
-        magnifyGlass = document.getElementById('magnifyGlassDisk').checked ? 'circle' : 'magnifierGlass';
-        chrome.storage.sync.set({'magnifierGlass': magnifyGlass});
+function save_options() {
+    var saved = 0;
 
-        // Update status to let user know options were saved.
+    var magnifyGlass = $('.magnifyGlass input');
+    
+    for(i=0; i<magnifyGlass.length; i++) {
+        if(magnifyGlass[i].checked) {
+            chrome.storage.sync.set({'magnifierGlass': magnifyGlass[i].value});
+            saved++;
+            break;
+        }
+    }
+    
+    if(saved>0) {
         var status = document.getElementById("status");
         status.innerHTML = "Options Saved.";
         $('#status').fadeIn(20);
-        $('#status').fadeOut(1500,function() {
+        $('#status').fadeOut(1500,function() {  
             status.innerHTML = "";
         });
     }
+}
 
 // Restores select box state to saved value from localStorage.
 function restore_options() {
     chrome.storage.sync.get(['magnifierGlass'], 
         function(a) {
-            if(a['magnifierGlass']) {
-                disk = a['magnifierGlass'] === 'circle';
-                document.getElementById('magnifyGlassDisk').checked = disk;
-                document.getElementById('magnifyGlass').checked = !disk;
+            var magnifyGlass = $('.magnifyGlass input');
+    
+            for(i=0; i<magnifyGlass.length; i++) {
+                magnifyGlass[i].checked = (magnifyGlass[i].value === a['magnifierGlass']);
             }
         }
     );

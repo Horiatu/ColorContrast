@@ -100,6 +100,22 @@ $( document ).ready(function() {
   					if(err) {
   						alert(err);
   					} else {
+  						//chrome.tabs.executeScript(tab.id, { allFrames: true, "file": "jquery-1.11.3.min.js" }, 
+						//function() {
+						//	chrome.tabs.executeScript(tab.id, { allFrames: true, "file": "ColorPicker.js" }, 
+						//	function() {
+						//		chrome.tabs.executeScript(tab.id, { allFrames: true, "code": 
+						//			"ColorPicker.displayColorPicker(false, document);\n"+
+						//            "ColorPicker.displayColorPicker(true, document);\n"+
+						//            "ColorPicker.refresh();" 
+						//		}, 
+						//		function() {
+						//			console.log('done');
+  						//			//window.close();
+						//		});
+						//	});
+						//});
+
   						$.when.apply($, $.addScripts(tab, [
   							{mode: "file", script: "jquery-1.11.3.min.js"},
   							{mode: "file", script: "ColorPicker.js"},

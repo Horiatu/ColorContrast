@@ -16,8 +16,20 @@
     <!--script src="inc/flattr/load.js"></script-->
 
     <style>
+      @font-face {
+        font-family: "Poiret One";
+        font-weight: 400;
+        src: url('Fonts/Poiret One.woff2') format('woff2');
+      }
       .jumbotron h1, .jumbotron .h1 {
+        font-family: "Poiret One";
+        text-shadow: 2px 2px 2px gray;
         font-size: 40px;
+      }
+       .jumbotron h2, .jumbotron .h2, legend {
+        font-family: "Poiret One";
+        color: gray;
+        font-weight: 600;
       }
       .example {
         background-color: #C7C7C7;
@@ -36,27 +48,30 @@
     <div>
       <div class="jumbotron">
         <h1>WCAG Luminosity Contrast Ratio Analyser</h1>
-        <p>Settings page</p>
+        <h2>Settings page</h2>
       </div>
 
       <div class="col-sm-6 col-md-6">
         <div style="padding-left: 60px;">
           <fieldset>
             <legend>Magnify Look</legend>
-            <div class="controls">
+            <div class="controls magnifyGlass">
               <table><tr>
                 <td>
-                <div class="checkbox"><label class="">
-                  <div><input type="radio" name="magnifyGlass" value="magnifyGlass" id="magnifyGlass">
-                  Magnify Glass</div>
-                  <div class="example"><img src="Images/magnifierGlass.png"/></div>
-                </label></div>
+                  <div class="checkbox">
+                    <div><input type="radio" name="magnifyGlass" value="magnifierGlass" id="magnifierGlass"/></div>
+                    <div class="example"><img src="Images/magnifierGlass.png"/></div>
+                  </div>
                 </td><td>
-                <div class="checkbox"><label class="">
-                  <div><input type="radio" name="magnifyGlass" value="circle" id="magnifyGlassDisk">
-                  Disk</div>
-                  <div class="example"><img src="Images/circle.png"/></div>
-                </label></div>
+                  <div class="checkbox">
+                    <div><input type="radio" name="magnifyGlass" value="magnifierGlass3" id="magnifierGlass3"/></div>
+                    <div class="example"><img src="Images/magnifierGlass3.png"/></div>
+                  </div>
+                </td><td>
+                  <div class="checkbox">
+                    <div><input type="radio" name="magnifyGlass" value="circle" id="circle"/></div>
+                    <div class="example"><img src="Images/circle.png"/></div>
+                  </div>
                 </td>
               </tr></table>
             </div>

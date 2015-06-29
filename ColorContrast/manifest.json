@@ -32,6 +32,7 @@
     "jquery-2.1.0.min.js",
     "font/*.woff2",
     "Images/magnifierGlass.png",
+    "Images/magnifierGlass3.png",
     "Images/circle.png",
     "Images/Cursors/pickColor.cur"
   ]
