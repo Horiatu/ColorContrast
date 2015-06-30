@@ -35,6 +35,7 @@
     "Images/magnifierGlass2.png",
     "Images/magnifierGlass3.png",
     "Images/mapbg.png",
-    "Images/Cursors/pickColor.cur"
+    "Images/Cursors/pickColor.cur",
+    "ColorPicker.css"
   ]
 }

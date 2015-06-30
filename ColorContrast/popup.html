@@ -12,7 +12,7 @@
      -->
     <script type="text/javascript" src="jquery-1.11.3.min.js"></script>
     <script type="text/javascript" src="ColorContrast.js"></script>
-    <script type="text/javascript" src="ColorPicker.js"></script>
+    <!--script type="text/javascript" src="ColorPicker.js"></script-->
     <script type="text/javascript" src="popup.js"></script>
   </head>
   <body>
@@ -26,16 +26,16 @@
     <table id="colors">
       <tr>
         <th><label for="background">Background:</label></th>
-        <td><input class="txInput" type="text" size="20" name="background" id="background" aria-required="true" required value="#037EAF" /></td>
-        <td><div class="btn"><img class="pick" id="bg" src="images/pick-color.png" alt="pick color" title="pick color"></img></div></td>
+        <td><input class="txInput" type="text" size="20" id="background" aria-required="true" required value="#037EAF" /></td>
+        <td><div class="btn"><img class="pick" name="background" src="images/pick-color.png" alt="pick color" title="pick color"></img></div></td>
         <td><div class="btn"><img class="code" id="bgCode" src="images/copy-code.png" alt="copy code" title="copy code"></img></div></td>
         <td rowspan="2"><div class="btn"><img id="toggle" src="images/toggle.png" alt="toggle" title="toggle colors"></img></div></td>
         <td id="contrast" rowspan="2"><span>4.35:1</span></td>
       </tr>
       <tr>
         <th><label for="foreground">Foreground:</label></th>
-        <td><input class="txInput" type="text" size="20" name="foreground" id="foreground" aria-required="true" required value="#0ff" /></td>
-        <td><div class="btn"><img class="pick" id="fr" src="images/pick-color.png" alt="pick color" title="pick color"></img><div></td>
+        <td><input class="txInput" type="text" size="20" id="foreground" aria-required="true" required value="#0ff" /></td>
+        <td><div class="btn"><img class="pick" name="foreground" src="images/pick-color.png" alt="pick color" title="pick color"></img><div></td>
         <td><div class="btn"><img class="code" id="frCode" src="images/copy-code.png" alt="copy code" title="copy code"></img></div></td>
       </tr>
     </table>

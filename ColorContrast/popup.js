@@ -92,7 +92,8 @@ $( document ).ready(function() {
 
 	pickAction = function(t) 
 	{
-		//console.log(t.currentTarget.id);
+		console.log(t.currentTarget);
+		backgroundPage.requestColor = t.currentTarget.name;
 	    $.getSelectedTab().done(function(tab)
   		{
   			$.validateTab(tab).always( 
@@ -100,37 +101,49 @@ $( document ).ready(function() {
   					if(err) {
   						alert(err);
   					} else {
-  						//chrome.tabs.executeScript(tab.id, { allFrames: true, "file": "jquery-1.11.3.min.js" }, 
-						//function() {
-						//	chrome.tabs.executeScript(tab.id, { allFrames: true, "file": "ColorPicker.js" }, 
-						//	function() {
-						//		chrome.tabs.executeScript(tab.id, { allFrames: true, "code": 
-						//			"ColorPicker.displayColorPicker(false, document);\n"+
-						//            "ColorPicker.displayColorPicker(true, document);\n"+
-						//            "ColorPicker.refresh();" 
-						//		}, 
-						//		function() {
-						//			console.log('done');
-  						//			//window.close();
-						//		});
-						//	});
-						//});
+  						chrome.tabs.executeScript(tab.id, { allFrames: true, "file": "jquery-1.11.3.min.js" }, 
+						function() {
+							chrome.tabs.executeScript(tab.id, { allFrames: true, "file": "ColorPicker.js" }, 
+							function() {
+								chrome.tabs.executeScript(tab.id, { allFrames: true, "code": 
+									//"ColorPicker.displayColorPicker(false, document);\n"+
+						            "ColorPicker.displayColorPicker(true, document);\n"+
+						            "ColorPicker.refresh();" 
+								}, 
+								function() {
+									console.log('done');
+  									closePopup();
+								});
+							});
+						});
 
-  						$.when.apply($, $.addScripts(tab, [
-  							{mode: "file", script: "jquery-1.11.3.min.js"},
-  							{mode: "file", script: "ColorPicker.js"},
-  							{mode: "code", script: "ColorPicker.displayColorPicker(false, document);\n"+
-  							                       "ColorPicker.displayColorPicker(true, document);\n"+
-  							                       "ColorPicker.refresh();"}
-  							])).done(function() {
-  								console.log('done');
-  								//window.close();
-  								}
-  							);
+  						//$.when.apply($, $.addScripts(tab, [
+  						//	{mode: "file", script: "jquery-1.11.3.min.js"},
+  						//	{mode: "file", script: "ColorPicker.js"},
+  						//	{mode: "code", script: "ColorPicker.displayColorPicker(false, document);\n"+
+  						//	                       "ColorPicker.displayColorPicker(true, document);\n"+
+  						//	                       "ColorPicker.refresh();"}
+  						//	])).done(function() {
+  						//		console.log('done');
+  						//		//chrome.extension.sendMessage({type: "close-Window", w:window});
+  						//		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+  						//			console.log(tabs);
+  						//			chrome.tabs.sendMessage(
+  						//				tabs[0].id, 
+  						//				{type: "close-Window", w:window}
+						//		  	)
+						//		});
+  						//		window.close();
+  						//		}
+  						//	);
   					}
 				}
 			);
         });
+	};
+
+	closePopup = function() {
+  		window.close();
 	};
 
 	copyCode = function(t) 
@@ -145,6 +158,32 @@ $( document ).ready(function() {
 	};
 
 
+	$.addScript = function(tab, script) {
+		var dfd = $.Deferred();
+		switch(script.mode) {
+			case "file" :
+				chrome.tabs.executeScript(tab.id, { allFrames: true, "file": script.script }, 
+				function() {
+					dfd.resolve(script.mode +': '+script.script);
+				});
+				break;
+			case "code" :
+				chrome.tabs.executeScript(tab.id, { allFrames: true, "code": script.script }, 
+				function() {
+					dfd.resolve(script.mode +': '+script.script);
+				});
+				break;
+		};
+	return dfd.promise();
+	};
+
+	$.addScripts = function(tab, scripts) {
+		var d=[];
+		$(scripts).each(function(i, s) {
+			d.push($.addScript(tab, s));//.then( function(msg) { console.log(msg); } ));
+		});
+		return d;
+	}
 
 	chrome.storage.sync.get(['background', 'foreground'], function(a) {
 		//console.log('Restore '+a['background']+' '+a['foreground']);
@@ -181,31 +220,29 @@ $( document ).ready(function() {
 		t.currentTarget["src"] = t.currentTarget["src"].replace(".color.png",".png");
 	});
 
-	$.addScript = function(tab, script) {
-		var dfd = $.Deferred();
-		switch(script.mode) {
-			case "file" :
-				chrome.tabs.executeScript(tab.id, { allFrames: true, "file": script.script }, 
-				function() {
-					dfd.resolve(script.mode +': '+script.script);
-				});
-				break;
-			case "code" :
-				chrome.tabs.executeScript(tab.id, { allFrames: true, "code": script.script }, 
-				function() {
-					dfd.resolve(script.mode +': '+script.script);
-				});
-				break;
-			};
-		return dfd.promise();
-		};
-
-	$.addScripts = function(tab, scripts) {
-		var d=[];
-		$(scripts).each(function(i, s) {
-			d.push($.addScript(tab, s).then( function(msg) { console.log(msg); } ));
-		});
-		return d;
-	}
+	var backgroundPage = chrome.extension.getBackgroundPage().Background;
+							
+	$.getSelectedTab().done(function(tab)
+  	{
+  		$.validateTab(tab).always( 
+  			function(err) {
+  				if(err) {
+  					alert(err);
+  				} else {
+					chrome.tabs.executeScript(tab.id, { allFrames: true, "code": 
+						"ColorPicker.displayColorPicker(false, document);"},
+						function() {
+							//console.log(backgroundPage);
+							var color = backgroundPage.Color;
+							console.log(backgroundPage.requestColor);
+							if(color != null && backgroundPage.requestColor != null) {
+								$('#'+backgroundPage.requestColor).val(color);
+								getContrast(backgroundPage.requestColor);
+							}
+						});
+				}
+			}
+		)
+	});
 
 });

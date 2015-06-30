@@ -28,13 +28,15 @@ ColorPicker.getDocumentBodyElement = function(contentDocument)
 ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
 {
   if(!contentDocument.getElementById("colorPickerCursor")) {
-    //var css = '<link id="colorPickerCursor" rel="stylesheet" type="text/css" href="'+chrome.extension.getURL('Images/Cursors/pickColor.css?0.3.0')+'" />';
+    var colorPickerCss = '<link id="colorPickerCss" rel="stylesheet" type="text/css" href="'+chrome.extension.getURL('ColorPicker.css')+'" />';
     var css = '<Style id="colorPickerCursor">\n'+
     ' * { cursor: url('+chrome.extension.getURL("Images/Cursors/pickColor.cur")+'), crosshair !important; }\n'+
     '</Style>';
     if ($("head").length == 0) { 
+      $("body").before(colorPickerCss);
       $("body").before(css);
     } else {
+      $("head").append(colorPickerCss);
       $("head").append(css);
     }
   }
@@ -42,13 +44,9 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
   if(!contentDocument.getElementById("colorPickerDiv")) {
     ColorPicker.colorPickerViewer = contentDocument.createElement("Div");
     ColorPicker.colorPickerViewer.setAttribute("id", "colorPickerViewer");
-    ColorPicker.colorPickerViewer.setAttribute("style", 
-      "position: fixed; padding:0px; z-index:10000; "+
-      "border: 1px solid gray; border-radius: 37px; overflow: hidden;");
     
     var t = contentDocument.createElement("Table");
     t.setAttribute("cellspacing", "1");
-    t.setAttribute("style", "border-collapse:collapse; margin:0; padding:0; box-sizing:content-box !important; -webkit-box-sizing:content-box !important;");
     t.setAttribute("id", "colorPickerViewerTable");
     ColorPicker.colorPickerViewer.appendChild(t);
 
@@ -56,7 +54,6 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
       function(a) {
           if(a['magnifierGlass']) {
             var d = contentDocument.createElement("div");
-            d.setAttribute("style", "width:59px; height:59px; position:absolute; top:-1px; left:-1px;");
             var i = contentDocument.createElement("img");
     
             i.setAttribute("alt","");
@@ -76,20 +73,13 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
 
     ColorPicker.colorPickerToolbar = contentDocument.createElement("Div");
     ColorPicker.colorPickerToolbar.setAttribute("id", "colorPickerDiv");
-    ColorPicker.colorPickerToolbar.setAttribute("style", 
-      "position: fixed; padding:2px; "+
-      "width:100px; "+
-      "right: 10px; bottom:10px; "+
-      "background-color:white; border-style:inset; visibility:visible;");
     
     ColorPicker.colorDiv = contentDocument.createElement("Div");
     ColorPicker.colorDiv.setAttribute("id", "colorDiv");
-    ColorPicker.colorDiv.setAttribute("style", "position: fixed; width:18px; height:18px;");
     ColorPicker.colorPickerToolbar.appendChild(ColorPicker.colorDiv);
 
     ColorPicker.colorTxt = contentDocument.createElement("Span");
     ColorPicker.colorTxt.setAttribute("id", "colorTxt");
-    ColorPicker.colorTxt.setAttribute("style", "font-weight:bold; width:50px; margin-left:24px; margin-right:4px;");
     ColorPicker.colorPickerToolbar.appendChild(ColorPicker.colorTxt);
 
     ColorPicker.getDocumentBodyElement(contentDocument).appendChild(ColorPicker.colorPickerToolbar);
@@ -104,6 +94,7 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
 ColorPicker.removeColorPicker = function(contentDocument)
 {
   $("#colorPickerCursor").remove();
+  $("colorPickerCss").remove();
 
   $("#colorPickerDiv").remove();
   $("#colorPickerViewer").remove();
@@ -147,7 +138,10 @@ ColorPicker.getColor = function(event, type)
       var tagName = eventTarget.tagName;
 
       // If the event target is not the color picker, the color picker is not an ancestor of the event target and the event target is not a scrollbar
-      if(eventTarget != colorPicker && !ColorPicker.isAncestor(eventTarget, colorPicker) && tagName && tagName.toLowerCase() != "scrollbar")
+      if(eventTarget != colorPicker 
+        && !ColorPicker.isAncestor(eventTarget, colorPicker) 
+        && tagName 
+        && tagName.toLowerCase() != "scrollbar")
       {
         var colorPicker = ownerDocument.getElementById("colorPickerViewer");
         var w = window.innerWidth-100;
@@ -165,8 +159,7 @@ ColorPicker.getColor = function(event, type)
         chrome.extension.sendMessage({type: "get-color", x: event.clientX, y: event.clientY, eventType: type});
         //console.log(event);
 
-        var colorViewer = ownerDocument.getElementById("colorPickerViewer");
-
+        //var colorViewer = ownerDocument.getElementById("colorPickerViewer");
       }
     }
   }
@@ -271,3 +264,22 @@ restoreTitles = function() {
   $('[title]').unbind('mousemove.hideTooltips').unbind('mouseout.hideTooltips');
   $('*[data-title!=undefined]').attr('title', $(this).data('title'));
 }
+
+//message = function(msg, sender, sendResponse)
+//{
+//  // If the msg type is to get the current color
+//  if(msg.type == "close-Window")
+//  {
+//    console.log(msg.w);
+//  }
+//}
+
+//chrome.runtime.onMessage.addListener(
+//  function(msg, sender, sendResponse)
+//{
+//  // If the msg type is to get the current color
+//  if(msg.type == "close-Window")
+//  {
+//    console.log(msg.w);
+//  }
+//});

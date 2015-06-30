@@ -66,6 +66,8 @@ $.getContext = function() {
 Background.context = null;
 Background.image = null;
 Background.promise = null; 
+Background.Color = null;
+Background.RequestColor = null;
 
 // Gets the current color
 Background.getColor = function(x, y, eventType)
@@ -79,6 +81,9 @@ Background.getColor = function(x, y, eventType)
     function() {
       var deep=3;
       var color = Background.convertRGBToHex(Background.context.getImageData(x, y, 1, 1).data);
+      if(eventType=='selected') {
+        Background.Color = color;
+      }
       
       var colors = "";
       var cr ='[';
@@ -106,7 +111,7 @@ Background.getColor = function(x, y, eventType)
         chrome.tabs.executeScript(null, { "code": "ColorPicker.setColors(" + colors + ", '" + eventType + "')" });
       }
       catch(err) {
-        //console.log(err);
+        console.log(err);
       }
     }
   );
@@ -270,64 +275,3 @@ Background.message = function(msg, sender, sendResponse)
 };
 
 chrome.extension.onMessage.addListener(Background.message);
-
-/* / Opens a generated tab
-Background.openGeneratedTab = function(tabURL, tabIndex, data, locale)
-{
-  chrome.tabs.create({ "index": tabIndex + 1, "url": tabURL }, function(openedTab)
-  {
-    var tabLoaded = function(tabId, tabInformation)
-    {
-      // If this is the opened tab and it finished loading
-      if(tabId == openedTab.id && tabInformation.status == "complete")
-      {
-        Background.initializeGeneratedTab(tabURL, data, locale);
-
-        chrome.tabs.onUpdated.removeListener(tabLoaded);
-      }
-    };
-
-    chrome.tabs.onUpdated.addListener(tabLoaded);
-  });
-};
-/*
-// Validates the CSS of the local page
-Background.validateLocalCSS = function(tabURL, tabIndex, css)
-{
-  chrome.tabs.create({ "index": tabIndex + 1, "url": tabURL }, function(openedTab)
-  {
-    var tabLoaded = function(tabId, tabInformation)
-    {
-      // If this is the opened tab and it finished loading
-      if(tabId == openedTab.id && tabInformation.status == "complete")
-      {
-        Background.initializeValidationTab(tabURL, Background.getStylesFromCSS(css));
-
-        chrome.tabs.onUpdated.removeListener(tabLoaded);
-      }
-    };
-
-    chrome.tabs.onUpdated.addListener(tabLoaded);
-  });
-};
-
-// Validates the HTML of the local page
-Background.validateLocalHTML = function(tabURL, tabIndex, validateURL)
-{
-  chrome.tabs.create({ "index": tabIndex + 1, "url": tabURL }, function(openedTab)
-  {
-    var tabLoaded = function(tabId, tabInformation)
-    {
-      // If this is the opened tab and it finished loading
-      if(tabId == openedTab.id && tabInformation.status == "complete")
-      {
-        Background.initializeValidationTab(tabURL, Background.getURLContents([validateURL], ""));
-
-        chrome.tabs.onUpdated.removeListener(tabLoaded);
-      }
-    };
-
-    chrome.tabs.onUpdated.addListener(tabLoaded);
-  });
-};
-*/
