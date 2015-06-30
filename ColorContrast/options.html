@@ -31,15 +31,26 @@
         color: gray;
         font-weight: 600;
       }
-      .example {
+      .glassBox {
         background-color: #C7C7C7;
         padding: 5px 30px;
       }
-      .example img {
+      .mapBg {
+        background-image: url("Images/mapbg.png");
+      }
+      .glassBox img {
         width:50px;
         height:50px;
       }
-
+      .radio, .checkbox {
+          padding-left: 20px;
+      }
+      input[type=radio], input[type=checkbox] {
+        width: 18px;
+        height: 18px;
+        margin: 2px; 
+        vertical-align: top;
+      }
     </style>
 
   </head>
@@ -56,24 +67,39 @@
           <fieldset>
             <legend>Magnify Look</legend>
             <div class="controls magnifyGlass">
-              <table><tr>
-                <td>
-                  <div class="checkbox">
-                    <div><input type="radio" name="magnifyGlass" value="magnifierGlass" id="magnifierGlass"/></div>
-                    <div class="example"><img src="Images/magnifierGlass.png"/></div>
-                  </div>
-                </td><td>
-                  <div class="checkbox">
-                    <div><input type="radio" name="magnifyGlass" value="magnifierGlass3" id="magnifierGlass3"/></div>
-                    <div class="example"><img src="Images/magnifierGlass3.png"/></div>
-                  </div>
-                </td><td>
-                  <div class="checkbox">
-                    <div><input type="radio" name="magnifyGlass" value="circle" id="circle"/></div>
-                    <div class="example"><img src="Images/circle.png"/></div>
-                  </div>
-                </td>
-              </tr></table>
+              <table>
+                <tr>
+                  <td>
+                    <div class="checkbox">
+                      <div><input type="radio" name="magnifyGlass" value="magnifierGlass" id="magnifierGlass"/></div>
+                      <div class="glassBox"><img src="Images/magnifierGlass.png"/></div>
+                    </div>
+                  </td><td>
+                    <div class="checkbox">
+                      <div><input type="radio" name="magnifyGlass" value="magnifierGlass2" id="magnifierGlass2"/></div>
+                      <div class="glassBox"><img src="Images/magnifierGlass2.png"/></div>
+                    </div>
+                  </td><td>
+                    <div class="checkbox">
+                      <div><input type="radio" name="magnifyGlass" value="magnifierGlass3" id="magnifierGlass3"/></div>
+                      <div class="glassBox"><img src="Images/magnifierGlass3.png"/></div>
+                    </div>
+                  <!--/td><td>
+                    <div class="checkbox">
+                      <div><input type="radio" name="magnifyGlass" value="circle" id="circle"/></div>
+                      <div class="glassBox"><img src="Images/circle.png"/></div>
+                    </div>
+                  </td-->
+                </tr>
+                <tr>
+                  <td colspan="6">
+                    <div style="margin-left: 20px; margin-top: 5px;">
+                      <input id="mapbg" type="checkbox"/>
+                      <label for="mapbg" style="font-weight: 400;">Show glass on a map-like background</label>
+                    </div>
+                  </td>
+                </tr>
+              </table>
             </div>
           </fieldset>
         </div>

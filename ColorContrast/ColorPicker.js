@@ -63,7 +63,7 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
             i.setAttribute("width","59px");
             i.setAttribute("height","59px");
 
-            console.log(a['magnifierGlass']);
+            //console.log(a['magnifierGlass']);
             i.setAttribute("src",chrome.extension.getURL("Images/"+a['magnifierGlass']+".png"));
             d.appendChild(i);
 
