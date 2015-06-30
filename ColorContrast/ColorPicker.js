@@ -40,8 +40,12 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
       $("head").append(css);
     }
   }
+    
+  chrome.storage.sync.get(['magnifierGlass'], function(a) {
+    showMagnifier = a['magnifierGlass'] != 'none';
+  });
 
-  if(!contentDocument.getElementById("colorPickerDiv")) {
+  if(showMagnifier && !contentDocument.getElementById("colorPickerDiv")) {
     ColorPicker.colorPickerViewer = contentDocument.createElement("Div");
     ColorPicker.colorPickerViewer.setAttribute("id", "colorPickerViewer");
     
@@ -104,6 +108,7 @@ ColorPicker.removeColorPicker = function(contentDocument)
   restoreTitles();
 };
 
+var showMagnifier = true;
 ColorPicker.displayColorPicker = function(display, contentDocument)
 {
   // If displaying the color picker
@@ -219,6 +224,7 @@ ColorPicker.setColor = function(color, type)
 //var colorM = null;
 ColorPicker.setColors = function(colors, type)
 {
+  if(!showMagnifier) return;
   var deep = colors.length;
   m=(deep-1)/2;
   //colorM = colors[m][m];
@@ -265,21 +271,3 @@ restoreTitles = function() {
   $('*[data-title!=undefined]').attr('title', $(this).data('title'));
 }
 
-//message = function(msg, sender, sendResponse)
-//{
-//  // If the msg type is to get the current color
-//  if(msg.type == "close-Window")
-//  {
-//    console.log(msg.w);
-//  }
-//}
-
-//chrome.runtime.onMessage.addListener(
-//  function(msg, sender, sendResponse)
-//{
-//  // If the msg type is to get the current color
-//  if(msg.type == "close-Window")
-//  {
-//    console.log(msg.w);
-//  }
-//});
