@@ -92,7 +92,7 @@ $( document ).ready(function() {
 
 	pickAction = function(t) 
 	{
-		console.log(t.currentTarget);
+		//console.log(t.currentTarget);
 		backgroundPage.requestColor = t.currentTarget.name;
 	    $.getSelectedTab().done(function(tab)
   		{
@@ -232,9 +232,7 @@ $( document ).ready(function() {
 					chrome.tabs.executeScript(tab.id, { allFrames: true, "code": 
 						"ColorPicker.displayColorPicker(false, document);"},
 						function() {
-							//console.log(backgroundPage);
 							var color = backgroundPage.Color;
-							console.log(backgroundPage.requestColor);
 							if(color != null && backgroundPage.requestColor != null) {
 								$('#'+backgroundPage.requestColor).val(color);
 								getContrast(backgroundPage.requestColor);

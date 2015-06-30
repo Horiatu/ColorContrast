@@ -6,15 +6,8 @@ $(document).ready(function() {
     $("#saveButton").click(function() { save_options() });
 
     $('#mapbg').change(function () {showMapBg($(this).is(':checked'))});
+    $('#clickType').change(function () {showDirections($(this).is(':checked'))});
 });
-
-function showMapBg(show) {
-    if (show) {
-        $('.glassBox').addClass('mapBg');
-    } else {
-        $('.glassBox').removeClass('mapBg');
-    }
-}
 
 // Saves options to localStorage.
 function save_options() {
@@ -28,6 +21,8 @@ function save_options() {
     }
 
     chrome.storage.sync.set({'MapBg': $('#mapbg').is(':checked')});
+
+    chrome.storage.sync.set({'clickType': $('#clickType').is(':checked')});
     
     var status = document.getElementById("status");
     status.innerHTML = "Options Saved.";
@@ -39,7 +34,7 @@ function save_options() {
 
 // Restores select box state to saved value from localStorage.
 function restore_options() {
-    chrome.storage.sync.get(['magnifierGlass', 'MapBg'], 
+    chrome.storage.sync.get(['magnifierGlass', 'MapBg', 'clickType'], 
         function(a) {
             var magnifyGlass = $('.magnifyGlass input');
     
@@ -49,7 +44,35 @@ function restore_options() {
 
             $('#mapbg').prop('checked', a['MapBg']);
             showMapBg(a['MapBg']);
+
+            $('#clickType').prop('checked', a['clickType']);
+            showDirections(a['clickType']);
         }
     );
+}
+
+function showMapBg(show) {
+    if (show) {
+        $('.glassBox').addClass('mapBg');
+    } else {
+        $('.glassBox').removeClass('mapBg');
+    }
+}
+
+function showDirections(show) {
+    if (show) {
+        $('#directionList').html(
+          '<li>Click Color-Picker button.</li>'+
+          '<li>Explore the page for the desired color (wait the piker lents to catch up with the current position.)</li>'+
+          '<li>Left or right-click the point - you may repeat this step.</li>'+
+          '<li>Open again the extension to finish the selection.</li>'+
+          '<li>(not available yet)</li>');
+    } else {
+        $('#directionList').html(
+          '<li>Click Color-Picker button for either Background or Foreground.</li>'+
+          '<li>Explore the page for the desired color (wait the piker lents to catch up with the current position.)</li>'+
+          '<li>Click the point - you may repeat this step.</li>'+
+          '<li>Open again the extension to finish the selection.</li>');
+    }
 }
 
