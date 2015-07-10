@@ -38,20 +38,21 @@ var ContrastAnalyser = function()
     luminance : function(hex) {
       // http://www.w3.org/Graphics/Color/sRGB.html
       var rgb = _private.rgb(hex);
-      var RsRGB = rgb.r/255.0;
-      var GsRGB = rgb.g/255.0;
-      var BsRGB = rgb.b/255.0;
-      var R = RsRGB <= 0.03928 ? RsRGB/12.92 : Math.pow((RsRGB+0.055)/1.055, 2.4);
-      var G = GsRGB <= 0.03928 ? GsRGB/12.92 : Math.pow((GsRGB+0.055)/1.055, 2.4);
-      var B = BsRGB <= 0.03928 ? BsRGB/12.92 : Math.pow((BsRGB+0.055)/1.055, 2.4);
-      return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+      rgb.r = rgb.r/255.0;
+      rgb.g = rgb.g/255.0;
+      rgb.b = rgb.b/255.0;
+      rgb.r = rgb.r <= 0.03928 ? rgb.r/12.92 : Math.pow((rgb.r+0.055)/1.055, 2.4);
+      rgb.g = rgb.g <= 0.03928 ? rgb.g/12.92 : Math.pow((rgb.g+0.055)/1.055, 2.4);
+      rgb.b = rgb.b <= 0.03928 ? rgb.b/12.92 : Math.pow((rgb.b+0.055)/1.055, 2.4);
+      var l = (0.2126 * rgb.r) + (0.7152 * rgb.g) + (0.0722 * rgb.b);
+      return l;
     },
     rgb : function(hex){
       hex = hex.replace('#','');
       var rgb = {
-        r: parseInt(hex[0] + hex[1], 16),
-        g: parseInt(hex[2] + hex[3], 16),
-        b: parseInt(hex[4] + hex[5], 16)
+        r: parseInt("0x"+hex.substr(0,2)),
+        g: parseInt("0x"+hex.substr(2,2)),
+        b: parseInt("0x"+hex.substr(4,2))
       };
       return rgb;
     },

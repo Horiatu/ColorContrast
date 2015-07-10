@@ -41,40 +41,47 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
     }
   }
     
-  chrome.storage.sync.get(['magnifierGlass'], function(a) {
-    showMagnifier = a['magnifierGlass'] != 'none';
-  });
+  //chrome.storage.sync.get(['magnifierGlass'], function(a) {
+  //  showMagnifier = a['magnifierGlass'] != 'none';
+  //});
 
-  if(showMagnifier && !contentDocument.getElementById("colorPickerDiv")) {
-    ColorPicker.colorPickerViewer = contentDocument.createElement("Div");
-    ColorPicker.colorPickerViewer.setAttribute("id", "colorPickerViewer");
+  var showMagnifier = false;
+  ColorPicker.retrieveGlass().then(function() {
+    if(!contentDocument.getElementById("colorPickerViewer")) {
+      ColorPicker.colorPickerViewer = contentDocument.createElement("Div");
+      ColorPicker.colorPickerViewer.setAttribute("id", "colorPickerViewer");
     
-    var t = contentDocument.createElement("Table");
-    t.setAttribute("cellspacing", "1");
-    t.setAttribute("id", "colorPickerViewerTable");
-    ColorPicker.colorPickerViewer.appendChild(t);
+      var t = contentDocument.createElement("Table");
+      t.setAttribute("cellspacing", "1");
+      t.setAttribute("id", "colorPickerViewerTable");
+      ColorPicker.colorPickerViewer.appendChild(t);
 
-    chrome.storage.sync.get(['magnifierGlass'], 
-      function(a) {
-          if(a['magnifierGlass']) {
-            var d = contentDocument.createElement("div");
-            var i = contentDocument.createElement("img");
+      chrome.storage.sync.get(['magnifierGlass'], 
+        function(a) {
+            if(a['magnifierGlass']) {
+              var d = contentDocument.createElement("div");
+              var i = contentDocument.createElement("img");
     
-            i.setAttribute("alt","");
-            i.setAttribute("width","59px");
-            i.setAttribute("height","59px");
+              i.setAttribute("alt","");
+              i.setAttribute("width","59px");
+              i.setAttribute("height","59px");
 
-            //console.log(a['magnifierGlass']);
-            i.setAttribute("src",chrome.extension.getURL("Images/"+a['magnifierGlass']+".png"));
-            d.appendChild(i);
+              //console.log(a['magnifierGlass']);
+              i.setAttribute("src",chrome.extension.getURL("Images/"+a['magnifierGlass']+".png"));
+              d.appendChild(i);
 
-            ColorPicker.colorPickerViewer.appendChild(d);
+              ColorPicker.colorPickerViewer.appendChild(d);
+
+              ColorPicker.getDocumentBodyElement(contentDocument).appendChild(ColorPicker.colorPickerViewer);
+            }
           }
-        }
-      );
+        );
+      }
+      showMagnifier = true;
+    }
+  );
     
-    ColorPicker.getDocumentBodyElement(contentDocument).appendChild(ColorPicker.colorPickerViewer);
-
+  if(!contentDocument.getElementById("colorPickerDiv")) {
     ColorPicker.colorPickerToolbar = contentDocument.createElement("Div");
     ColorPicker.colorPickerToolbar.setAttribute("id", "colorPickerDiv");
     
@@ -94,6 +101,20 @@ ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
 
   removeTitles();
 };
+
+ColorPicker.retrieveGlass = function() 
+{
+  dfr = $.Deferred();
+  chrome.storage.sync.get(['magnifierGlass'], function(a) {
+    //debugger;
+    if(a['magnifierGlass'] != 'none') {
+      dfr.resolve();
+    } else {
+      dfr.reject();
+    }
+  });
+  return dfr.promise();
+}
 
 ColorPicker.removeColorPicker = function(contentDocument)
 {
@@ -135,11 +156,14 @@ ColorPicker.getColor = function(event, type)
   // If the event target is set
   if(eventTarget)
   {
-    var ownerDocument = eventTarget.ownerDocument;
+    chrome.extension.sendMessage({type: "get-color", x: event.clientX, y: event.clientY, eventType: type});
 
-    // If the owner document is set
+    var ownerDocument = eventTarget.ownerDocument;
     if(ownerDocument)
     {
+      var colorPicker = ownerDocument.getElementById("colorPickerViewer");
+      if(!colorPicker) return;
+
       var tagName = eventTarget.tagName;
 
       // If the event target is not the color picker, the color picker is not an ancestor of the event target and the event target is not a scrollbar
@@ -148,7 +172,6 @@ ColorPicker.getColor = function(event, type)
         && tagName 
         && tagName.toLowerCase() != "scrollbar")
       {
-        var colorPicker = ownerDocument.getElementById("colorPickerViewer");
         var w = window.innerWidth-100;
         var h = window.innerHeight-100;
         if(event.clientX < w) {
@@ -161,10 +184,10 @@ ColorPicker.getColor = function(event, type)
         } else {
           colorPicker.style.top = event.clientY-62+"px";
         } 
-        chrome.extension.sendMessage({type: "get-color", x: event.clientX, y: event.clientY, eventType: type});
         //console.log(event);
 
         //var colorViewer = ownerDocument.getElementById("colorPickerViewer");
+
       }
     }
   }
@@ -221,28 +244,30 @@ ColorPicker.setColor = function(color, type)
   ColorPicker.colorTxt.innerHTML = color;
 };
 
-//var colorM = null;
 ColorPicker.setColors = function(colors, type)
 {
-  if(!showMagnifier) return;
+  if(!showMagnifier || !ColorPicker.colorPickerViewer) return;
+
   var deep = colors.length;
   m=(deep-1)/2;
-  //colorM = colors[m][m];
   var s='';//<table style="border-collapse:collapse;" cellspacing="1" >';
   for(i=0; i<deep; i++) {
     s+='<tr>';
     
     for(j=0; j<deep; j++) {
-      //if(colorM != colors[m][m]) return;
       color=colors[j][i];
       if(!color) {
         color='indigo';
       }
       var centre = i==m && j==m;
-      s+='<td style="padding:0px; border:1px solid rgba(100, 100, 100, 0.5); width:7px; height:7px; background-color:'+color+';">';
+      s+='<td style="background-color:'+color;
       if(centre) {
-        s+='<div style="padding:0px; width:5px; height:5px; border:1px solid rgba(255, 0, 0, 0.5); background-color:transparent;"></div>';
+        s+='; border-radius:6px'
       }
+      s+=';">';
+      //if(centre) {
+      //  s+='<div style="padding:0px; width:5px; height:5px; border:1px solid red; background-color:transparent;"></div>';
+      //}
       s+='</td>';
     }
 

@@ -56,9 +56,9 @@ $( document ).ready(function() {
 			$(".example span").css("color", foregroundTxt);
 
 			var cc = ContrastAnalyser.contrast(backgroundTxt, foregroundTxt);
-			cc = Math.round((cc * 10) / 10);
+			//cc = Math.round((cc * 10) / 10);
 
-			$("#contrast span").html(parseFloat(cc).toFixed(1) + ":1");
+			$("#contrast span").html(parseFloat(cc).toFixed(2) + ":1");
 
 			if(cc >= 4.5) {
 				$("#contrast span").css("text-shadow", "2px 2px 2px darkgreen");
@@ -106,7 +106,7 @@ $( document ).ready(function() {
 							chrome.tabs.executeScript(tab.id, { allFrames: true, "file": "ColorPicker.js" }, 
 							function() {
 								chrome.tabs.executeScript(tab.id, { allFrames: true, "code": 
-									//"ColorPicker.displayColorPicker(false, document);\n"+
+									"ColorPicker.displayColorPicker(false, document);\n"+
 						            "ColorPicker.displayColorPicker(true, document);\n"+
 						            "ColorPicker.refresh();" 
 								}, 
@@ -142,7 +142,8 @@ $( document ).ready(function() {
         });
 	};
 
-	closePopup = function() {
+	closePopup = function() 
+	{
   		window.close();
 	};
 
@@ -157,7 +158,7 @@ $( document ).ready(function() {
 	    o.val(initial);
 	};
 
-
+	/*
 	$.addScript = function(tab, script) {
 		var dfd = $.Deferred();
 		switch(script.mode) {
@@ -184,6 +185,7 @@ $( document ).ready(function() {
 		});
 		return d;
 	}
+	*/
 
 	chrome.storage.sync.get(['background', 'foreground'], function(a) {
 		//console.log('Restore '+a['background']+' '+a['foreground']);
@@ -209,8 +211,7 @@ $( document ).ready(function() {
 		getContrast("background");
 		$("#foreground").val(backgroundVal);
 		getContrast("foreground");
-    	}
-    );
+    });
 
 	$('.btn img').on('mouseenter', function(t) {
 		t.currentTarget["src"] = t.currentTarget["src"].replace(".png",".color.png");
@@ -229,18 +230,21 @@ $( document ).ready(function() {
   				if(err) {
   					alert(err);
   				} else {
-					chrome.tabs.executeScript(tab.id, { allFrames: true, "code": 
-						"ColorPicker.displayColorPicker(false, document);"},
+					chrome.tabs.executeScript(tab.id, { allFrames: false, "code": 
+						//"try { " +
+						"ColorPicker.displayColorPicker(false, document);"
+						//+ " } catch () {}"
+						},
 						function() {
 							var color = backgroundPage.Color;
 							if(color != null && backgroundPage.requestColor != null) {
 								$('#'+backgroundPage.requestColor).val(color);
 								getContrast(backgroundPage.requestColor);
 							}
-						});
+						}
+					);
 				}
 			}
 		)
 	});
-
 });
