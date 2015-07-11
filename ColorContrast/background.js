@@ -107,8 +107,11 @@ Background.getColor = function(x, y, eventType)
       colors+="]";
       //console.log(colors);
       try {
-        chrome.tabs.executeScript(null, { "code": "ColorPicker.setColor('" + color + "', '" + eventType + "')" });
-        chrome.tabs.executeScript(null, { "code": "ColorPicker.setColors(" + colors + ", '" + eventType + "')" });
+        chrome.tabs.executeScript(null, { "code": 
+          "if(ColorPicker) {\n"+
+          "  ColorPicker.setColors(" + colors + ", '" + eventType + "');\n" +
+          "  ColorPicker.setColor('" + color + "', '" + eventType + "');\n" + 
+          "}\n" });
       }
       catch(err) {
         console.log(err);

@@ -13,15 +13,16 @@
 	top:-1px; left:-1px;
 }
 
-#colorPickerViewerTable{
+#colorPickerViewer table{
 	border-collapse:collapse; 
 	margin:0; 
 	padding:0; box-sizing:content-box !important; 
 	-webkit-box-sizing:content-box !important;
 	--background-color: rgba(100, 100, 100, 0.75);
+	cellspacing: 1;
 }
 
-#colorPickerViewerTable td {
+#colorPickerViewer table td {
 	padding:0px; 
 	border:1px solid rgba(100, 100, 100, 0.1); 
 	width:7px; 

@@ -1,298 +1,267 @@
-var ColorPicker = ColorPicker || {};
-ColorPicker.colorPickerToolbar = null;
-ColorPicker.colorPickerViewer = null;
-ColorPicker.colorDiv = null;
-ColorPicker.colorTxt = null;
+var ColorPicker = function() {
 
-ColorPicker.getDocumentBodyElement = function(contentDocument)
-{
-  // If there is a body element
-  if(contentDocument.body)
-  {
-    return contentDocument.body;
-  }
-  else
-  {
-    var bodyElement = contentDocument.querySelector("body");
+    var _private = {
+        colorPickerToolbar: null,
+        colorDiv: null,
+        colorTxt: null,
+        imageUrl: null,
+        showToolbar: false,
 
-    // If there is a body element
-    if(bodyElement)
-    {
-      return bodyElement;
-    }
-  }
+        retrieveGlass: function() {
+            var dfr1 = $.Deferred();
+            chrome.storage.sync.get(['magnifierGlass'], function(a) {
+                if (a['magnifierGlass'] != 'none') {
+                    _private.imageUrl = chrome.extension.getURL("Images/" + a['magnifierGlass'] + ".png");
+                    dfr1.resolve();
+                } else {
+                    dfr1.reject();
+                }
+            });
+            return dfr1.promise();
+        },
 
-  return contentDocument.documentElement;
-};
+        retrieveToolbar: function() {
+            var dfr2 = $.Deferred();
+            chrome.storage.sync.get(['toolbar'], function(a) {
+                if (a['toolbar']) {
+                    dfr2.resolve();
+                } else {
+                    dfr2.reject();
+                }
+            });
+            return dfr2.promise();
+        },
 
-ColorPicker.createColorPicker = function(contentDocument)//, toolbarHTML)
-{
-  if(!contentDocument.getElementById("colorPickerCursor")) {
-    var colorPickerCss = '<link id="colorPickerCss" rel="stylesheet" type="text/css" href="'+chrome.extension.getURL('ColorPicker.css')+'" />';
-    var css = '<Style id="colorPickerCursor">\n'+
-    ' * { cursor: url('+chrome.extension.getURL("Images/Cursors/pickColor.cur")+'), crosshair !important; }\n'+
-    '</Style>';
-    if ($("head").length == 0) { 
-      $("body").before(colorPickerCss);
-      $("body").before(css);
-    } else {
-      $("head").append(colorPickerCss);
-      $("head").append(css);
-    }
-  }
-    
-  //chrome.storage.sync.get(['magnifierGlass'], function(a) {
-  //  showMagnifier = a['magnifierGlass'] != 'none';
-  //});
+        getColor: function(event, type) {
+            var eventTarget = event.target;
 
-  var showMagnifier = false;
-  ColorPicker.retrieveGlass().then(function() {
-    if(!contentDocument.getElementById("colorPickerViewer")) {
-      ColorPicker.colorPickerViewer = contentDocument.createElement("Div");
-      ColorPicker.colorPickerViewer.setAttribute("id", "colorPickerViewer");
-    
-      var t = contentDocument.createElement("Table");
-      t.setAttribute("cellspacing", "1");
-      t.setAttribute("id", "colorPickerViewerTable");
-      ColorPicker.colorPickerViewer.appendChild(t);
+            // If the event target is set
+            if (eventTarget) {
+                chrome.extension.sendMessage({
+                    type: "get-color",
+                    x: event.clientX,
+                    y: event.clientY,
+                    eventType: type
+                });
 
-      chrome.storage.sync.get(['magnifierGlass'], 
-        function(a) {
-            if(a['magnifierGlass']) {
-              var d = contentDocument.createElement("div");
-              var i = contentDocument.createElement("img");
-    
-              i.setAttribute("alt","");
-              i.setAttribute("width","59px");
-              i.setAttribute("height","59px");
+                var ownerDocument = eventTarget.ownerDocument;
+                if (ownerDocument) {
+                    var colorPicker = ownerDocument.getElementById("colorPickerViewer");
+                    if (!colorPicker) return;
 
-              //console.log(a['magnifierGlass']);
-              i.setAttribute("src",chrome.extension.getURL("Images/"+a['magnifierGlass']+".png"));
-              d.appendChild(i);
+                    var tagName = eventTarget.tagName;
 
-              ColorPicker.colorPickerViewer.appendChild(d);
-
-              ColorPicker.getDocumentBodyElement(contentDocument).appendChild(ColorPicker.colorPickerViewer);
+                    // If the event target is not the color picker, the color picker is not an ancestor of the event target and the event target is not a scrollbar
+                    if (eventTarget != colorPicker && !_private.isAncestor(eventTarget, colorPicker) && tagName && tagName.toLowerCase() != "scrollbar") {
+                        var w = window.innerWidth - 100;
+                        var h = window.innerHeight - 100;
+                        if (event.clientX < w) {
+                            colorPicker.style.left = event.clientX + 4 + "px";
+                        } else {
+                            colorPicker.style.left = event.clientX - 62 + "px";
+                        }
+                        if (event.clientY < h) {
+                            colorPicker.style.top = event.clientY + 4 + "px";
+                        } else {
+                            colorPicker.style.top = event.clientY - 62 + "px";
+                        }
+                        //console.log(event);
+                    }
+                }
             }
-          }
-        );
-      }
-      showMagnifier = true;
-    }
-  );
-    
-  if(!contentDocument.getElementById("colorPickerDiv")) {
-    ColorPicker.colorPickerToolbar = contentDocument.createElement("Div");
-    ColorPicker.colorPickerToolbar.setAttribute("id", "colorPickerDiv");
-    
-    ColorPicker.colorDiv = contentDocument.createElement("Div");
-    ColorPicker.colorDiv.setAttribute("id", "colorDiv");
-    ColorPicker.colorPickerToolbar.appendChild(ColorPicker.colorDiv);
+        },
 
-    ColorPicker.colorTxt = contentDocument.createElement("Span");
-    ColorPicker.colorTxt.setAttribute("id", "colorTxt");
-    ColorPicker.colorPickerToolbar.appendChild(ColorPicker.colorTxt);
+        isAncestor: function(element, ancestorElement) {
+            // If the element and ancestor element are set
+            if (element && ancestorElement) {
+                var parentElement = null;
 
-    ColorPicker.getDocumentBodyElement(contentDocument).appendChild(ColorPicker.colorPickerToolbar);
-  }
+                // Loop through the parent elements
+                while ((parentElement = element.parentNode) !== null) {
+                    // If the parent element is the ancestor element
+                    if (parentElement == ancestorElement) {
+                        return true;
+                    } else {
+                        element = parentElement;
+                    }
+                }
+            }
 
-  contentDocument.addEventListener("click", ColorPicker.click, true);
-  contentDocument.addEventListener("mousemove", ColorPicker.mouseMove, false);
+            return false;
+        },
 
-  removeTitles();
-};
+        Click: function(event) {
+            if (event.button != 2) {
+                _private.getColor(event, "selected");
 
-ColorPicker.retrieveGlass = function() 
-{
-  dfr = $.Deferred();
-  chrome.storage.sync.get(['magnifierGlass'], function(a) {
-    //debugger;
-    if(a['magnifierGlass'] != 'none') {
-      dfr.resolve();
-    } else {
-      dfr.reject();
-    }
-  });
-  return dfr.promise();
-}
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        },
 
-ColorPicker.removeColorPicker = function(contentDocument)
-{
-  $("#colorPickerCursor").remove();
-  $("colorPickerCss").remove();
+        MouseMove: function(event) {
+            _private.getColor(event, "hover");
+        },
 
-  $("#colorPickerDiv").remove();
-  $("#colorPickerViewer").remove();
+        removeTitles: function() {
+            //return;
+            $('[title]').bind('mousemove.hideTooltips', function() {
+                $this = $(this);
+                if ($this.attr('title') && $this.attr('title') != '') {
+                    $this.data('title', $this.attr('title'));
+                    $this.attr('title', '');
+                }
+            }).bind('mouseout.hideTooltips', function() {
+                $this = $(this);
+                $this.attr('title', $this.data('title'));
+            });
+        },
 
-  contentDocument.removeEventListener("click", ColorPicker.click, true);
-  contentDocument.removeEventListener("mousemove", ColorPicker.mouseMove, false);
-  restoreTitles();
-};
+        restoreTitles: function() {
+            //return;
+            $('[title]').unbind('mousemove.hideTooltips').unbind('mouseout.hideTooltips');
+            $('*[data-title!=undefined]').attr('title', $(this).data('title'));
+        },
 
-var showMagnifier = true;
-ColorPicker.displayColorPicker = function(display, contentDocument)
-{
-  // If displaying the color picker
-  if(display)
-  {
-    ColorPicker.createColorPicker(contentDocument);
-  }
-  else
-  {
-    try { ColorPicker.removeColorPicker(contentDocument); } catch(err) {console.log(err);};
-  }
-};
+        init: function(contentDocument) {
+            if (!contentDocument.getElementById("colorPickerCursor")) {
+                var colorPickerCss = '<link id="colorPickerCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('ColorPicker.css') + '" />';
+                var css = '<Style id="colorPickerCursor">\n' +
+                    ' * { cursor: url(' + chrome.extension.getURL("Images/Cursors/pickColor.cur") + '), crosshair !important; }\n' +
+                    '</Style>';
+                if ($("head").length == 0) {
+                    $("body").before(colorPickerCss);
+                    $("body").before(css);
+                } else {
+                    $("head").append(colorPickerCss);
+                    $("head").append(css);
+                }
+            }
 
-ColorPicker.refresh = function() 
-{
-  chrome.extension.sendMessage({type: "get-canvas"});
-}
+            contentDocument.addEventListener("click", _private.Click, true);
+            contentDocument.addEventListener("mousemove", _private.MouseMove, false);
 
-// Gets the color
-ColorPicker.getColor = function(event, type)
-{
-  var eventTarget = event.target;
+            _private.removeTitles();
 
-  // If the event target is set
-  if(eventTarget)
-  {
-    chrome.extension.sendMessage({type: "get-color", x: event.clientX, y: event.clientY, eventType: type});
+            _private.retrieveGlass().then(function() {
+                if (!contentDocument.getElementById("colorPickerViewer")) {
+                    ColorPicker.colorPickerViewer = contentDocument.createElement("Div");
+                    ColorPicker.colorPickerViewer.setAttribute("id", "colorPickerViewer");
 
-    var ownerDocument = eventTarget.ownerDocument;
-    if(ownerDocument)
-    {
-      var colorPicker = ownerDocument.getElementById("colorPickerViewer");
-      if(!colorPicker) return;
+                    var t = contentDocument.createElement("Table");
+                    ColorPicker.colorPickerViewer.appendChild(t);
 
-      var tagName = eventTarget.tagName;
+                    var d = contentDocument.createElement("div");
+                    var i = contentDocument.createElement("img");
 
-      // If the event target is not the color picker, the color picker is not an ancestor of the event target and the event target is not a scrollbar
-      if(eventTarget != colorPicker 
-        && !ColorPicker.isAncestor(eventTarget, colorPicker) 
-        && tagName 
-        && tagName.toLowerCase() != "scrollbar")
-      {
-        var w = window.innerWidth-100;
-        var h = window.innerHeight-100;
-        if(event.clientX < w) {
-          colorPicker.style.left = event.clientX+4+"px";
-        } else {
-          colorPicker.style.left = event.clientX-62+"px";
-        }
-        if(event.clientY < h) {
-          colorPicker.style.top = event.clientY+4+"px";
-        } else {
-          colorPicker.style.top = event.clientY-62+"px";
-        } 
-        //console.log(event);
+                    i.setAttribute("alt", "");
+                    i.setAttribute("width", "59px");
+                    i.setAttribute("height", "59px");
 
-        //var colorViewer = ownerDocument.getElementById("colorPickerViewer");
+                    //console.log(a['magnifierGlass']);
+                    i.setAttribute("src", _private.imageUrl);
+                    d.appendChild(i);
 
-      }
-    }
-  }
-};
+                    ColorPicker.colorPickerViewer.appendChild(d);
 
-ColorPicker.isAncestor = function(element, ancestorElement)
-{
-  // If the element and ancestor element are set
-  if(element && ancestorElement)
-  {
-    var parentElement = null;
+                    $('body').append(ColorPicker.colorPickerViewer);
+                }
+                _public.showMagnifier = true;
+            });
 
-    // Loop through the parent elements
-    while((parentElement = element.parentNode) !== null)
-    {
-      // If the parent element is the ancestor element
-      if(parentElement == ancestorElement)
-      {
-        return true;
-      }
-      else
-      {
-        element = parentElement;
-      }
-    }
-  }
+            _private.retrieveToolbar().then(function() {
+                if (!contentDocument.getElementById("colorPickerDiv")) {
+                    _private.colorPickerToolbar = contentDocument.createElement("Div");
+                    _private.colorPickerToolbar.setAttribute("id", "colorPickerDiv");
 
-  return false;
-};
+                    _private.colorDiv = contentDocument.createElement("Div");
+                    _private.colorDiv.setAttribute("id", "colorDiv");
+                    _private.colorPickerToolbar.appendChild(_private.colorDiv);
 
+                    _private.colorTxt = contentDocument.createElement("Span");
+                    _private.colorTxt.setAttribute("id", "colorTxt");
+                    _private.colorPickerToolbar.appendChild(_private.colorTxt);
 
-// Handles the click event
-ColorPicker.click = function(event)
-{
-  if(event.button != 2)
-  {
-    ColorPicker.getColor(event, "selected");
+                    $('body').append(_private.colorPickerToolbar);
+                };
+                _public.showToolbar = true;
+            });
+        },
 
-    event.stopPropagation();
-    event.preventDefault();
-  }
-};
+        destroy: function(contentDocument) {
+            $("#colorPickerCursor").remove();
+            $("colorPickerCss").remove();
 
-// Handles the mouse move event
-ColorPicker.mouseMove = function(event)
-{
-  ColorPicker.getColor(event, "hover");
-};
+            $("#colorPickerDiv").remove();
+            $("#colorPickerViewer").remove();
 
-// Sets the color
-ColorPicker.setColor = function(color, type)
-{
-  ColorPicker.colorDiv.setAttribute("style", "position:fixed; width:18px; height:18px; background-color:" + color + ";");
-  ColorPicker.colorTxt.innerHTML = color;
-};
+            contentDocument.removeEventListener("click", _private.Click, true);
+            contentDocument.removeEventListener("mousemove", _private.MouseMove, false);
+            _private.restoreTitles();
+        },
 
-ColorPicker.setColors = function(colors, type)
-{
-  if(!showMagnifier || !ColorPicker.colorPickerViewer) return;
-
-  var deep = colors.length;
-  m=(deep-1)/2;
-  var s='';//<table style="border-collapse:collapse;" cellspacing="1" >';
-  for(i=0; i<deep; i++) {
-    s+='<tr>';
-    
-    for(j=0; j<deep; j++) {
-      color=colors[j][i];
-      if(!color) {
-        color='indigo';
-      }
-      var centre = i==m && j==m;
-      s+='<td style="background-color:'+color;
-      if(centre) {
-        s+='; border-radius:6px'
-      }
-      s+=';">';
-      //if(centre) {
-      //  s+='<div style="padding:0px; width:5px; height:5px; border:1px solid red; background-color:transparent;"></div>';
-      //}
-      s+='</td>';
     }
 
-    s+='</tr>';
-  }
-  ColorPicker.colorPickerViewer.childNodes[0].innerHTML = s;
-};
+    var _public = {
+        showMagnifier: false,
+        colorPickerViewer: null,
+        Show: function(contentDocument) {
+            _private.init(contentDocument);
+        },
 
-removeTitles = function() {
-  //return;
-  $('[title]').bind('mousemove.hideTooltips', function () {
-      $this = $(this);
-      if($this.attr('title') && $this.attr('title') != '') { 
-        $this.data('title', $this.attr('title'));
-        $this.attr('title', '');
-      }
-  }).bind('mouseout.hideTooltips', function () {
-      $this = $(this);
-      $this.attr('title', $this.data('title'));
-  });
-}
+        Hide: function(contentDocument) {
+            try {
+                _private.destroy(contentDocument);
+            } catch (err) {
+                console.log(err);
+            };
+        },
 
-restoreTitles = function() {
-  //return;
-  $('[title]').unbind('mousemove.hideTooltips').unbind('mouseout.hideTooltips');
-  $('*[data-title!=undefined]').attr('title', $(this).data('title'));
-}
+        refresh: function() {
+            chrome.extension.sendMessage({
+                type: "get-canvas"
+            });
+        },
 
+        setColor: function(color, type) {
+            _private.colorDiv.setAttribute("style", "position:fixed; width:18px; height:18px; background-color:" + color + ";");
+            _private.colorTxt.innerHTML = color;
+        },
+
+        setColors: function(colors, type) {
+
+            if (!ColorPicker.showMagnifier || !ColorPicker.colorPickerViewer) return;
+
+            var deep = colors.length;
+            m = (deep - 1) / 2;
+            var s = ''; //<table style="border-collapse:collapse;" cellspacing="1" >';
+            for (i = 0; i < deep; i++) {
+                s += '<tr>';
+
+                for (j = 0; j < deep; j++) {
+                    color = colors[j][i];
+                    if (!color) {
+                        color = 'indigo';
+                    }
+                    var centre = i == m && j == m;
+                    s += '<td style="background-color:' + color;
+                    if (centre) {
+                        s += '; border-radius:6px'
+                    }
+                    s += ';">';
+                    //if(centre) {
+                    //  s+='<div style="padding:0px; width:5px; height:5px; border:1px solid red; background-color:transparent;"></div>';
+                    //}
+                    s += '</td>';
+                }
+
+                s += '</tr>';
+            }
+            this.colorPickerViewer.childNodes[0].innerHTML = s;
+        },
+
+    }
+
+    return _public;
+
+}();

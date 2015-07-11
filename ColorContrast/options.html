@@ -7,7 +7,7 @@
     <link type="text/css" rel="stylesheet" href="inc/bootstrap/3.1.1/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="inc/bootstrap/3.1.1/css/bootstrap-theme.min.css">
 
-    <script src="jquery-1.11.3.min.js"></script>
+    <script src="jquery-2.1.4.js"></script>
     <script type="text/javascript" src="inc/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,11 +26,18 @@
         text-shadow: 2px 2px 2px gray;
         font-size: 40px;
       }
-       .jumbotron h2, .jumbotron .h2, legend {
+
+      .jumbotron h2, .jumbotron .h2, legend {
         font-family: "Poiret One";
-        color: gray;
+        --color: gray;
         font-weight: 600;
+        --border-bottom: 1px solid gray;
       }
+
+      legend {
+        border-bottom: 1px solid gray; 
+      }
+
       .glassBox {
         background-color: #C7C7C7;
         padding: 5px 30px;
@@ -103,6 +110,12 @@
                   </td>
                 </tr>
               </table>
+            </div>
+
+            <legend style="margin-top:30px;">Toolbar</legend>
+            <div class="controls">
+              <input id="toolbar" type="checkbox" style="margin-left: 20px;"/>
+              <label for="toolbar" style="font-weight: 400;">Color value panel visible</label>
             </div>
           </fieldset>
 
