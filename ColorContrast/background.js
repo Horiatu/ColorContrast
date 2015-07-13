@@ -2,6 +2,13 @@
 
 var Background = Background || {};
 
+/*
+Background.convertRGBToLong = function(rgb)
+{
+  return (rgb[0] * 256 + rgb[1]) * 256 + rgb[2];
+};
+*/
+
 // Converts an RGB color into a hex color
 Background.convertRGBToHex = function(rgb)
 {
