@@ -4,9 +4,71 @@ var DEFAULT_COLOR="#b48484";
 
 // jQuery like functions
 
+<<<<<<< HEAD
 // for get element by id
 function $(id) {
     return document.getElementById(id);
+=======
+// Converts an RGB color into a hex color
+Background.convertRGBToHex = function(rgb)
+{
+  var blue  = parseInt(rgb[2], 10).toString(16).toLowerCase();
+  var green = parseInt(rgb[1], 10).toString(16).toLowerCase();
+  var red   = parseInt(rgb[0], 10).toString(16).toLowerCase();
+
+  // If the color is only 1 character
+  if(blue.length == 1)
+  {
+    blue = "0" + blue;
+  }
+
+  // If the color is only 1 character
+  if(green.length == 1)
+  {
+    green = "0" + green;
+  }
+
+  // If the color is only 1 character
+  if(red.length == 1)
+  {
+    red = "0" + red;
+  }
+
+  return "#" + red + green + blue;
+};
+
+$.getContext = function() {
+
+  var deferred = $.Deferred();
+
+  chrome.tabs.captureVisibleTab(null, function(dataUrl)
+  {
+    Background.image = new Image();
+
+    Background.image.onload = function()
+    {
+      var canvas  = document.createElement("canvas");
+      Background.context = canvas.getContext("2d");
+
+      canvas.height = Background.image.naturalHeight;
+      canvas.width  = Background.image.naturalWidth;
+
+      Background.context.clearRect(0, 0, Background.image.naturalWidth, Background.image.naturalHeight);
+      Background.context.drawImage(Background.image, 0, 0);
+
+      deferred.resolve();
+    };
+
+    Background.image.onerror = function() {
+      deferred.reject();
+    };
+
+    Background.image.src = dataUrl;
+
+  });
+
+  return deferred.promise();
+>>>>>>> parent of 5d5221b... Central marker
 }
 
 // Returns -1 if value isn't in array.

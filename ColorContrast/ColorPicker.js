@@ -161,7 +161,6 @@ var ColorPicker = function() {
                     ColorPicker.colorPickerViewer.setAttribute("id", "colorPickerViewer");
 
                     var t = contentDocument.createElement("Table");
-                    t.setAttribute("cellspacing", 1);
                     ColorPicker.colorPickerViewer.appendChild(t);
 
                     var d = contentDocument.createElement("div");
@@ -314,39 +313,44 @@ var ColorPicker = function() {
             _private.colorTxt.innerHTML = color;
         },
 
-        /*
-        toHex: function(color) {
-          var hex = '0123456789abcdef';
-          var r ='';
-          for (x=0; x<6; x++) {
-            r = hex.substr(color % 16, 1) + r;
-            color = Math.floor(color / 16);
-          }
-          return '#'+r;
-        },
-        */
-
         setColors: function(colors, type) {
 
             if (!ColorPicker.showMagnifier || !ColorPicker.colorPickerViewer) return;
 
             var deep = colors.length;
             m = (deep - 1) / 2;
+<<<<<<< HEAD
             var s = '';
+=======
+            var s = ''; //<table style="border-collapse:collapse;" cellspacing="1" >';
+>>>>>>> parent of 5d5221b... Central marker
             for (i = 0; i < deep; i++) {
                 s += '<tr>';
 
                 for (j = 0; j < deep; j++) {
                     color = colors[j][i];
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of 5d5221b... Central marker
                     if (!color) {
                         color = 'indigo';
                     }
                     var centre = i == m && j == m;
+<<<<<<< HEAD
                     s += '<td style="background-color:' + color + ';">';
                     if (centre) {
                         s += '<div style="position:relative; margin-bottom:-2px; margin-right:-2px; width:7px; height:7px; border:1px solid red; background-color:transparent;"></div>';
+=======
+                    s += '<td style="background-color:' + color;
+                    if (centre) {
+                        s += '; border-radius:6px'
+>>>>>>> parent of 5d5221b... Central marker
                     }
+                    s += ';">';
+                    //if(centre) {
+                    //  s+='<div style="padding:0px; width:5px; height:5px; border:1px solid red; background-color:transparent;"></div>';
+                    //}
                     s += '</td>';
                 }
 

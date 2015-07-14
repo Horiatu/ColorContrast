@@ -19,11 +19,12 @@
 	padding:0; box-sizing:content-box !important; 
 	-webkit-box-sizing:content-box !important;
 	--background-color: rgba(100, 100, 100, 0.75);
+	cellspacing: 1;
 }
 
 #colorPickerViewer table td {
 	padding:0px; 
-	border:1px solid rgba(128, 128, 128, 0.1); 
+	border:1px solid rgba(100, 100, 100, 0.1); 
 	width:7px; 
 	height:7px; 
 }
