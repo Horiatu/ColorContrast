@@ -276,4 +276,3 @@ Background.message = function(msg, sender, sendResponse)
 };
 
 chrome.extension.onMessage.addListener(Background.message);
->>>>>>> parent of 5d5221b... Central marker

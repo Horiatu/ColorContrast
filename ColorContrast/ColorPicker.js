@@ -265,4 +265,3 @@ var ColorPicker = function() {
     return _public;
 
 }();
->>>>>>> parent of 5d5221b... Central marker
