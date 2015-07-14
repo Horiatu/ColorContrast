@@ -149,6 +149,7 @@ var ColorPicker = function() {
                     ColorPicker.colorPickerViewer.setAttribute("id", "colorPickerViewer");
 
                     var t = contentDocument.createElement("Table");
+                    t.setAttribute("cellspacing", 1);
                     ColorPicker.colorPickerViewer.appendChild(t);
 
                     var d = contentDocument.createElement("div");
@@ -234,7 +235,7 @@ var ColorPicker = function() {
 
             var deep = colors.length;
             m = (deep - 1) / 2;
-            var s = ''; //<table style="border-collapse:collapse;" cellspacing="1" >';
+            var s = ''; 
             for (i = 0; i < deep; i++) {
                 s += '<tr>';
 
@@ -244,14 +245,10 @@ var ColorPicker = function() {
                         color = 'indigo';
                     }
                     var centre = i == m && j == m;
-                    s += '<td style="background-color:' + color;
-                    if (centre) {
-                        s += '; border-radius:6px'
+                    s += '<td style="background-color:' + color + ';">';
+                    if(centre) {
+                      s+='<div style="position:relative; margin-bottom:-2px; margin-right:-2px; width:7px; height:7px; border:1px solid red; background-color:transparent;"></div>';
                     }
-                    s += ';">';
-                    //if(centre) {
-                    //  s+='<div style="padding:0px; width:5px; height:5px; border:1px solid red; background-color:transparent;"></div>';
-                    //}
                     s += '</td>';
                 }
 
