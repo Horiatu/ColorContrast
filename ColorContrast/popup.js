@@ -1,204 +1,187 @@
-$(document).ready(function() {
+var NEED_BG_VERSION=10;
+var bgPage = null;
+var pickupDisabled = false;
 
-    $.getSelectedTab = function() {
-            var dfr = $.Deferred();
+chrome.runtime.getBackgroundPage(function(backgroundPage) {
+    bgPage = backgroundPage;
 
-            chrome.tabs.query({
-                "active": true,
-                "currentWindow": true
-            }, function(tabs) {
-                dfr.resolve(tabs[0]);
-            });
+    // reload background if we need new version
+    if ( bgPage.bg.version == undefined || bgPage.bg.version < NEED_BG_VERSION ) {
+        console.log('Background version not ok, reloading.');
+        console.log(bgPage.version);
+        chrome.runtime.sendMessage({type: "reload-background"});
+    }
+});
 
-            return dfr.promise();
-        },
+// init tab
+function init() {
+    // find current tab
+    chrome.tabs.getSelected(null, function (tab) {
+        var message = '';
+        // special chrome pages
+        if (tab.url.indexOf('chrome') == 0) {
+            message = "Chrome doesn't allow extensions to interact with special Chrome pages like this one.";
+            pickupDisabled = true;
+        }
+        // chrome gallery
+        else if (tab.url.indexOf('https://chrome.google.com/webstore') == 0) {
+            message = "Chrome doesn't allow extensions to interact with Chrome Web Store.";
+            pickupDisabled = true;
+        }
+        // local pages
+        else if (tab.url.indexOf('file') == 0) {
+            message = "Chrome doesn't allow extensions to interact with local pages.";
+            pickupDisabled = true;
+        }
 
-        $.validateTab = function(tab) {
-            var dfd = $.Deferred();
-            var url = tab.url;
+        setDefaultColors();
 
-            if (url.indexOf("chrome://") === 0 || url.indexOf("chrome-extension://") === 0) {
-                dfd.reject("Warning: Does not work on internal browser pages.");
-            } else if (url.indexOf("https://chrome.google.com/extensions/") === 0 || url.indexOf("https://chrome.google.com/webstore/") === 0) {
-                dfd.reject("Warning: Does not work on the Chrome Extension Gallery.");
-            } else {
-                dfd.resolve();
-            }
+        // disable or enable pickup button
+        if (pickupDisabled === true) {
+            $("#pickupButton").addClass("disabled");
+//            $("#disableMessageHelp").attr('title',message);
+            $("#disableMessageHelp").tooltip({title: message, placement: 'bottom'});
+            $("#pickupMessage").show();
+        } else {
+            bgPage.bg.useTab(tab);
+            $("#pickupButton").click(activatePick);
+        }
+    });
+}
 
-            return dfd.promise();
-        },
+function setDefaultColors() {
+    var activeColor = bgPage.bg.getColor();
+    // set color boxes
+    setColor('cur', activeColor, true);
+    setColor('new', activeColor);
 
-        getContrast = function(id) {
-            var backgroundVal = $("#background").val().trim();
-            var foregroundVal = $("#foreground").val().trim();
-            var backgroundTxt = ContrastAnalyser.colorNameOrHexToColor(backgroundVal);
-            var foregroundTxt = ContrastAnalyser.colorNameOrHexToColor(foregroundVal);
-            if (backgroundTxt && foregroundTxt) {
-                if (id) {
-                    $("#" + id).removeClass("error");
-                } else {
-                    $(".txInput").removeClass("error");
-                }
+    showColorPicker(activeColor);
+}
 
-                chrome.storage.sync.set({
-                    'background': backgroundVal
-                }, function() {
-                    //console.log("background "+backgroundVal+' saved');
-                });
-                chrome.storage.sync.set({
-                    'foreground': foregroundVal
-                }, function() {
-                    //console.log("foreground "+foregroundVal+' saved');
-                });
-
-                $(".example").css("background-color", backgroundTxt);
-                $(".example span").css("color", foregroundTxt);
-
-                var cc = ContrastAnalyser.contrast(backgroundTxt, foregroundTxt);
-                //cc = Math.round((cc * 10) / 10);
-
-                $("#contrast span").html(parseFloat(cc).toFixed(2) + ":1");
-
-                if (cc >= 4.5) {
-                    $("#contrast span").css("text-shadow", "2px 2px 2px darkgreen");
-                    $(".largeOK").show();
-                    $(".smallOK").show();
-                    $(".large").hide();
-                    $(".small").hide();
-                } else if (cc >= 3.0) {
-                    $("#contrast span").css("text-shadow", "2px 2px 2px orangered");
-                    $(".largeOK").show();
-                    $(".smallOK").hide();
-                    $(".large").hide();
-                    $(".small").show();
-                } else {
-                    $("#contrast span").css("text-shadow", "2px 2px 2px red");
-                    $(".largeOK").hide();
-                    $(".smallOK").hide();
-                    $(".large").show();
-                    $(".small").show();
-                }
-            } else {
-                if (id) {
-                    $("#" + id).addClass("error");
-                } else {
-                    $(".txInput").addClass("error");
-                }
-                $("#contrast span").css("text-shadow", "2px 2px 2px transparent");
-            };
-        };
-
-    pickAction = function(t) {
-        //console.log(t.currentTarget);
-        backgroundPage.requestColor = t.currentTarget.name;
-        $.getSelectedTab().done(function(tab) {
-            $.validateTab(tab).always(
-                function(err) {
-                    if (err) {
-                        alert(err);
-                    } else {
-                        chrome.tabs.executeScript(tab.id, {
-                                allFrames: true,
-                                "file": "jquery-2.1.4.js"
-                            },
-                            function() {
-                                chrome.tabs.executeScript(tab.id, {
-                                        allFrames: true,
-                                        "file": "ColorPicker.js"
-                                    },
-                                    function() {
-                                        chrome.tabs.executeScript(tab.id, {
-                                                allFrames: true,
-                                                "code": "ColorPicker.Hide(document);\n" +
-                                                    "ColorPicker.Show(document);\n" +
-                                                    "ColorPicker.refresh();"
-                                            },
-                                            function() {
-                                                console.log('done');
-                                                closePopup();
-                                            });
-                                    });
-                            });
-                    }
-                }
-            );
-        });
-    };
-
-    closePopup = function() {
+function activatePick() {
+    if ( pickupDisabled === false ) {
+        bgPage.bg.activate();
         window.close();
-    };
+    }
+}
 
-    copyCode = function(t) {
-        //console.log(t.currentTarget.id);
-        var o = $(t.currentTarget).closest('tr').find("input");
-        var initial = o.val();
-        o.val(ContrastAnalyser.colorNameOrHexToColor(initial));
-        o.focus();
-        o.select();
-        document.execCommand("Copy", false, null);
-        o.val(initial);
-    };
+function goto(url) {
+    chrome.tabs.create({url: url});
 
-    chrome.storage.sync.get(['background', 'foreground'], function(a) {
-        //console.log('Restore '+a['background']+' '+a['foreground']);
-        if (a['background']) {
-            $("#background").val(a['background']);
+    if ( typeof arguments[1] != "undefined" && arguments[1] === true )
+        window.close();
+}
+
+function drawHistory() {
+    // History
+    if ( window.localStorage.history != undefined && window.localStorage.history.length > 3 ) {
+        var history = JSON.parse(window.localStorage.history);
+        var output = '';
+        for ( var c in history ) {
+            output += '<div class="historySquare" style="background: ' + history[c] + '" title="' + history[c] + '">&nbsp;</div>';
         }
-        if (a['foreground']) {
-            $("#foreground").val(a['foreground']);
+        $("#historyColors").html(output+'<br class="clearfix" /><em class="muted">Hover your cursor over color boxes to preview color.<br>Click to set as selected and copy to clipboard.</em>');
+
+        $('.historySquare').hover(function() {
+            setColor('new', this.title);
+        });
+
+        $('.historySquare').click(function() {
+            setColor('cur', this.title);
+        });
+
+        $("#clearHistory").show().click(function() { clearHistory() });
+    } else {
+        $("#clearHistory").hide();
+        check_support('history');
+        $("#historyColors").html('<em class="muted">No history yet. Try to pick some colors from web or color picker.</em>');
+
+    }
+}
+
+
+function setColor(what, color, dontsave, history) {
+    color = pusher.color(color);
+    // TODO jak se bude chovat kdyz je undefined?
+    if ( what == 'cur'&& color !== undefined ) {
+        if ( dontsave !== true  ) {
+            var color_arr = color.rgba8();
+            bgPage.bg.setColor({color: { r: color_arr[0], g: color_arr[1], b: color_arr[2], rgbhex: color.hex6() }, history: history});
+            if ( history === true ) { drawHistory(); }
         }
-        getContrast(null);
+
+        $("#colorpicker").spectrum("set", color.hex6());
+    }
+
+    formats = [color.hex6(), color.hex3(), color.html('keyword'), color.html('hsl'), color.html('rgb')];
+
+    var out = '';
+    out = '<div class="colorPreviewBox" style="background-color: '+color.hex6()+';">';
+    for ( key in formats ) {
+        format = formats[key];
+        out += '<code>' + format + '</code>&nbsp;';
+        out += key > 0 ? '<br>' : '&nbsp;'
+    }
+    out += '</div>';
+
+    $("#"+what+"Color").html(out);
+}
+
+function clearHistory()
+{
+    chrome.runtime.sendMessage({type: "clear-history"}, function() {
+        drawHistory();
+        setDefaultColors();
+    });
+}
+
+function check_support(what)
+{
+    chrome.runtime.sendMessage({type: "supports", what: what}, function(response) {
+        if ( !response || response.state != 'ok' ) {
+            ////console.log("Doesn't support " + what + ". Reloading background.");
+            chrome.runtime.sendMessage({type: "reload-background"});
+        }
+    });
+}
+
+// show jPicker tab and set color
+function showColorPicker(color)
+{
+    $("#colorpicker").spectrum({
+        flat: true,
+        showInput: true,
+        showInitial: false,
+        preferredFormat: "hex",
+        chooseText: "select",
+        color: color,
+        move: function(tinycolor) {
+            setColor('new', tinycolor.toHexString());
+        },
+        change: function(tinycolor) {
+            setColor('cur', tinycolor.toHexString(), false, true);
+        }
     });
 
-    $(".txInput").on("input", function(e) {
-        getContrast(e.currentTarget.id);
-    });
+    $(".sp-input").after('<em class="muted" id="inputTip" style="display: none;">You can enter color in hex, rgb, html name or hsl - all formats as you can see in boxes on right.</em>').focusin(function() { $("#inputTip").show()}).focusout(function() { $("#inputTip").hide()});
 
-    $('.pick').on('click', pickAction);
-    $('.code').on('click', copyCode);
-    $('#toggle').on('click', function(t) {
-        var backgroundVal = $("#background").val().trim();
-        var foregroundVal = $("#foreground").val().trim();
-        $("#background").val(foregroundVal);
-        getContrast("background");
-        $("#foreground").val(backgroundVal);
-        getContrast("foreground");
-    });
+}
 
-    $('.btn img').on('mouseenter', function(t) {
-        t.currentTarget["src"] = t.currentTarget["src"].replace(".png", ".color.png");
-    });
+$(document).ready(function() {
+    // initialize script
+    init();
 
-    $('.btn img').on('mouseleave', function(t) {
-        t.currentTarget["src"] = t.currentTarget["src"].replace(".color.png", ".png");
-    });
+    $("a.ext").click(function() { goto(this.href); });
+    $("button.ext").click(function() { goto(this.data-href); });
 
-    var backgroundPage = chrome.extension.getBackgroundPage().Background;
+    drawHistory();
 
-    $.getSelectedTab().done(function(tab) {
-        $.validateTab(tab).always(
-            function(err) {
-                if (err) {
-                    alert(err);
-                } else {
-                    chrome.tabs.executeScript(tab.id, {
-                            allFrames: false,
-                            "code":
-                            "try { " +
-                                "ColorPicker.Hide(document);"
-                        + " } catch (err) {console.log(err);};"
-                        },
-                        function() {
-                            var color = backgroundPage.Color;
-                            if (color != null && backgroundPage.requestColor != null) {
-                                $('#' + backgroundPage.requestColor).val(color);
-                                getContrast(backgroundPage.requestColor);
-                            }
-                        }
-                    );
-                }
-            }
-        )
-    });
+    FlattrLoader.setup();
+
+    $("[data-toggle=tooltip]").tooltip();
+
+    $("#buttonAbout").click(function() {
+        $("#eyeDropperMain").toggle();
+        $("#eyeDropperAbout").toggle();
+    })
 });

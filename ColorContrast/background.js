@@ -1,287 +1,332 @@
-//console.log('Background loading');
+var BG_VERSION=10;
+var NEED_DROPPER_VERSION=10;
+var DEFAULT_COLOR="#b48484";
 
-var Background = Background || {};
+// jQuery like functions
 
-/*
-Background.convertRGBToLong = function(rgb)
-{
-  return (rgb[0] * 256 + rgb[1]) * 256 + rgb[2];
-};
-*/
-
-// Converts an RGB color into a hex color
-Background.convertRGBToHex = function(rgb)
-{
-  var blue  = parseInt(rgb[2], 10).toString(16).toLowerCase();
-  var green = parseInt(rgb[1], 10).toString(16).toLowerCase();
-  var red   = parseInt(rgb[0], 10).toString(16).toLowerCase();
-
-  // If the color is only 1 character
-  if(blue.length == 1)
-  {
-    blue = "0" + blue;
-  }
-
-  // If the color is only 1 character
-  if(green.length == 1)
-  {
-    green = "0" + green;
-  }
-
-  // If the color is only 1 character
-  if(red.length == 1)
-  {
-    red = "0" + red;
-  }
-
-  return "#" + red + green + blue;
-};
-
-$.getContext = function() {
-
-  var deferred = $.Deferred();
-
-  chrome.tabs.captureVisibleTab(null, function(dataUrl)
-  {
-    Background.image = new Image();
-
-    Background.image.onload = function()
-    {
-      var canvas  = document.createElement("canvas");
-      Background.context = canvas.getContext("2d");
-
-      canvas.height = Background.image.naturalHeight;
-      canvas.width  = Background.image.naturalWidth;
-
-      Background.context.clearRect(0, 0, Background.image.naturalWidth, Background.image.naturalHeight);
-      Background.context.drawImage(Background.image, 0, 0);
-
-      deferred.resolve();
-    };
-
-    Background.image.onerror = function() {
-      deferred.reject();
-    };
-
-    Background.image.src = dataUrl;
-
-  });
-
-  return deferred.promise();
+// for get element by id
+function $(id) {
+    return document.getElementById(id);
 }
 
-Background.context = null;
-Background.image = null;
-Background.promise = null; 
-Background.Color = null;
-Background.RequestColor = null;
-
-// Gets the current color
-Background.getColor = function(x, y, eventType)
-{
-  if(!Background.context || eventType=='selected')
-  {
-    Background.promise = $.getContext();
+// Returns -1 if value isn't in array.
+// Return position starting from 0 if found
+function inArray(value, array) {
+  for(var i=0; i<array.length; i++) {
+    if (array[i] == value) return i;
   }
+  return -1;
+}
 
-  Background.promise.then(
-    function() {
-      var deep=3;
-      var color = Background.convertRGBToHex(Background.context.getImageData(x, y, 1, 1).data);
-      if(eventType=='selected') {
-        Background.Color = color;
-      }
-      
-      var colors = "";
-      var cr ='[';
-      for (i=-deep; i<=deep; i++) {
-        xi = x+i;
-        var cc = cr+"[";
-        for (j=-deep; j<=deep; j++) {
-          yj = y+j;
-          if(xi<0 || xi>=Background.image.naturalWidth || yj<0 || yj>=Background.image.naturalHeight)
-          {
-            colors+=cc + 'null';
-          }
-          else {
-            colors+=cc + "'"+Background.convertRGBToHex(Background.context.getImageData(xi, yj, 1, 1).data)+"'";
-          }
-          cc = ',';
+// base bg object
+var bg = {
+  tab: 0,
+  tabs: [],
+  version: BG_VERSION,
+  screenshotData: '',
+  screenshotFormat: 'png',
+  canvas: document.createElement("canvas"),
+  canvasContext: null,
+  debugImage: null,
+  debugTab: 0,
+  color: null,
+
+  // use selected tab
+  // need to null all tab-specific variables
+  useTab: function(tab) {
+    bg.tab = tab;
+    bg.screenshotData = '';
+    bg.canvas = document.createElement("canvas");
+    bg.canvasContext = null;
+  },
+
+  checkDropperScripts: function() {
+    console.log('bg: checking dropper version');
+    bg.sendMessage({type: 'edropper-version'}, function(res) {
+      console.log('bg: checking dropper version 2');
+      if ( res ) {
+        if ( res.version < NEED_DROPPER_VERSION ) {
+          bg.refreshDropper();
+        } else {
+          bg.pickupActivate();
         }
-        colors+="]";
-        cr=',';
+      } else {
+        bg.injectDropper();
       }
-      colors+="]";
-      //console.log(colors);
-      try {
-        chrome.tabs.executeScript(null, { "code": 
-          "if(ColorPicker) {\n"+
-          "  ColorPicker.setColors(" + colors + ", '" + eventType + "');\n" +
-          "  ColorPicker.setColor('" + color + "', '" + eventType + "');\n" + 
-          "}\n" });
+    });
+  },
+
+  // FIXME: try to handle this better, maybe some consolidation
+  injectDropper: function() {
+    console.log("bg: injecting dropper scripts");
+
+    chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "inc/jquery-2.1.0.min.js"}, function() {
+      console.log('bg: jquery injected');
+      chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "inc/jquery.scrollstop.js"}, function() {
+        console.log('bg: jquery.scrollstop injected');
+        chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "inc/shortcut.js"}, function() {
+          console.log('bg: shortcuts injected');
+          chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "edropper2.js"}, function() {
+            console.log('bg: edropper2 injected');
+            bg.pickupActivate();
+          });
+        });
+      });
+    });
+  },
+
+  refreshDropper: function() {
+    console.log("bg: refreshing dropper scripts");
+
+    chrome.tabs.executeScript(bg.tab.id, {allFrames: true, file: "edropper2.js"}, function() {
+      console.log('bg: edropper2 updated')
+      bg.pickupActivate();
+    });
+  },
+
+  sendMessage: function(message, callback) {
+    chrome.tabs.sendMessage(bg.tab.id, message, callback);
+  },
+
+  shortcutListener: function() {
+    chrome.commands.onCommand.addListener(function(command) {
+      console.log('bg: command: ', command);
+      switch(command) {
+        case 'activate':
+          bg.activate2();
+          break;
       }
-      catch(err) {
-        console.log(err);
+    });
+  },
+
+  messageListener: function() {
+    // simple messages
+    chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
+      switch(req.type) {
+        case 'activate-from-hotkey':
+          bg.activate2();
+          sendResponse({});
+          break;
+
+        // Define what background script supports
+        case 'supports': bg.supports(req.what, sendResponse); break;
+
+        // Reload background script
+        case 'reload-background': window.location.reload(); break;
+
+        // Clear colors history
+        case 'clear-history': bg.clearHistory(sendResponse); break;
+      }
+    });
+
+    // longer connections
+    chrome.extension.onConnect.addListener(function(port) {
+      port.onMessage.addListener(function(req) {
+        switch(req.type) {
+          // Taking screenshot for content script
+          case 'screenshot': 
+            ////console.log('received screenshot request');
+            bg.capture(); break;
+          
+          // Creating debug tab
+          case 'debug-tab':
+            ////console.log('received debug tab');
+            bg.debugImage = req.image;
+            bg.createDebugTab();
+            break;
+
+          // Set color given in req
+          case 'set-color': bg.setColor(req); break;
+
+        }
+      });
+    });
+  },
+
+  // function for injecting new content
+  inject: function(file, tab) {
+    if ( tab == undefined )
+      tab = bg.tab.id;
+
+    ////console.log("Injecting " + file + " into tab " + tab);
+    chrome.tabs.executeScript(tab, {allFrames: false, file: file}, function() {});
+  },
+
+  supports: function(what, sendResponse) {
+    var state = 'no';
+    if ( what == 'dummy' || what == 'history' )
+      state = 'ok';
+
+    sendResponse({state: state});
+  },
+
+  // method for setting color. It set bg color, update badge and save to history if possible
+  setColor: function(req) {
+    if ( ! req.color ) {
+      console.log('bg: error receiving collor from dropper.');
+      return;
+    }
+    // we are storing color with first # character
+    if ( ! req.color.rgbhex.match(/^#/) )
+        req.color.rgbhex = '#' + req.color.rgbhex;
+
+    bg.color = req.color.rgbhex;
+    chrome.browserAction.setBadgeText({text: ' '});
+    chrome.browserAction.setBadgeBackgroundColor({color: [req.color.r, req.color.g, req.color.b, 255]});
+
+    // local storage only if available
+    if ( window.localStorage != null ) {
+      // save to clipboard through small hack
+      if ( window.localStorage['autoClipboard'] === "true" ) {
+        var edCb = $('edClipboard');
+        edCb.value = window.localStorage['autoClipboardNoGrid'] === "true" ? bg.color.substring(1) : bg.color;
+        edCb.select();
+        document.execCommand("copy", false, null);
+      }
+
+      // history can be disabled i.e when setting color from
+      // history itself
+      if ( req.history == undefined || req.history != 'no' ) {
+        var history = JSON.parse(window.localStorage.history);
+        // first check if there isn't same color in history
+        if ( inArray(bg.color, history) < 0 ) {
+          history.push(bg.color);
+          window.localStorage.history = JSON.stringify(history);
+        }
       }
     }
-  );
+  },
 
-  return {};
-};
+  // activate from content script
+  activate2: function() {
+    chrome.tabs.getSelected(null, function(tab) {
+      bg.useTab(tab);
+      bg.activate();
+    });
+  },
 
-// Returns the edit CSS dashboard HTML template
-Background.getEditCSSDashboardTemplates = function(parameters)
-{
-  return { "dashboard": ich.dashboard(parameters, true), "editCSS": ich.editCSSPanel(parameters, true), "panel": ich.dashboardPanel(parameters, true), "tab": ich.dashboardTab(parameters, true) };
-};
+  // activate Pick
+  activate: function() {
+    console.log('bg: received pickup activate');
+    // check scripts and activate pickup
+    bg.checkDropperScripts();
+  },
 
-// Returns the edit CSS tab HTML template
-Background.getEditCSSTabTemplates = function(parameters)
-{
-  return { "panel": ich.editCSSTabPanel(parameters, true), "tab": ich.editCSSTab(parameters, true) };
-};
+  pickupActivate: function() {
+    // load options
+    cursor = (window.localStorage.dropperCursor === 'crosshair') ? 'crosshair' : 'default';
+    enableColorToolbox = (window.localStorage.enableColorToolbox === "false") ? false : true;
+    enableColorTooltip = (window.localStorage.enableColorTooltip === "false") ? false : true;
+    enableRightClickDeactivate = (window.localStorage.enableRightClickDeactivate === "false") ? false : true;
 
-// Returns the element information dashboard HTML template
-Background.getElementInformationDashboardTemplates = function(parameters)
-{
-  return { "dashboard": ich.dashboard(parameters, true), "elementInformation": ich.elementInformationPanel(parameters, true), "panel": ich.dashboardPanel(parameters, true), "tab": ich.dashboardTab(parameters, true) };
-};
+    // activate picker
+    bg.sendMessage({type: 'pickup-activate', options: { cursor: cursor, enableColorToolbox: enableColorToolbox, enableColorTooltip: enableColorTooltip, enableRightClickDeactivate: enableRightClickDeactivate}}, function() {});
 
-// Gets the styles from CSS
-Background.getStylesFromCSS = function(cssDocuments)
-{
-  var contentDocument = null;
-  var cssContent      = null;
-  var styles          = "";
-  var documents       = cssDocuments.documents;
-  var styleSheets     = [];
+    console.log('bg: activating pickup');
+  },
 
-  // Loop through the documents
-  for(var i = 0, l = documents.length; i < l; i++)
-  {
-    contentDocument = documents[i];
-    styleSheets     = styleSheets.concat(contentDocument.styleSheets);
-
-    // If there are embedded styles
-    if(contentDocument.embedded)
-    {
-      styles += contentDocument.embedded;
+  // capture actual Screenshot
+  capture: function() {
+    ////console.log('capturing');
+    try {
+      chrome.tabs.captureVisibleTab(null, {format: 'png'}, bg.doCapture);
+    // fallback for chrome before 5.0.372.0
+    } catch(e) {
+      chrome.tabs.captureVisibleTab(null, bg.doCapture);
     }
-  }
+  },
 
-  cssContent = Background.getURLContents(styleSheets, "");
+  getColor: function() {
+      return bg.color;
+  },
 
-  // Loop through the CSS content
-  for(i = 0, l = cssContent.length; i < l; i++)
-  {
-    styles += cssContent[i].content;
-  }
+  doCapture: function(data) {
+      if ( data ) {
+        console.log('bg: sending updated image');
+        bg.sendMessage({type: 'update-image', data: data}, function() {});
+      } else {
+        console.error('bg: did not receive data from captureVisibleTab');
+      }
+  },
 
-  return { "css": styles };
-};
+  createDebugTab: function() {
+    // DEBUG
+    if ( bg.debugTab != 0 ) {
+      chrome.tabs.sendMessage(bg.debugTab, {type: 'update'});
+    } else
+      chrome.tabs.create({url: 'debugimage.html', selected: false}, function(tab) { bg.debugTab = tab.id });
+  },
 
-// Gets the content from a URL
-Background.getURLContent = function(url, errorMessage)
-{
-  var content = null;
+  isThisPlatform: function(operationSystem) {
+    return navigator.userAgent.toLowerCase().indexOf(operationSystem) > -1;
+  },
 
-  // Try to get the content
-  try
-  {
-    var request = new XMLHttpRequest();
+  tabOnChangeListener: function() {
+    // deactivate dropper if tab changed
+    chrome.tabs.onSelectionChanged.addListener(function(tabId, selectInfo) {
+      if ( bg.tab.id == tabId )
+        bg.sendMessage({type: 'pickup-deactivate'}, function() {});
+    });
 
-    // Chrome no longer allows a timeout set on synchronous requests
-    //request.timeout = Common.requestTimeout;
+  },
 
-    request.ontimeout = function()
-    {
-      content = errorMessage;
-    };
+  clearHistory: function(sendResponse) {
+      ////console.log('clearing history');
+      window.localStorage.history = "[]";
+      bg.color = DEFAULT_COLOR;
 
-    request.open("get", url, false);
-    request.send(null);
+      if ( sendResponse != undefined ) {
+          sendResponse({state: 'OK'});
+      }
+  },
+  
+  init: function() {
+    // only if we have support for localStorage
+    if ( window.localStorage != null ) {
 
-    content = request.responseText;
-  }
-  catch(exception)
-  {
-    content = errorMessage;
-  }
-
-  return content;
-};
-
-// Gets the content from a set of URLs
-Background.getURLContents = function(urls, errorMessage)
-{
-  var url         = null;
-  var urlContents = [];
-
-  // Loop through the urls
-  for(var i = 0, l = urls.length; i < l; i++)
-  {
-    url = urls[i];
-
-    urlContents.push({ "content": Background.getURLContent(url, errorMessage), "url": url });
-  }
-
-  return urlContents;
-};
-
-// Initializes a generated tab
-Background.initializeGeneratedTab = function(url, data, locale)
-{
-  var extensionTab = null;
-  var tabs         = chrome.extension.getViews({ "type": "tab" });
-
-  // Loop through the tabs
-  for(var i = 0, l = tabs.length; i < l; i++)
-  {
-    extensionTab = tabs[i];
-
-    // If the tab has a matching URL and has not been initialized
-    if(extensionTab.location.href == url && !extensionTab.Generated.initialized)
-    {
-      extensionTab.Generated.initialized = true;
-
-      extensionTab.Generated.initialize(data, locale);
+      // show installed or updated page
+      if ( window.localStorage.seenInstalledPage == undefined || window.localStorage.seenInstalledPage === "false" ) {
+        window.localStorage.seenInstalledPage = true;
+        chrome.tabs.create({url: 'pages/installed.html', selected: true});
+      }
     }
-  }
-};
 
-// Initializes a validation tab
-Background.initializeValidationTab = function(url, data)
-{
-  var extensionTab = null;
-  var tabs         = chrome.extension.getViews({ "type": "tab" });
-
-  // Loop through the tabs
-  for(var i = 0, l = tabs.length; i < l; i++)
-  {
-    extensionTab = tabs[i];
-
-    // If the tab has a matching URL and has not been initialized
-    if(extensionTab.location.href == url && !extensionTab.Validation.initialized)
-    {
-      extensionTab.Validation.initialized = true;
-
-      extensionTab.Validation.initialize(data);
+    // settings from local storage
+    if ( window.localStorage.history == undefined ) {
+        bg.clearHistory();
+    } else if ( window.localStorage.history.length > 3 ) {
+      var history = JSON.parse(window.localStorage.history);
+      history = bg.addHashesToColorsInHistory(history);
+      bg.color = history[history.length-1];
+    } else {
+      bg.color = DEFAULT_COLOR;
     }
+
+    // we have to listen for messages
+    bg.messageListener();
+    
+    // act when tab is changed
+    // TODO: call only when needed? this is now used also if picker isn't active
+    bg.tabOnChangeListener();
+
+    // listen for shortcut commands
+    bg.shortcutListener();
+  },
+
+  // in versions before 0.3.0 colors were stored without # hash in front
+  // this fixes it
+  addHashesToColorsInHistory: function(history) {
+      if ( history[0][0] != '#' ) {
+          for ( key in history ) {
+              history[key] = '#' + history[key];
+          }
+      }
+      window.localStorage.history = JSON.stringify(history);
+      return history;
   }
 };
 
-// Handles any background messages
-Background.message = function(msg, sender, sendResponse)
-{
-  // If the msg type is to get the current color
-  if(msg.type == "get-color")
-  {
-    sendResponse(Background.getColor(msg.x, msg.y, msg.eventType));
-  }
-  else if(msg.type == "get-canvas")
-  {
-    Background.context = null;
-  }
-};
+document.addEventListener('DOMContentLoaded', function () {
+    bg.init()
+});
 
-chrome.extension.onMessage.addListener(Background.message);

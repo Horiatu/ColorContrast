@@ -6,6 +6,12 @@ var ColorPicker = function() {
         colorTxt: null,
         imageUrl: null,
         showToolbar: false,
+        context: null,
+        image: null,
+        canvasPromise: null,
+        Color: null,
+        ContextDfr: null,
+
 
         retrieveGlass: function() {
             var dfr1 = $.Deferred();
@@ -37,12 +43,18 @@ var ColorPicker = function() {
 
             // If the event target is set
             if (eventTarget) {
-                chrome.extension.sendMessage({
-                    type: "get-color",
-                    x: event.clientX,
-                    y: event.clientY,
-                    eventType: type
-                });
+                //if (type == "get-color") {
+                _private.getContextColor(event.clientX, event.clientX, type);
+                //} else if (type == "get-canvas") {
+                //    context = null;
+                //}
+
+                //chrome.extension.sendMessage({
+                //    type: "get-color",
+                //    x: event.clientX,
+                //    y: event.clientX,
+                //    eventType: type
+                //});
 
                 var ownerDocument = eventTarget.ownerDocument;
                 if (ownerDocument) {
@@ -90,7 +102,7 @@ var ColorPicker = function() {
             return false;
         },
 
-        Click: function(event) {
+        onMouseClick: function(event) {
             if (event.button != 2) {
                 _private.getColor(event, "selected");
 
@@ -99,7 +111,7 @@ var ColorPicker = function() {
             }
         },
 
-        MouseMove: function(event) {
+        onMouseMove: function(event) {
             _private.getColor(event, "hover");
         },
 
@@ -138,8 +150,8 @@ var ColorPicker = function() {
                 }
             }
 
-            contentDocument.addEventListener("click", _private.Click, true);
-            contentDocument.addEventListener("mousemove", _private.MouseMove, false);
+            contentDocument.addEventListener("click", _private.onMouseClick, true);
+            contentDocument.addEventListener("mousemove", _private.onMouseMove, false);
 
             _private.removeTitles();
 
@@ -187,18 +199,93 @@ var ColorPicker = function() {
                 };
                 _public.showToolbar = true;
             });
+
+            //_private.messageListener();
         },
 
         destroy: function(contentDocument) {
+            contentDocument.removeEventListener("mousemove", _private.onMouseMove, false);
+            contentDocument.removeEventListener("click", _private.onMouseClick, true);
+
             $("#colorPickerCursor").remove();
             $("colorPickerCss").remove();
 
             $("#colorPickerDiv").remove();
             $("#colorPickerViewer").remove();
 
-            contentDocument.removeEventListener("click", _private.Click, true);
-            contentDocument.removeEventListener("mousemove", _private.MouseMove, false);
             _private.restoreTitles();
+        },
+
+        getContext: function() {
+            ContextDfr = $.Deferred();
+            _private.sendMessage({Type: "update-image"});
+            return ContextDfr.promise();
+        },
+
+        getContextColor: function(x, y, eventType) {
+            if (!context || eventType == 'selected') {
+                canvasPromise = _private.getContext();
+            }
+
+            canvasPromise.then(
+                function() {
+                    var deep = 3;
+                    var color = convertRGBToHex(context.getImageData(x, y, 1, 1).data);
+                    if (eventType == 'selected') {
+                        Color = color;
+                    }
+
+                    var colors = "";
+                    var cr = '[';
+                    for (i = -deep; i <= deep; i++) {
+                        xi = x + i;
+                        var cc = cr + "[";
+                        for (j = -deep; j <= deep; j++) {
+                            yj = y + j;
+                            if (xi < 0 || xi >= image.naturalWidth || yj < 0 || yj >= image.naturalHeight) {
+                                colors += cc + 'null';
+                            } else {
+                                colors += cc + "'" + convertRGBToHex(context.getImageData(xi, yj, 1, 1).data) + "'";
+                            }
+                            cc = ',';
+                        }
+                        colors += "]";
+                        cr = ',';
+                    }
+                    colors += "]";
+                    //console.log(colors);
+                    try {
+                        setColors(colors, eventType);
+                        setColor(color, eventType);
+                    } catch (err) {
+                        console.log(err);
+                    }
+                }
+            );
+
+            return {};
+        },
+
+        convertRGBToHex: function(rgb) {
+            var blue = parseInt(rgb[2], 10).toString(16).toLowerCase();
+            var green = parseInt(rgb[1], 10).toString(16).toLowerCase();
+            var red = parseInt(rgb[0], 10).toString(16).toLowerCase();
+
+            if (blue.length == 1) blue = "0" + blue;
+            if (green.length == 1) green = "0" + green;
+            if (red.length == 1) red = "0" + red;
+
+            return "#" + red + green + blue;
+        },
+
+        sendMessage: function(message) {
+            //chrome.extension.connect().postMessage(message);
+            chrome.runtime.sendMessage(message, function(response)
+            {
+                console.log(response);
+                //_private.image = response;
+                //_private.ContextDfr.resolve();
+            })
         },
 
     }
@@ -218,10 +305,8 @@ var ColorPicker = function() {
             };
         },
 
-        refresh: function() {
-            chrome.extension.sendMessage({
-                type: "get-canvas"
-            });
+        Refresh: function() {
+            context = null;
         },
 
         setColor: function(color, type) {
@@ -247,20 +332,20 @@ var ColorPicker = function() {
 
             var deep = colors.length;
             m = (deep - 1) / 2;
-            var s = ''; 
+            var s = '';
             for (i = 0; i < deep; i++) {
                 s += '<tr>';
 
                 for (j = 0; j < deep; j++) {
                     color = colors[j][i];
-                    
+
                     if (!color) {
                         color = 'indigo';
                     }
                     var centre = i == m && j == m;
                     s += '<td style="background-color:' + color + ';">';
-                    if(centre) {
-                      s+='<div style="position:relative; margin-bottom:-2px; margin-right:-2px; width:7px; height:7px; border:1px solid red; background-color:transparent;"></div>';
+                    if (centre) {
+                        s += '<div style="position:relative; margin-bottom:-2px; margin-right:-2px; width:7px; height:7px; border:1px solid red; background-color:transparent;"></div>';
                     }
                     s += '</td>';
                 }
@@ -269,7 +354,6 @@ var ColorPicker = function() {
             }
             this.colorPickerViewer.childNodes[0].innerHTML = s;
         },
-
     }
 
     return _public;

@@ -28,8 +28,16 @@
     "tabs", "activeTab", "<all_urls>", "storage", "clipboardRead", "clipboardWrite"
   ],
 
+  //"content_scripts": [{
+  //  "js": ["jquery-2.1.4.js", "ColorPicker.js"],
+  //  "all_frames": true,
+  //  "run_at" : "document_start",
+  //  "matches": ["*://*/*"]
+  //}],
+
   "web_accessible_resources": [
     "jquery-2.1.4.js",
+    "edropper2.js",
     "font/*.woff2",
     "Images/magnifierGlass.png",
     "Images/magnifierGlass2.png",
