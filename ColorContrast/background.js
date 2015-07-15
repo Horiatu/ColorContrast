@@ -68,7 +68,7 @@ Background.Color = null;
 Background.RequestColor = null;
 
 // Gets the current color
-Background.getColor = function(x, y, eventType)
+Background.getColor = function(x, y, eventType, showMagnifier, showToolbar)
 {
   if(!Background.context || eventType=='selected')
   {
@@ -77,42 +77,48 @@ Background.getColor = function(x, y, eventType)
 
   Background.promise.then(
     function() {
-      var deep=3;
-      var color = Background.convertRGBToHex(Background.context.getImageData(x, y, 1, 1).data);
-      if(eventType=='selected') {
-        Background.Color = color;
+      if(!showMagnifier && !showToolbar) return;
+      if(showToolbar) {
+        var color = Background.convertRGBToHex(Background.context.getImageData(x, y, 1, 1).data);
+        if(eventType=='selected') {
+          Background.Color = color;
+        }
       }
       
-      var colors = "";
-      var cr ='[';
-      for (i=-deep; i<=deep; i++) {
-        xi = x+i;
-        var cc = cr+"[";
-        for (j=-deep; j<=deep; j++) {
-          yj = y+j;
-          if(xi<0 || xi>=Background.image.naturalWidth || yj<0 || yj>=Background.image.naturalHeight)
-          {
-            colors+=cc + 'null';
+      if(showMagnifier) {
+        var deep=3;
+        var colors = "";
+        var cr ='[';
+        for (i=-deep; i<=deep; i++) {
+          xi = x+i;
+          var cc = cr+"[";
+          for (j=-deep; j<=deep; j++) {
+            yj = y+j;
+            if(xi<0 || xi>=Background.image.naturalWidth || yj<0 || yj>=Background.image.naturalHeight)
+            {
+              colors+=cc + 'null';
+            }
+            else {
+              colors+=cc + "'"+Background.convertRGBToHex(Background.context.getImageData(xi, yj, 1, 1).data)+"'";
+            }
+            cc = ',';
           }
-          else {
-            colors+=cc + "'"+Background.convertRGBToHex(Background.context.getImageData(xi, yj, 1, 1).data)+"'";
-          }
-          cc = ',';
+          colors+="]";
+          cr=',';
         }
         colors+="]";
-        cr=',';
+        //console.log(colors);
       }
-      colors+="]";
-      //console.log(colors);
+
+      var script = "if(ColorPicker !== undefined && ColorPicker) {\n";
+      if(showMagnifier) script += "  ColorPicker.setColors(" + colors + ", '" + eventType + "');\n";
+      if(showToolbar) script += "  ColorPicker.setColor('" + color + "', '" + eventType + "');\n";
+      script+="};";
       try {
-        chrome.tabs.executeScript(null, { "code": 
-          "if(ColorPicker) {\n"+
-          "  ColorPicker.setColors(" + colors + ", '" + eventType + "');\n" +
-          "  ColorPicker.setColor('" + color + "', '" + eventType + "');\n" + 
-          "}\n" });
+        chrome.tabs.executeScript(null, { "code": script });
       }
       catch(err) {
-        console.log(err);
+        console.log("Error: "+err);
       }
     }
   );
@@ -267,7 +273,7 @@ Background.message = function(msg, sender, sendResponse)
   // If the msg type is to get the current color
   if(msg.type == "get-color")
   {
-    sendResponse(Background.getColor(msg.x, msg.y, msg.eventType));
+    sendResponse(Background.getColor(msg.x, msg.y, msg.eventType, msg.showMagnifier, msg.showToolbar));
   }
   else if(msg.type == "get-canvas")
   {

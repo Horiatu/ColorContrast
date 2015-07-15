@@ -248,9 +248,10 @@ $( document ).ready(function() {
                     chrome.tabs.executeScript(tab.id, {
                             allFrames: false,
                             "code":
-                            "try { " +
-                                "ColorPicker.Hide(document);"
-                        + " } catch (err) {console.log(err);};"
+                            "try {\n" +
+                                //"  if(undefined !== ColorPicker && ColorPicker)\n"+
+                                "    ColorPicker.Hide(document);\n"
+                        + "}\ncatch (err) {\n  //console.log('Init error: '+err);\n};"
                         },
                         function() {
                             var color = backgroundPage.Color;

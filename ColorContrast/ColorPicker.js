@@ -5,7 +5,6 @@ var ColorPicker = function() {
         colorDiv: null,
         colorTxt: null,
         imageUrl: null,
-        showToolbar: false,
 
         retrieveGlass: function() {
             var dfr1 = $.Deferred();
@@ -41,7 +40,9 @@ var ColorPicker = function() {
                     type: "get-color",
                     x: event.clientX,
                     y: event.clientY,
-                    eventType: type
+                    eventType: type,
+                    showMagnifier: _public.showMagnifier,
+                    showToolbar: _public.showToolbar,
                 });
 
                 var ownerDocument = eventTarget.ownerDocument;
@@ -204,8 +205,10 @@ var ColorPicker = function() {
     }
 
     var _public = {
-        showMagnifier: false,
         colorPickerViewer: null,
+        showMagnifier: false,
+        showToolbar: false,
+
         Show: function(contentDocument) {
             _private.init(contentDocument);
         },
@@ -225,8 +228,10 @@ var ColorPicker = function() {
         },
 
         setColor: function(color, type) {
-            _private.colorDiv.setAttribute("style", "position:fixed; width:18px; height:18px; background-color:" + color + ";");
-            _private.colorTxt.innerHTML = color;
+            if(_public.showToolbar) {
+                _private.colorDiv.setAttribute("style", "position:fixed; width:18px; height:18px; background-color:" + color + ";");
+                _private.colorTxt.innerHTML = color;
+            }
         },
 
         setColors: function(colors, type) {
@@ -247,7 +252,7 @@ var ColorPicker = function() {
                     var centre = i == m && j == m;
                     s += '<td style="background-color:' + color + ';">';
                     if(centre) {
-                      s+='<div style="position:relative; margin-bottom:-2px; margin-right:-2px; width:7px; height:7px; border:1px solid red; background-color:transparent;"></div>';
+                      s+='<div class="marker"></div>';
                     }
                     s += '</td>';
                 }

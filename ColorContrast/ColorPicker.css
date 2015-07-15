@@ -47,3 +47,11 @@
 	margin-left:24px; 
 	margin-right:4px;
 }
+
+.marker{
+	position:relative !important; 
+	margin-bottom:-2px; margin-right:-2px; 
+	width:7px !important; height:7px !important; 
+	border:1px solid red; 
+	background-color:transparent;
+}

@@ -50,7 +50,8 @@
         height:50px;
       }
       .radio, .checkbox {
-          padding-left: 20px;
+        padding-left: 0px;
+        padding-right: 20px;
       }
       input[type=radio], input[type=checkbox] {
         width: 18px;
@@ -103,7 +104,7 @@
                 </tr>
                 <tr>
                   <td colspan="6">
-                    <div style="margin-left: 20px; margin-top: 5px;">
+                    <div>
                       <input id="mapbg" type="checkbox"/>
                       <label for="mapbg" style="font-weight: 400;">Show glass on a map-like background</label>
                     </div>
@@ -114,8 +115,8 @@
 
             <legend style="margin-top:30px;">Toolbar</legend>
             <div class="controls">
-              <input id="toolbar" type="checkbox" style="margin-left: 20px;"/>
-              <label for="toolbar" style="font-weight: 400;">Color value panel visible</label>
+              <input id="toolbar" type="checkbox"/>
+              <label for="toolbar" style="font-weight: 400;">Color-value panel visible</label>
             </div>
           </fieldset>
 
@@ -131,9 +132,9 @@
       <div class="col-lg-offset-1 col-sm-6 col-md-6" style="margin-left:0;">
         <legend>Directions:</legend>
         <fieldset>
-          <div style="margin-left: 20px; margin-top: 5px;">
+          <div>
             <table style="margin-bottom:10px;"><tbody><tr>
-              <td style="vertical-align: top;"><input id="clickType" type="checkbox" style="margin-right:5px; margin-left:-5px; vertical-aligh:top;"></td>
+              <td style="vertical-align: top;"><input id="clickType" type="checkbox" style="margin-right:5px; vertical-aligh:top;"></td>
               <td><label for="clickType" style="font-weight: 400;">Use <kbd>left-click</kbd> for background, <kbd>right-click</kbd> for foreground.</label></td>
             </tr></tbody></table>
           </div>
