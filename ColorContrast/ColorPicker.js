@@ -236,7 +236,25 @@ var ColorPicker = function() {
 
         setColors: function(colors, type) {
             if (!ColorPicker.showMagnifier || !ColorPicker.colorPickerViewer) return;
-            this.colorPickerViewer.childNodes[0].innerHTML = colors.replace(/bg/g, 'style="background-color');
+            var deep = colors.length;
+            m = (deep - 1) / 2;
+            var s = ''; 
+            for (i = 0; i < deep; i++) {
+                s += '<tr>';
+
+                for (j = 0; j < deep; j++) {
+                    color = colors[j][i];
+                    var centre = i == m && j == m;
+                    s += '<td style="background-color:' + color + ';">';
+                    if(centre) {
+                      s+='<div class="marker"></div>';
+                    }
+                    s += '</td>';
+                }
+
+                s += '</tr>';
+            }
+            this.colorPickerViewer.childNodes[0].innerHTML = s;
         },
 
     }

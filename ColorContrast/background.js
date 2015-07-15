@@ -70,42 +70,36 @@ Background.getColor = function(x, y, eventType, showMagnifier, showToolbar) {
     Background.promise.then(
         function() {
             if (!showMagnifier && !showToolbar) return;
-            if (showToolbar) {
-                var color = Background.convertRGBToHex(Background.context.getImageData(x, y, 1, 1).data);
-                if (eventType == 'selected') {
-                    Background.Color = color;
-                }
+
+            var color = Background.convertRGBToHex(Background.context.getImageData(x, y, 1, 1).data);
+            if (eventType == 'selected') {
+                Background.Color = color;
             }
 
             if (showMagnifier) {
                 var deep = 3;
-                var s = '';
-                for (j = -deep; j <= deep; j++) {
-                    yj = y + j;
-
-                    s += '<tr>';
-                    for (i = -deep; i <= deep; i++) {
-                        xi = x + i;
-
+                var colors = "";
+                var cr = '[';
+                for (i = -deep; i <= deep; i++) {
+                    xi = x + i;
+                    var cc = cr + "[";
+                    for (j = -deep; j <= deep; j++) {
+                        yj = y + j;
                         if (xi < 0 || xi >= Background.image.naturalWidth || yj < 0 || yj >= Background.image.naturalHeight) {
-                            color = 'indigo';
+                            colors += cc + "'indigo'";
                         } else {
-                            color = Background.convertRGBToHex(Background.context.getImageData(xi, yj, 1, 1).data);
+                            colors += cc + "'" + Background.convertRGBToHex(Background.context.getImageData(xi, yj, 1, 1).data) + "'";
                         }
-                        s += '<td bg:' + color + ';">';
-                        if (i == 0 && j == 0) {
-                            s += '<div class="marker"></div>';
-                        }
-                        s += '</td>';
+                        cc = ',';
                     }
-
-                    s += '</tr>';
+                    colors += "]";
+                    cr = ',';
                 }
-
+                colors += "]";
             }
 
             var script = "if(ColorPicker !== undefined && ColorPicker) {\n";
-            if (showMagnifier) script += "  ColorPicker.setColors('" + s + "', '" + eventType + "');\n";
+            if (showMagnifier) script += "  ColorPicker.setColors(" + colors + ", '" + eventType + "');\n";
             if (showToolbar) script += "  ColorPicker.setColor('" + color + "', '" + eventType + "');\n";
             script += "};";
             try {
