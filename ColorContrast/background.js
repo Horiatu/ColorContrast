@@ -24,6 +24,31 @@ Background.convertRGBToHex = function(rgb) {
     return "#" + red + green + blue;
 };
 
+Background.capture = function() {
+    ////console.log('capturing');
+    try {
+      chrome.tabs.captureVisibleTab(null, {format: 'png'}, Background.doCapture);
+    // fallback for chrome before 5.0.372.0
+    } catch(e) {
+      chrome.tabs.captureVisibleTab(null, Background.doCapture);
+    }
+  };
+
+Background.doCapture = function(data) {
+      if ( data ) {
+        console.log('bg: sending updated image');
+        Background.sendMessage({type: 'update-image', data: data}, function() {});
+      } else {
+        console.error('bg: did not receive data from captureVisibleTab');
+      }
+  };
+
+Background.sendMessage = function(message, callback) {
+    chrome.tabs.getSelected(null, function(tab) {
+      chrome.tabs.sendMessage(tab.id, message, callback);
+    });
+  };
+
 $.getContext = function() {
 
     var deferred = $.Deferred();
@@ -52,7 +77,7 @@ $.getContext = function() {
 
     });
 
-    return deferred.promise();
+    return deferred.promise;
 }
 
 Background.context = null;
@@ -69,7 +94,7 @@ Background.getColor = function(x, y, eventType, showMagnifier, showToolbar) {
         Background.promise = $.getContext();
     }
 
-    Background.promise.done(
+    Background.promise().done(
         function() {
             if (!showMagnifier && !showToolbar) return;
 
@@ -116,3 +141,26 @@ Background.message = function(msg, sender, sendResponse) {
 };
 
 chrome.extension.onMessage.addListener(Background.message);
+
+    chrome.extension.onConnect.addListener(function(port) {
+      port.onMessage.addListener(function(req) {
+        switch(req.type) {
+          // Taking screenshot for content script
+          case 'screenshot': 
+            ////console.log('received screenshot request');
+            Background.capture(); 
+            break;
+/*         
+          // Creating debug tab
+          case 'debug-tab':
+            ////console.log('received debug tab');
+            bg.debugImage = req.image;
+            bg.createDebugTab();
+            break;
+
+          // Set color given in req
+          case 'set-color': bg.setColor(req); break;
+*/
+        }
+      });
+    });
