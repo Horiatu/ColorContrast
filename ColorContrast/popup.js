@@ -189,9 +189,10 @@ $(document).ready(function() {
             },
             function() {
                 var color = backgroundPage.Color;
-                if (color != null && backgroundPage.requestColor != null) {
-                    $('#' + backgroundPage.requestColor).val(color);
-                    getContrast(backgroundPage.requestColor);
+                var rqColor = backgroundPage.requestColor;
+                if (color != null && rqColor != null) {
+                    $('#' + rqColor).val(color);
+                    getContrast(rqColor);
                 }
             }
         );
