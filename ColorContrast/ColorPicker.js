@@ -32,6 +32,8 @@ var ColorPicker = function() {
         rects: [],
         screenshoting: false,
 
+        gridSize:7,
+
         rectInRect: function(A, B) {
             return (A.x >= B.x && A.y >= B.y && (A.x + A.width) <= (B.x + B.width) && (A.y + A.height) <= (B.y + B.height))
         },
@@ -88,9 +90,10 @@ var ColorPicker = function() {
 
         retrieveGlass: function() {
             var dfr1 = $.Deferred();
-            chrome.storage.sync.get(['magnifierGlass'], function(a) {
+            chrome.storage.sync.get(['magnifierGlass', 'gridSize'], function(a) {
                 if (a['magnifierGlass'] != 'none') {
                     _private.imageUrl = chrome.extension.getURL("Images/" + a['magnifierGlass'] + ".png");
+                    _private.gridSize = a['gridSize'] ? a['gridSize']:7;
                     dfr1.resolve();
                 } else {
                     dfr1.reject();
@@ -134,17 +137,18 @@ var ColorPicker = function() {
                     // If the event target is not the color picker, the color picker is not an ancestor of the event target and the event target is not a scrollbar
                     if (eventTarget != colorPickerViewer && !_private.isAncestor(eventTarget, colorPickerViewer) && tagName && tagName.toLowerCase() != "scrollbar") {
                         // place viewer
-                        var w = window.innerWidth - 100;
-                        var h = window.innerHeight - 100;
+                        var size = _private.gridSize * 8;
+                        var w = window.innerWidth - size - 24;
+                        var h = window.innerHeight - size - 24;
                         if (event.clientX < w) {
                             colorPickerViewer.css("left", (event.clientX + 4) + "px");
                         } else {
-                            colorPickerViewer.css("left", (event.clientX - 62) + "px");
+                            colorPickerViewer.css("left", (event.clientX - size - 4) + "px");
                         }
                         if (event.clientY < h) {
                             colorPickerViewer.css("top", (event.clientY + 4) + "px");
                         } else {
-                            colorPickerViewer.css("top", (event.clientY - 62) + "px");
+                            colorPickerViewer.css("top", (event.clientY - size - 4) + "px");
                         }
 
                     }
@@ -156,7 +160,7 @@ var ColorPicker = function() {
                 }
 
                 if (!_private.showMagnifier || !ColorPicker.colorPickerViewer) return;
-                var deep = 3;
+                var deep = (_private.gridSize-1)/2;
                 for (i = -deep; i <= deep; i++) {
                     for (j = -deep; j <= deep; j++) {
                         ColorPicker.dotArray[i + deep][j + deep].setAttribute("style", "background-color:" + _private.getPixel(event, j, i) + ";");
@@ -293,7 +297,7 @@ var ColorPicker = function() {
                     ColorPicker.colorPickerViewer.appendChild(t);
 
                     _public.dotArray = Array();
-                    deep = 3;
+                    var deep = (_private.gridSize-1)/2;
                     for (i = -deep; i <= deep; i++) {
                         row = Array();
                         tr = contentDocument.createElement("tr");
@@ -311,20 +315,24 @@ var ColorPicker = function() {
                         _public.dotArray.push(row);
                     }
 
-                    var d = contentDocument.createElement("div");
-                    var i = contentDocument.createElement("img");
+                    //var d = contentDocument.createElement("div");
+                    var glass = contentDocument.createElement("img");
 
-                    i.setAttribute("alt", "");
-                    i.setAttribute("width", "59px");
-                    i.setAttribute("height", "59px");
+                    glass.setAttribute("alt", "");
+                    glass.setAttribute("width", "100%");
+                    glass.setAttribute("height", "100%");
+                    glass.setAttribute("style", "position:absolute; top:0; left:0;");//_private.gridSize*8+"px");
+                    
 
                     //console.log(a['magnifierGlass']);
-                    i.setAttribute("src", _private.imageUrl);
-                    d.appendChild(i);
+                    glass.setAttribute("src", _private.imageUrl);
+                    //d.appendChild(glass);
 
-                    ColorPicker.colorPickerViewer.appendChild(d);
+                    ColorPicker.colorPickerViewer.appendChild(glass);
 
                     $('body').append(ColorPicker.colorPickerViewer);
+
+                    $('#colorPickerViewer').css('border-radius', deep * 8 + 6);
                 }
                 _private.showMagnifier = true;
             });
