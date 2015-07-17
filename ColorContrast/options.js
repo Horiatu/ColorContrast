@@ -13,6 +13,9 @@ $(document).ready(function() {
     $('#toolbar').change(function() {
         showToolbar($(this).is(':checked'))
     });
+    $('#gridSize').change(function() {
+        showGrid($(this).val());
+    });
     $('#clickType').change(function() {
         showDirections($(this).is(':checked'))
     });
@@ -43,6 +46,10 @@ function save_options() {
         'clickType': $('#clickType').is(':checked')
     });
 
+    chrome.storage.sync.set({
+        'gridSize': $('#gridSize').val()
+    });
+
     var status = document.getElementById("status");
     status.innerHTML = "Options Saved.";
     $('#status').fadeIn(20);
@@ -53,7 +60,7 @@ function save_options() {
 
 // Restores select box state to saved value from localStorage.
 function restore_options() {
-    chrome.storage.sync.get(['magnifierGlass', 'MapBg', 'clickType', 'toolbar'],
+    chrome.storage.sync.get(['magnifierGlass', 'MapBg', 'clickType', 'toolbar', 'gridSize'],
         function(a) {
             var magnifyGlass = $('.magnifyGlass input');
 
@@ -68,6 +75,9 @@ function restore_options() {
 
             $('#clickType').prop('checked', a['clickType']);
             showDirections(a['clickType']);
+
+            $('#gridSize').val(a['gridSize']);
+            showGrid(a['gridSize']);
         }
     );
 }
@@ -81,6 +91,23 @@ function showMapBg(show) {
 }
 
 function showToolbar(show) {}
+
+function showGrid(val) {
+    $('#gridSizeVal').text(val);
+
+    $('#grid').empty();
+    grid=$(document.createElement('table'));
+    grid.attr("cellspacing", 1);
+    $('#grid').append(grid);
+    for(i=0; i<val; i++) {
+        tr=$(document.createElement('tr'));
+        grid.append(tr);
+        for(j=0; j<val; j++) {
+        td=$(document.createElement('td'));
+        tr.append(td);
+        }
+    }
+}
 
 function showDirections(show) {
     if (show) {

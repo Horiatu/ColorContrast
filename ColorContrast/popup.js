@@ -184,7 +184,7 @@ $(document).ready(function() {
                 "code": "try {\n" +
                     "    ColorPicker.Hide(document);\n" + "}\n" +
                     "catch (err) {\n" +
-                    "  //console.log('Init error: '+err);\n" +
+                    //"  console.log('Init error: '+err);\n" +
                     "};"
             },
             function() {

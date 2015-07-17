@@ -53,6 +53,20 @@
         padding-left: 0px;
         padding-right: 20px;
       }
+      #grid table {
+        margin-left: 10px;
+        border: 1px solid black;
+      }
+      #gridSettings td {
+        vertical-align: top;
+        padding-right: 10px;
+      }
+      #grid table tr td {
+        border: 1px solid rgba(128, 128, 128, 0.5);
+        width: 7px;
+        height: 7px;
+        padding-right: 00px;
+        }
       input[type=radio], input[type=checkbox] {
         width: 18px;
         height: 18px;
@@ -109,6 +123,23 @@
                       <label for="mapbg" style="font-weight: 400;">Show glass on a map-like background</label>
                     </div>
                   </td>
+                </tr>
+                <tr>
+                  <table id="gridSettings" style="margin-top:20px;">
+                    <tr>
+                      <td>
+                        <label for="gridSize" style="font-weight: 400;">Grid Size:</label>
+                      </td>
+                      <td>
+                        <input id="gridSize" type="range" min="7" max="25" step="2" value="7" 
+                          style="width:200px;"/>
+                      </td>
+                      <td>
+                        <text id="gridSizeVal" style="font-weight: 400;">11</text>
+                      </td>
+                      <td id="grid"></td>
+                    </tr>
+                  </table>
                 </tr>
               </table>
             </div>
