@@ -23,6 +23,8 @@ var ColorPicker = function() {
         YOffset: 0,
         XOffset: 0,
 
+        showMagnifier: false,
+        showToolbar: false,
 
         screenshotDfr: null,
 
@@ -139,33 +141,22 @@ var ColorPicker = function() {
                     }
                 };
 
-                //chrome.extension.sendMessage({
-                //        type: "get-color",
-                //        x: event.clientX,
-                //        y: event.clientY,
-                //        eventType: type,
-                //        showMagnifier: _public.showMagnifier,
-                //        showToolbar: _public.showToolbar,
-                //    },
-                //    function(response) 
-                //    {
-                        if (_public.showToolbar) {
-                            color = _private.getPixel(event, 0, 0);
-                            _private.colorDiv.setAttribute("style", "position:fixed; width:18px; height:18px; background-color:" + color + ";");
-                            _private.colorTxt.innerHTML = color;
-                        }
+                if (_private.showToolbar) {
+                    color = _private.getPixel(event, 0, 0);
+                    _private.colorDiv.setAttribute("style", "position:fixed; width:18px; height:18px; background-color:" + color + ";");
+                    _private.colorTxt.innerHTML = color;
+                }
 
-                        //if (!ColorPicker.showMagnifier || !ColorPicker.colorPickerViewer) return;
-                        //var deep = response.colors.length;
-                        //for (i = 0; i < deep; i++) {
-                        //    for (j = 0; j < deep; j++) {
-                        //        color = response.colors[j][i];
-                        //        ColorPicker.dotArray[i][j].setAttribute("style", "background-color:" + color + ";");
-                        //    }
-                        //}
-                        getColorDfr.resolve();
-                 //   }
-                //);
+                if (!_private.showMagnifier || !ColorPicker.colorPickerViewer) return;
+                var deep = 3;
+                for (i = -deep; i <= deep; i++) {
+                    for (j = -deep; j <= deep; j++) {
+                        color = _private.getPixel(event, j, i);;
+                        ColorPicker.dotArray[i + deep][j + deep].setAttribute("style", "background-color:" + color + ";");
+                    }
+                }
+
+                getColorDfr.resolve();
             } else {
                 getColorDfr.reject();
             }
@@ -174,27 +165,29 @@ var ColorPicker = function() {
         },
 
         toHex: function(c, n) {
-          if(c === undefined) return '00'; 
-          var hex = c.toString(16);
-          while(hex.length < n) { hex = '0' + hex; }
-          return hex;
+            if (c === undefined) return '00';
+            var hex = c.toString(16);
+            while (hex.length < n) {
+                hex = '0' + hex;
+            }
+            return hex;
         },
 
         getPixel: function(e, x, y) {
-          if ( _private.canvasData === null )
-            return 'transparent';
+            if (_private.canvasData === null)
+                return 'transparent';
 
             var canvasIndex = ((e.pageX + x) + (e.pageY + y) * _private.canvas.width) * 4;
             ////console.log(e.pageX + ' ' + e.pageY + ' ' + _private.canvas.width);
 
             var rgb = {
-              r: _private.canvasData[canvasIndex],
-              g: _private.canvasData[canvasIndex+1],
-              b: _private.canvasData[canvasIndex+2],
-              //alpha: _private.canvasData[canvasIndex+3]
+                r: _private.canvasData[canvasIndex],
+                g: _private.canvasData[canvasIndex + 1],
+                b: _private.canvasData[canvasIndex + 2],
+                //alpha: _private.canvasData[canvasIndex+3]
             };
 
-            var color = '#'+_private.toHex(rgb.r,2) + _private.toHex(rgb.g,2) + _private.toHex(rgb.b,2);
+            var color = '#' + _private.toHex(rgb.r, 2) + _private.toHex(rgb.g, 2) + _private.toHex(rgb.b, 2);
             return color;
         },
 
@@ -231,13 +224,10 @@ var ColorPicker = function() {
         },
 
         MouseMove: function(event) {
-            //event.stopPropagation();
-            //event.preventDefault();
-
-            _private.removeMouseSupport(document);
+            //_private.removeMouseSupport(document);
             _private.getColor(event, "hover").always(
                 function() {
-                    _private.addMouseSupport(document);
+            //        _private.addMouseSupport(document);
                     $('#colorPickerViewer').show(); // !
                 });
         },
@@ -334,7 +324,7 @@ var ColorPicker = function() {
 
                     $('body').append(ColorPicker.colorPickerViewer);
                 }
-                _public.showMagnifier = true;
+                _private.showMagnifier = true;
             });
 
             _private.retrieveToolbar().then(function() {
@@ -352,7 +342,7 @@ var ColorPicker = function() {
 
                     $('body').append(_private.colorPickerToolbar);
                 };
-                _public.showToolbar = true;
+                _private.showToolbar = true;
             });
 
             chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
@@ -371,7 +361,9 @@ var ColorPicker = function() {
 
         screenshot: function() {
             _private.screenshotDfr = $.Deferred();
-            chrome.extension.connect().postMessage({type: 'screenshot'});
+            chrome.extension.connect().postMessage({
+                type: 'screenshot'
+            });
 
             return _private.screenshotDfr.promise();
         },
@@ -424,7 +416,7 @@ var ColorPicker = function() {
 
                 _private.canvasContext.drawImage(image, _private.XOffset, _private.YOffset);
                 _private.canvasData = _private.canvasContext.getImageData(0, 0, _private.canvas.width, _private.canvas.height).data;
-                
+
                 _private.screenshoting = false;
                 //$("#eye-dropper-overlay").css('cursor',_private.options.cursor);
 
@@ -460,8 +452,6 @@ var ColorPicker = function() {
 
     var _public = {
         colorPickerViewer: null,
-        showMagnifier: false,
-        showToolbar: false,
         dotArray: null,
 
         Show: function(contentDocument) {
