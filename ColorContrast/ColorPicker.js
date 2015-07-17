@@ -117,6 +117,15 @@ var ColorPicker = function() {
             var eventTarget = event.target;
 
             if (eventTarget) {
+
+                color = _private.getPixel(event, 0, 0);
+                if(type == "selected") {
+                    chrome.extension.connect().postMessage({
+                        type: 'set-color',
+                        color: color
+                    });
+                };
+
                 var colorPickerViewer = $("#colorPickerViewer");
                 if (_private.showMagnifier && colorPickerViewer) {
 
@@ -142,7 +151,6 @@ var ColorPicker = function() {
                 };
 
                 if (_private.showToolbar) {
-                    color = _private.getPixel(event, 0, 0);
                     _private.colorDiv.setAttribute("style", "position:fixed; width:18px; height:18px; background-color:" + color + ";");
                     _private.colorTxt.innerHTML = color;
                 }
@@ -151,8 +159,7 @@ var ColorPicker = function() {
                 var deep = 3;
                 for (i = -deep; i <= deep; i++) {
                     for (j = -deep; j <= deep; j++) {
-                        color = _private.getPixel(event, j, i);;
-                        ColorPicker.dotArray[i + deep][j + deep].setAttribute("style", "background-color:" + color + ";");
+                        ColorPicker.dotArray[i + deep][j + deep].setAttribute("style", "background-color:" + _private.getPixel(event, j, i) + ";");
                     }
                 }
 
@@ -215,21 +222,16 @@ var ColorPicker = function() {
                 event.stopPropagation();
                 event.preventDefault();
 
-                $('#colorPickerViewer').hide();
-                _private.screenshot().done(function() {
-                    $('#colorPickerViewer').show();
+                //$('#colorPickerViewer').hide();
+                //_private.screenshot().done(function() {
+                //    $('#colorPickerViewer').show();
                     _private.getColor(event, "selected");
-                });
+                //});
             }
         },
 
         MouseMove: function(event) {
-            //_private.removeMouseSupport(document);
-            _private.getColor(event, "hover").always(
-                function() {
-            //        _private.addMouseSupport(document);
-                    $('#colorPickerViewer').show(); // !
-                });
+            _private.getColor(event, "hover");
         },
 
         addMouseSupport: function(contentDocument) {
@@ -468,9 +470,6 @@ var ColorPicker = function() {
 
         refresh: function() {
             _private.screenshot();
-            //chrome.extension.sendMessage({
-            //    type: "get-canvas"
-            //});
         },
     }
 

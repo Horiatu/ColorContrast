@@ -100,7 +100,11 @@ Background.getColor = function(x, y, eventType, showMagnifier, showToolbar) {
 
             color = Background.convertRGBToHex(Background.context.getImageData(x, y, 1, 1).data);
             if (eventType == 'selected') {
+
+
                 Background.Color = color; // !!!
+
+
             }
 
             colors = [];
@@ -129,15 +133,13 @@ Background.getColor = function(x, y, eventType, showMagnifier, showToolbar) {
 // Handles any background messages
 Background.message = function(msg, sender, sendResponse) {
     // If the msg type is to get the current color
-    if (msg.type == "get-color") {
-        Background.getColor(msg.x, msg.y, msg.eventType, msg.showMagnifier, msg.showToolbar).done(
-          function(response) {
-            sendResponse(response);
-          }
-        );
-    } else if (msg.type == "get-canvas") {
-        Background.context = null;
-    }
+    //if (msg.type == "get-color") {
+    //    Background.getColor(msg.x, msg.y, msg.eventType, msg.showMagnifier, msg.showToolbar).done(
+    //      function(response) {
+    //        sendResponse(response);
+    //      }
+    //    );
+    //} 
 };
 
 chrome.extension.onMessage.addListener(Background.message);
@@ -145,10 +147,12 @@ chrome.extension.onMessage.addListener(Background.message);
     chrome.extension.onConnect.addListener(function(port) {
       port.onMessage.addListener(function(req) {
         switch(req.type) {
-          // Taking screenshot for content script
           case 'screenshot': 
-            ////console.log('received screenshot request');
+            //console.log('received screenshot request');
             Background.capture(); 
+            break;
+          case 'set-color' :
+            Background.color = req.color;
             break;
 /*         
           // Creating debug tab
@@ -157,9 +161,6 @@ chrome.extension.onMessage.addListener(Background.message);
             bg.debugImage = req.image;
             bg.createDebugTab();
             break;
-
-          // Set color given in req
-          case 'set-color': bg.setColor(req); break;
 */
         }
       });
