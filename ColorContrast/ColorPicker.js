@@ -30,9 +30,8 @@ var ColorPicker = function() {
 
         canvas: document.createElement("canvas"),
         rects: [],
-        screenshoting: false,
 
-        gridSize:7,
+        gridSize: 7,
 
         rectInRect: function(A, B) {
             return (A.x >= B.x && A.y >= B.y && (A.x + A.width) <= (B.x + B.width) && (A.y + A.height) <= (B.y + B.height))
@@ -93,7 +92,7 @@ var ColorPicker = function() {
             chrome.storage.sync.get(['magnifierGlass', 'gridSize'], function(a) {
                 if (a['magnifierGlass'] != 'none') {
                     _private.imageUrl = chrome.extension.getURL("Images/" + a['magnifierGlass'] + ".png");
-                    _private.gridSize = a['gridSize'] ? a['gridSize']:7;
+                    _private.gridSize = a['gridSize'] ? a['gridSize'] : 7;
                     dfr1.resolve();
                 } else {
                     dfr1.reject();
@@ -114,6 +113,10 @@ var ColorPicker = function() {
             return dfr2.promise();
         },
 
+        sendMessage: function(message) {
+            chrome.extension.connect().postMessage(message);
+        },
+
         getColor: function(event, type) {
             getColorDfr = $.Deferred();
 
@@ -122,8 +125,8 @@ var ColorPicker = function() {
             if (eventTarget) {
 
                 color = _private.getPixel(event, 0, 0);
-                if(type == "selected") {
-                    chrome.extension.connect().postMessage({
+                if (type == "selected") {
+                    _private.sendMessage({
                         type: 'set-color',
                         color: color
                     });
@@ -160,7 +163,7 @@ var ColorPicker = function() {
                 }
 
                 if (!_private.showMagnifier || !ColorPicker.colorPickerViewer) return;
-                var deep = (_private.gridSize-1)/2;
+                var deep = (_private.gridSize - 1) / 2;
                 for (i = -deep; i <= deep; i++) {
                     for (j = -deep; j <= deep; j++) {
                         ColorPicker.dotArray[i + deep][j + deep].setAttribute("style", "background-color:" + _private.getPixel(event, j, i) + ";");
@@ -187,19 +190,25 @@ var ColorPicker = function() {
         getPixel: function(e, x, y) {
             if (_private.canvasData === null)
                 return 'transparent';
+            var X = e.pageX + x;
+            var Y = e.pageY + y;
 
-            var canvasIndex = ((e.pageX + x) + (e.pageY + y) * _private.canvas.width) * 4;
-            ////console.log(e.pageX + ' ' + e.pageY + ' ' + _private.canvas.width);
+            if (X < 0 || Y < 0 || X >= _private.width || Y >= _private.height) {
+                return 'indigo';
+            } else {
+                var canvasIndex = (X + Y * _private.canvas.width) * 4;
+                ////console.log(e.pageX + ' ' + e.pageY + ' ' + _private.canvas.width);
 
-            var rgb = {
-                r: _private.canvasData[canvasIndex],
-                g: _private.canvasData[canvasIndex + 1],
-                b: _private.canvasData[canvasIndex + 2],
-                //alpha: _private.canvasData[canvasIndex+3]
-            };
+                var rgb = {
+                    r: _private.canvasData[canvasIndex],
+                    g: _private.canvasData[canvasIndex + 1],
+                    b: _private.canvasData[canvasIndex + 2],
+                    //alpha: _private.canvasData[canvasIndex+3]
+                };
 
-            var color = '#' + _private.toHex(rgb.r, 2) + _private.toHex(rgb.g, 2) + _private.toHex(rgb.b, 2);
-            return color;
+                var color = '#' + _private.toHex(rgb.r, 2) + _private.toHex(rgb.g, 2) + _private.toHex(rgb.b, 2);
+                return color;
+            }
         },
 
         isAncestor: function(element, ancestorElement) {
@@ -229,7 +238,7 @@ var ColorPicker = function() {
                 //$('#colorPickerViewer').hide();
                 //_private.screenshot().done(function() {
                 //    $('#colorPickerViewer').show();
-                    _private.getColor(event, "selected");
+                _private.getColor(event, "selected");
                 //});
             }
         },
@@ -241,11 +250,15 @@ var ColorPicker = function() {
         addMouseSupport: function(contentDocument) {
             contentDocument.addEventListener("click", _private.Click, true);
             contentDocument.addEventListener("mousemove", _private.MouseMove, true);
+            contentDocument.addEventListener('scroll', _private.onScrollStop, true);
+            $(window).bind('resize', _private.onWindowResize);
         },
 
         removeMouseSupport: function(contentDocument) {
             contentDocument.removeEventListener("click", _private.Click);
             contentDocument.removeEventListener("mousemove", _private.MouseMove);
+            contentDocument.removeEventListener('scroll', _private.onScrollStop);
+            $(window).unbind('resize', _private.onWindowResize);
         },
 
         removeTitles: function() {
@@ -297,7 +310,7 @@ var ColorPicker = function() {
                     ColorPicker.colorPickerViewer.appendChild(t);
 
                     _public.dotArray = Array();
-                    var deep = (_private.gridSize-1)/2;
+                    var deep = (_private.gridSize - 1) / 2;
                     for (i = -deep; i <= deep; i++) {
                         row = Array();
                         tr = contentDocument.createElement("tr");
@@ -321,8 +334,8 @@ var ColorPicker = function() {
                     glass.setAttribute("alt", "");
                     glass.setAttribute("width", "100%");
                     glass.setAttribute("height", "100%");
-                    glass.setAttribute("style", "position:absolute; top:0; left:0;");//_private.gridSize*8+"px");
-                    
+                    glass.setAttribute("style", "position:absolute; top:0; left:0;"); //_private.gridSize*8+"px");
+
 
                     //console.log(a['magnifierGlass']);
                     glass.setAttribute("src", _private.imageUrl);
@@ -378,6 +391,63 @@ var ColorPicker = function() {
             return _private.screenshotDfr.promise();
         },
 
+        screenChanged: function(force) {
+            //if (!dropperActivated) return;
+
+            console.log("screenChanged");
+            _private.YOffset = $(document).scrollTop();
+            _private.XOffset = $(document).scrollLeft();
+
+            var rect = {
+                x: _private.XOffset,
+                y: _private.YOffset,
+                width: _private.screenWidth,
+                height: _private.screenHeight
+            };
+
+            // don't screenshot if we already have this one
+            if (!force && _private.rects.length > 0) {
+                for (index in _private.rects) {
+                    if (_private.rectInRect(rect, _private.rects[index])) {
+                        console.log('already shoted, skipping');
+                        return;
+                    }
+                }
+            }
+
+            //$("#eye-dropper-overlay").css('cursor', 'progress')
+
+            _private.screenshot();
+        },
+
+        onScrollStop: function() {
+            //if (!page.dropperActivated) return;
+
+            console.log("Scroll stop");
+            _private.screenChanged();
+        },
+
+        onWindowResize: function(e) {
+            //if (!_private.dropperActivated) return;
+
+            console.log('window resized');
+
+            //// set defaults
+            //_private.defaults();
+
+            // width and height changed so we have to get new one
+            _private.width = $(document).width();
+            _private.height = $(document).height();
+            _private.screenWidth = window.innerWidth;
+            _private.screenHeight = window.innerHeight;
+
+            //// also don't forget to set overlay
+            //$("#eye-dropper-overlay").css('width',page.width).css('height',page.height);
+
+            // call screen chaned
+            _private.screenChanged();
+        },
+
         capture: function(imageData) {
             _private.imageData = imageData;
 
@@ -427,7 +497,6 @@ var ColorPicker = function() {
                 _private.canvasContext.drawImage(image, _private.XOffset, _private.YOffset);
                 _private.canvasData = _private.canvasContext.getImageData(0, 0, _private.canvas.width, _private.canvas.height).data;
 
-                _private.screenshoting = false;
                 //$("#eye-dropper-overlay").css('cursor',_private.options.cursor);
 
                 //// re-enable tooltip and toolbox
