@@ -53,10 +53,16 @@
 	background-color:transparent;
 }
 
-#ColorPickerOvr {
+#ColorPickerOvr, #ColorPickerLdr {
 	position: absolute; 
 	opacity: 1; 
 	background: rgba(0,0,0,0.005); 
 	border: none; z-index: 5000;
+}
+#ColorPickerOvr{
 	cursor:crosshair;
+}
+
+#ColorPickerLdr {
+	cursor:wait;
 }

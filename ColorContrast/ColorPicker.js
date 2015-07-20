@@ -272,8 +272,10 @@ var ColorPicker = function() {
                 }
             }
 
-            $("body").prepend('<div id="ColorPickerOvr" style="cursor: url(' + chrome.extension.getURL("Images/Cursors/pickColor.cur") + '), crosshair !important;"></div>');
+            $("body").prepend('<div id="ColorPickerLdr"></div>');
+            $("#ColorPickerLdr").append('<div id="ColorPickerOvr" style="cursor: url(' + chrome.extension.getURL("Images/Cursors/pickColor.cur") + '), crosshair !important;"></div>');
             
+            $("#ColorPickerLdr").css("width", $(document).width()).css("height", $(document).width());
             $("#ColorPickerOvr").css("width", $(document).width()).css("height", $(document).width());
             
             _private.addMouseSupport(document);
@@ -419,6 +421,7 @@ var ColorPicker = function() {
             _private.screenWidth = window.innerWidth;
             _private.screenHeight = window.innerHeight;
 
+            $("#ColorPickerLdr").css("width", _private.width).css("height", _private.height);
             $("#ColorPickerOvr").css("width", _private.width).css("height", _private.height);
 
             // call screen chaned
@@ -486,7 +489,7 @@ var ColorPicker = function() {
         destroy: function(contentDocument) {
             _private.removeMouseSupport(document);
 
-            $("#ColorPickerOvr").remove();
+            $("#ColorPickerLdr").remove();
 
             $("#colorPickerCss").remove();
         },
