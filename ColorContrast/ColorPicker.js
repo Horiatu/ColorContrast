@@ -282,6 +282,10 @@ var ColorPicker = function() {
         },
 
         init: function(contentDocument) {
+
+            $("body").before('<div id="ColorPickerOvr"></div>');
+            $("#ColorPickerOvr").css("width", $(document).width()).css("height", $(document).width());
+
             if (!contentDocument.getElementById("colorPickerCursor")) {
                 var colorPickerCss = '<link id="colorPickerCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('ColorPicker.css') + '" />';
                 var css = '<Style id="colorPickerCursor">\n' +
@@ -343,7 +347,7 @@ var ColorPicker = function() {
 
                     ColorPicker.colorPickerViewer.appendChild(glass);
 
-                    $('body').append(ColorPicker.colorPickerViewer);
+                    $('#ColorPickerOvr').append(ColorPicker.colorPickerViewer);
 
                     $('#colorPickerViewer').css('border-radius', deep * 8 + 6);
                 }
@@ -363,7 +367,7 @@ var ColorPicker = function() {
                     _private.colorTxt.setAttribute("id", "colorTxt");
                     _private.colorPickerToolbar.appendChild(_private.colorTxt);
 
-                    $('body').append(_private.colorPickerToolbar);
+                    $('#ColorPickerOvr').append(_private.colorPickerToolbar);
                 };
                 _private.showToolbar = true;
             });
@@ -384,8 +388,10 @@ var ColorPicker = function() {
 
         screenshot: function() {
             _private.screenshotDfr = $.Deferred();
-            chrome.extension.connect().postMessage({
-                type: 'screenshot'
+            $("#ColorPickerOvr").hide(100, function() {
+                chrome.extension.connect().postMessage({
+                    type: 'screenshot'
+                });
             });
 
             return _private.screenshotDfr.promise();
@@ -441,8 +447,7 @@ var ColorPicker = function() {
             _private.screenWidth = window.innerWidth;
             _private.screenHeight = window.innerHeight;
 
-            //// also don't forget to set overlay
-            //$("#eye-dropper-overlay").css('width',page.width).css('height',page.height);
+            $("#ColorPickerOvr").css("width", _private.width).css("height", _private.height);
 
             // call screen chaned
             _private.screenChanged();
@@ -491,23 +496,13 @@ var ColorPicker = function() {
                 }
 
                 // put rectangle in array
-                if (merged == false)
+                if (!merged)
                     _private.rects.push(rect);
 
                 _private.canvasContext.drawImage(image, _private.XOffset, _private.YOffset);
                 _private.canvasData = _private.canvasContext.getImageData(0, 0, _private.canvas.width, _private.canvas.height).data;
 
-                //$("#eye-dropper-overlay").css('cursor',_private.options.cursor);
-
-                //// re-enable tooltip and toolbox
-                //if ( _private.options.enableColorTooltip === true ) {
-                // _private.elColorTooltip.show(1);
-                //}
-                //if ( _private.options.enableColorToolbox === true ) {
-                //  _private.elColorToolbox.show(1);
-                //}
-
-                _private.screenshotDfr.resolve();
+                $("#ColorPickerOvr").show(100, _private.screenshotDfr.resolve);
             }
             if (_private.imageData) {
                 image.src = _private.imageData;
@@ -520,8 +515,7 @@ var ColorPicker = function() {
             $("#colorPickerCursor").remove();
             $("colorPickerCss").remove();
 
-            $("#colorPickerDiv").remove();
-            $("#colorPickerViewer").remove();
+            $("#colorPickerOvr").remove();
 
             _private.removeMouseSupport(document);
             _private.restoreTitles();

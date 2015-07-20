@@ -52,3 +52,10 @@
 	border:1px solid red; 
 	background-color:transparent;
 }
+
+#ColorPickerOvr {
+	position: absolute; 
+	opacity: 1; 
+	background: rgba(0,0,0,0.001); 
+	border: none; z-index: 5000;"
+}
