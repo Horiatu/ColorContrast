@@ -263,11 +263,13 @@ var ColorPicker = function() {
 
         init: function(contentDocument) {
 
-            var colorPickerCss = '<link id="colorPickerCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('ColorPicker.css') + '" />';
-            if ($("head").length == 0) {
-                $("body").before(colorPickerCss);
-            } else {
-                $("head").append(colorPickerCss);
+            if(!contentDocument.getElementById("colorPickerCss")) {
+                var colorPickerCss = '<link id="colorPickerCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('ColorPicker.css') + '" />';
+                if ($("head").length == 0) {
+                    $("body").before(colorPickerCss);
+                } else {
+                    $("head").append(colorPickerCss);
+                }
             }
 
             $("body").prepend('<div id="ColorPickerOvr" style="cursor: url(' + chrome.extension.getURL("Images/Cursors/pickColor.cur") + '), crosshair !important;"></div>');
@@ -486,7 +488,7 @@ var ColorPicker = function() {
 
             $("#ColorPickerOvr").remove();
 
-            $("colorPickerCss").remove();
+            $("#colorPickerCss").remove();
         },
 
     }
