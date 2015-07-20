@@ -56,6 +56,7 @@
 #ColorPickerOvr {
 	position: absolute; 
 	opacity: 1; 
-	background: rgba(0,0,0,0.001); 
-	border: none; z-index: 5000;"
+	background: rgba(0,0,0,0.005); 
+	border: none; z-index: 5000;
+	cursor:crosshair;
 }

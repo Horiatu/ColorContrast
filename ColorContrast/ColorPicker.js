@@ -157,7 +157,7 @@ var ColorPicker = function() {
                     }
                 };
 
-                if (_private.showToolbar) {
+                if (_private.showToolbar && _private.colorDiv && _private.colorTxt) {
                     _private.colorDiv.setAttribute("style", "position:fixed; width:18px; height:18px; background-color:" + color + ";");
                     _private.colorTxt.innerHTML = color;
                 }
@@ -261,48 +261,20 @@ var ColorPicker = function() {
             $(window).unbind('resize', _private.onWindowResize);
         },
 
-        removeTitles: function() {
-            //return;
-            $('[title]').bind('mousemove.hideTooltips', function() {
-                $this = $(this);
-                if ($this.attr('title') && $this.attr('title') != '') {
-                    $this.data('title', $this.attr('title'));
-                    $this.attr('title', '');
-                }
-            }).bind('mouseout.hideTooltips', function() {
-                $this = $(this);
-                $this.attr('title', $this.data('title'));
-            });
-        },
-
-        restoreTitles: function() {
-            //return;
-            $('[title]').unbind('mousemove.hideTooltips').unbind('mouseout.hideTooltips');
-            $('*[data-title!=undefined]').attr('title', $(this).data('title'));
-        },
-
         init: function(contentDocument) {
 
-            $("body").before('<div id="ColorPickerOvr"></div>');
-            $("#ColorPickerOvr").css("width", $(document).width()).css("height", $(document).width());
-
-            if (!contentDocument.getElementById("colorPickerCursor")) {
-                var colorPickerCss = '<link id="colorPickerCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('ColorPicker.css') + '" />';
-                var css = '<Style id="colorPickerCursor">\n' +
-                    ' * { cursor: url(' + chrome.extension.getURL("Images/Cursors/pickColor.cur") + '), crosshair !important; }\n' +
-                    '</Style>';
-                if ($("head").length == 0) {
-                    $("body").before(colorPickerCss);
-                    $("body").before(css);
-                } else {
-                    $("head").append(colorPickerCss);
-                    $("head").append(css);
-                }
+            var colorPickerCss = '<link id="colorPickerCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('ColorPicker.css') + '" />';
+            if ($("head").length == 0) {
+                $("body").before(colorPickerCss);
+            } else {
+                $("head").append(colorPickerCss);
             }
 
+            $("body").prepend('<div id="ColorPickerOvr" style="cursor: url(' + chrome.extension.getURL("Images/Cursors/pickColor.cur") + '), crosshair !important;"></div>');
+            
+            $("#ColorPickerOvr").css("width", $(document).width()).css("height", $(document).width());
+            
             _private.addMouseSupport(document);
-
-            _private.removeTitles();
 
             _private.retrieveGlass().then(function() {
                 if (!contentDocument.getElementById("colorPickerViewer")) {
@@ -421,8 +393,6 @@ var ColorPicker = function() {
                 }
             }
 
-            //$("#eye-dropper-overlay").css('cursor', 'progress')
-
             _private.screenshot();
         },
 
@@ -512,13 +482,11 @@ var ColorPicker = function() {
         },
 
         destroy: function(contentDocument) {
-            $("#colorPickerCursor").remove();
-            $("colorPickerCss").remove();
-
-            $("#colorPickerOvr").remove();
-
             _private.removeMouseSupport(document);
-            _private.restoreTitles();
+
+            $("#ColorPickerOvr").remove();
+
+            $("colorPickerCss").remove();
         },
 
     }
