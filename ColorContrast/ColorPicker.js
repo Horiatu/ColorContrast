@@ -244,18 +244,20 @@ var ColorPicker = function() {
                 event.preventDefault();
         },
 
-        addMouseSupport: function(contentDocument) {
-            contentDocument.addEventListener("click", _private.Click, false);
-            contentDocument.addEventListener("mousemove", _private.MouseMove, false);
-            contentDocument.addEventListener('scroll', _private.onScrollStop, true);
+        addMouseSupport: function() {
+            document.addEventListener("click", _private.Click, false);
+            document.addEventListener("mousemove", _private.MouseMove, false);
+            document.addEventListener('scroll', _private.onScrollStop, true);
             $(window).bind('resize', _private.onWindowResize);
+            $(_public.colorPickerViewer).css('display', 'inherit');
         },
 
-        removeMouseSupport: function(contentDocument) {
-            contentDocument.removeEventListener("click", _private.Click);
-            contentDocument.removeEventListener("mousemove", _private.MouseMove);
-            contentDocument.removeEventListener('scroll', _private.onScrollStop);
+        removeMouseSupport: function() {
+            document.removeEventListener("click", _private.Click);
+            document.removeEventListener("mousemove", _private.MouseMove);
+            document.removeEventListener('scroll', _private.onScrollStop);
             $(window).unbind('resize', _private.onWindowResize);
+            $(_public.colorPickerViewer).css('display', 'none');
         },
 
         init: function(contentDocument) {
@@ -279,7 +281,7 @@ var ColorPicker = function() {
             $("body").prepend('<div id="ColorPickerLdr"></div>');
             $("#ColorPickerLdr").append('<div id="ColorPickerOvr" style="cursor: url(' + chrome.extension.getURL("Images/Cursors/pickColor.cur") + '), crosshair !important;"></div>');
             
-            _private.addMouseSupport(document);
+            _private.addMouseSupport();
 
             _private.retrieveGlass().then(function() {
                 if (!contentDocument.getElementById("colorPickerViewer")) {
@@ -352,25 +354,24 @@ var ColorPicker = function() {
                     $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="checkmark" alt="Pass AA" title="Pass AA">');
                     $('#colorPickerToolbar').append('<Span class="Contrast">4.50:1</Span>');
 
-
-
                     $('#colorPickerToolbar').append('<div style="display: inline-block;">'+
                         '<ul id="menu1" class="menu dropit"></ul></div>');
                     $('#menu1').append('<li class="dropit-trigger"><a href="#" class="btn">'+
                         '<img src='+chrome.extension.getURL("Images/menu.png")+'></img>'+
                         '</a></li>');
                     $('.dropit-trigger').append('<ul class="dropit-submenu" style="display: none;"></ul>');
-                    $('.dropit-submenu').append('<li><a href="#">Up-Right</a></li>');
+                    $('.dropit-submenu').append('<li><a href="#">Copy Foreground</a></li>');
+                    $('.dropit-submenu').append('<li><a href="#">Copy Background</a></li>');
+                    $('.dropit-submenu').append('<li><hr/></li>');
+                    $('.dropit-submenu').append('<li><a id="UpRight">Up-Right</a></li>');
                     $('.dropit-submenu').append('<li><a href="#">Up-Left</a></li>');
                     $('.dropit-submenu').append('<li><a href="#">Down-Right</a></li>');
                     $('.dropit-submenu').append('<li><a hrelf="#">Down-Left</a></li>');
-                    $('.dropit-submenu').append('<li><hr/></li>');
-                    $('.dropit-submenu').append('<li><a href="#">Copy Foreground</a></li>');
-                    $('.dropit-submenu').append('<li><a href="#">Copy Background</a></li>');
 
-
-
-                    $('#menu1').dropit();
+                    $('#menu1').dropit({
+                        beforeShow: _private.removeMouseSupport,
+                        afterHide: _private.addMouseSupport
+                    });
                 };
                 _private.showToolbar = true;
             });
@@ -510,7 +511,7 @@ var ColorPicker = function() {
         },
 
         destroy: function(contentDocument) {
-            _private.removeMouseSupport(document);
+            _private.removeMouseSupport();
 
             $("#ColorPickerLdr").remove();
 

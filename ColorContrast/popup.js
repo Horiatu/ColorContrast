@@ -1,92 +1,92 @@
 $(document).ready(function() {
 
     getSelectedTab = function() {
-        var dfd = $.Deferred();
+            var dfd = $.Deferred();
 
-        chrome.tabs.query({
-            "active": true,
-            "currentWindow": true
-        }, function(tabs) {
-            dfd.resolve(tabs[0]);
-        });
-
-        return dfd.promise();
-    },
-
-    validateTab = function(tab) {
-        var dfd = $.Deferred();
-        var url = tab.url;
-
-        if (url.indexOf("chrome://") === 0 || url.indexOf("chrome-extension://") === 0) {
-            dfd.reject("Warning: Does not work on internal browser pages.");
-        } else if (url.indexOf("https://chrome.google.com/extensions/") === 0 || url.indexOf("https://chrome.google.com/webstore/") === 0) {
-            dfd.reject("Warning: Does not work on the Chrome Extension Gallery.");
-        } else {
-            dfd.resolve();
-        }
-
-        return dfd.promise();
-    },
-
-    getContrast = function(id) {
-        var backgroundVal = $("#background").val().trim();
-        var foregroundVal = $("#foreground").val().trim();
-        var backgroundTxt = ContrastAnalyser.colorNameOrHexToColor(backgroundVal);
-        var foregroundTxt = ContrastAnalyser.colorNameOrHexToColor(foregroundVal);
-        if (backgroundTxt && foregroundTxt) {
-            if (id) {
-                $("#" + id).removeClass("error");
-            } else {
-                $(".txInput").removeClass("error");
-            }
-
-            chrome.storage.sync.set({
-                'background': backgroundVal
-            }, function() {
-                //console.log("background "+backgroundVal+' saved');
-            });
-            chrome.storage.sync.set({
-                'foreground': foregroundVal
-            }, function() {
-                //console.log("foreground "+foregroundVal+' saved');
+            chrome.tabs.query({
+                "active": true,
+                "currentWindow": true
+            }, function(tabs) {
+                dfd.resolve(tabs[0]);
             });
 
-            $(".example").css("background-color", backgroundTxt);
-            $(".example span").css("color", foregroundTxt);
+            return dfd.promise();
+        },
 
-            var cc = ContrastAnalyser.contrast(backgroundTxt, foregroundTxt);
-            //cc = Math.round((cc * 10) / 10);
+        validateTab = function(tab) {
+            var dfd = $.Deferred();
+            var url = tab.url;
 
-            $("#contrast span").html(parseFloat(cc).toFixed(2) + ":1");
-
-            if (cc >= 4.5) {
-                $("#contrast span").css("text-shadow", "2px 2px 2px darkgreen");
-                $(".largeOK").show();
-                $(".smallOK").show();
-                $(".large").hide();
-                $(".small").hide();
-            } else if (cc >= 3.0) {
-                $("#contrast span").css("text-shadow", "2px 2px 2px orangered");
-                $(".largeOK").show();
-                $(".smallOK").hide();
-                $(".large").hide();
-                $(".small").show();
+            if (url.indexOf("chrome://") === 0 || url.indexOf("chrome-extension://") === 0) {
+                dfd.reject("Warning: Does not work on internal browser pages.");
+            } else if (url.indexOf("https://chrome.google.com/extensions/") === 0 || url.indexOf("https://chrome.google.com/webstore/") === 0) {
+                dfd.reject("Warning: Does not work on the Chrome Extension Gallery.");
             } else {
-                $("#contrast span").css("text-shadow", "2px 2px 2px red");
-                $(".largeOK").hide();
-                $(".smallOK").hide();
-                $(".large").show();
-                $(".small").show();
+                dfd.resolve();
             }
-        } else {
-            if (id) {
-                $("#" + id).addClass("error");
+
+            return dfd.promise();
+        },
+
+        getContrast = function(id) {
+            var backgroundVal = $("#background").val().trim();
+            var foregroundVal = $("#foreground").val().trim();
+            var backgroundTxt = ContrastAnalyser.colorNameOrHexToColor(backgroundVal);
+            var foregroundTxt = ContrastAnalyser.colorNameOrHexToColor(foregroundVal);
+            if (backgroundTxt && foregroundTxt) {
+                if (id) {
+                    $("#" + id).removeClass("error");
+                } else {
+                    $(".txInput").removeClass("error");
+                }
+
+                chrome.storage.sync.set({
+                    'background': backgroundVal
+                }, function() {
+                    //console.log("background "+backgroundVal+' saved');
+                });
+                chrome.storage.sync.set({
+                    'foreground': foregroundVal
+                }, function() {
+                    //console.log("foreground "+foregroundVal+' saved');
+                });
+
+                $(".example").css("background-color", backgroundTxt);
+                $(".example span").css("color", foregroundTxt);
+
+                var cc = ContrastAnalyser.contrast(backgroundTxt, foregroundTxt);
+                //cc = Math.round((cc * 10) / 10);
+
+                $("#contrast span").html(parseFloat(cc).toFixed(2) + ":1");
+
+                if (cc >= 4.5) {
+                    $("#contrast span").css("text-shadow", "2px 2px 2px darkgreen");
+                    $(".largeOK").show();
+                    $(".smallOK").show();
+                    $(".large").hide();
+                    $(".small").hide();
+                } else if (cc >= 3.0) {
+                    $("#contrast span").css("text-shadow", "2px 2px 2px orangered");
+                    $(".largeOK").show();
+                    $(".smallOK").hide();
+                    $(".large").hide();
+                    $(".small").show();
+                } else {
+                    $("#contrast span").css("text-shadow", "2px 2px 2px red");
+                    $(".largeOK").hide();
+                    $(".smallOK").hide();
+                    $(".large").show();
+                    $(".small").show();
+                }
             } else {
-                $(".txInput").addClass("error");
-            }
-            $("#contrast span").css("text-shadow", "2px 2px 2px transparent");
+                if (id) {
+                    $("#" + id).addClass("error");
+                } else {
+                    $(".txInput").addClass("error");
+                }
+                $("#contrast span").css("text-shadow", "2px 2px 2px transparent");
+            };
         };
-    };
 
     pickAction = function(t) {
         //console.log(t.currentTarget);
@@ -103,26 +103,26 @@ $(document).ready(function() {
                             },
                             function() {
                                 chrome.tabs.executeScript(tab.id, {
-                                        allFrames: true,
-                                        "file": "dropit.js"
-                                    },                            function() {
-                                chrome.tabs.executeScript(tab.id, {
-                                        allFrames: true,
-                                        "file": "ColorPicker.js"
-                                    },
-                                    function() {
-                                        chrome.tabs.executeScript(tab.id, {
-                                                allFrames: true,
-                                                "code": "ColorPicker.Hide(document);\n" +
-                                                    "ColorPicker.Show(document);\n" +
-                                                    "ColorPicker.refresh();"
-                                            },
-                                            function() {
-                                                console.log('done');
-                                                closePopup();
-                                            });
-                                    });
-                              });
+                                    allFrames: true,
+                                    "file": "dropit.js"
+                                }, function() {
+                                    chrome.tabs.executeScript(tab.id, {
+                                            allFrames: true,
+                                            "file": "ColorPicker.js"
+                                        },
+                                        function() {
+                                            chrome.tabs.executeScript(tab.id, {
+                                                    allFrames: true,
+                                                    "code": "ColorPicker.Hide(document);\n" +
+                                                        "ColorPicker.Show(document);\n" +
+                                                        "ColorPicker.refresh();"
+                                                },
+                                                function() {
+                                                    console.log('done');
+                                                    closePopup();
+                                                });
+                                        });
+                                });
                             });
                     }
                 }

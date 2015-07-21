@@ -28,6 +28,10 @@
 .dropit .dropit-open .dropit-submenu { 
     display: block; 
     background-color: white;
+    font-family: sans-serif;
+    font-weight: bold;
+    white-space: nowrap;
+    left: -138px;
 }
 
 .menu ul.dropit-submenu a {

@@ -36,9 +36,11 @@
                         }
 
                         // Hide open menus
-                        settings.beforeHide.call(this);
-                        $('.dropit-open').removeClass('dropit-open').find('.dropit-submenu').hide();
-                        settings.afterHide.call(this);
+                        if($('.dropit-open')) {
+                            settings.beforeHide.call(this);
+                            $('.dropit-open').removeClass('dropit-open').find('.dropit-submenu').hide();
+                            settings.afterHide.call(this);
+                        }
 
                         // Open this menu
                         settings.beforeShow.call(this);
@@ -50,9 +52,11 @@
 
                     // Close if outside click
                     $(document).on('click', function(){
-                        settings.beforeHide.call(this);
-                        $('.dropit-open').removeClass('dropit-open').find('.dropit-submenu').hide();
-                        settings.afterHide.call(this);
+                        if($('.dropit-open')) {
+                            settings.beforeHide.call(this);
+                            $('.dropit-open').removeClass('dropit-open').find('.dropit-submenu').hide();
+                            settings.afterHide.call(this);
+                        }
                     });
 
                     // If hover
