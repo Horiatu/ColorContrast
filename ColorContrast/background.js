@@ -56,3 +56,13 @@ chrome.extension.onConnect.addListener(function(port) {
         }
     });
 });
+
+chrome.tabs.getSelected(null, function(tab) {
+    chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
+        switch (msg.type) {
+            case 'get-contrast':
+                sendResponse({contrast: ContrastAnalyser.contrast(msg.c1, msg.c2)});
+                break;
+        }
+    });
+});
