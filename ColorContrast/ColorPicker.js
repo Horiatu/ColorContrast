@@ -348,11 +348,11 @@ var ColorPicker = function() {
                     _private.colorTxt.setAttribute("id", "colorTxt");
                     _private.colorPickerToolbar.appendChild(_private.colorTxt);
 
-                    $('#colorPickerToolbar').append('<Span class="Sample smallSample">Small Text</Span>');
+                    $('#colorPickerToolbar').append('<Span id="smallSample" class="Sample smallSample">Small Text</Span>');
                     $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="checkmark" alt="Pass AA" title="Pass AA">');
-                    $('#colorPickerToolbar').append('<Span class="Sample largeSample">Large Text</Span>');
+                    $('#colorPickerToolbar').append('<Span id="lasegrSample" class="Sample largeSample">Large Text</Span>');
                     $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="checkmark" alt="Pass AA" title="Pass AA">');
-                    $('#colorPickerToolbar').append('<Span class="Contrast">4.50:1</Span>');
+                    $('#colorPickerToolbar').append('<Span id="contrast" class="Contrast">4.50:1</Span>');
 
                     $('#colorPickerToolbar').append('<div style="display: inline-block;">'+
                         '<ul id="menu1" class="menu dropit"></ul></div>');
@@ -360,13 +360,24 @@ var ColorPicker = function() {
                         '<img src='+chrome.extension.getURL("Images/menu.png")+'></img>'+
                         '</a></li>');
                     $('.dropit-trigger').append('<ul class="dropit-submenu" style="display: none;"></ul>');
-                    $('.dropit-submenu').append('<li><a href="#">Copy Foreground</a></li>');
-                    $('.dropit-submenu').append('<li><a href="#">Copy Background</a></li>');
+                    $('.dropit-submenu').append('<li><a id="CopyFr">Copy Foreground</a></li>');
+                    $('.dropit-submenu').append('<li><a id="CopyBg">Copy Background</a></li>');
                     $('.dropit-submenu').append('<li><hr/></li>');
                     $('.dropit-submenu').append('<li><a id="UpRight">Up-Right</a></li>');
-                    $('.dropit-submenu').append('<li><a href="#">Up-Left</a></li>');
-                    $('.dropit-submenu').append('<li><a href="#">Down-Right</a></li>');
-                    $('.dropit-submenu').append('<li><a hrelf="#">Down-Left</a></li>');
+                    $('.dropit-submenu').append('<li><a id="UpLeft">Up-Left</a></li>');
+                    $('.dropit-submenu').append('<li><a id="DownRight">Down-Right</a></li>');
+                    $('.dropit-submenu').append('<li><a id="DownLeft">Down-Left</a></li>');
+
+                    $('#colorPickerToolbar').append('<input id="CopyBox" type="text" style="display: none; position: absolute;overflow-x: hidden;"></input>');
+                    
+
+                    $('#CopyFr').click(function() {
+                        alert('Foreground color "'+_private.colorToClipboard('color')+'" copyed to clipboard');
+                    });
+
+                    $('#CopyBg').click(function() {
+                        alert('Background color "'+_private.colorToClipboard('background-color')+'" copyed to clipboard');
+                    });
 
                     $('#menu1').dropit({
                         beforeShow: _private.removeMouseSupport,
@@ -388,6 +399,20 @@ var ColorPicker = function() {
             _private.XOffset = $(document).scrollLeft();
 
             _private.screenshot();
+        },
+
+        colorToClipboard: function(what) {
+            var ctx = document.createElement('canvas').getContext('2d');
+            ctx.strokeStyle = $('#smallSample').css(what);
+            var color = ctx.strokeStyle;
+            var copyBox = $('#CopyBox')
+            copyBox.val(color);
+            copyBox.show();
+            copyBox.focus();
+            copyBox.select();
+            document.execCommand("Copy", false, null);
+            copyBox.hide();
+            return color;
         },
 
         screenshot: function() {
