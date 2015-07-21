@@ -122,3 +122,11 @@
   	padding-bottom: 0px;
   	padding-top: 1px;
 }
+
+.hide {
+	  display: none;
+}
+
+.show {
+	  display: inline-block;
+}

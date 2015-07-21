@@ -215,7 +215,7 @@ $(document).ready(function() {
                 },
                 function(result) {
                     contrastDfr.resolve(result.contrast);
-                    console.log(result);
+                    //console.log(result);
                 });
             return contrastDfr.promise();
         },

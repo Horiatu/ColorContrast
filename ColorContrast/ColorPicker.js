@@ -242,9 +242,33 @@ var ColorPicker = function() {
                         }
                     }
                 });
+
+                var c1 = $('.Sample').css('color');
+                var c2 = $('.Sample').css('background-color');
+                _private.contrast(c1, c2).done(_private.showContrast);
+
                 event.stopPropagation();
                 event.preventDefault();
             }
+        },
+
+        showContrast: function (c) {
+            //console.log(c);
+            $("#contrast").html(parseFloat(c).toFixed(2) + ":1");
+
+            if(c>4.5) {
+                $('.fail').removeClass('show').addClass('hide');
+                $('.ok').removeClass('hide').addClass('show');
+            } else if(c>3.5) {
+                $('.fail.large').removeClass('show').addClass('hide');
+                $('.ok.large').removeClass('hide').addClass('show');
+                $('.fail.small').removeClass('hide').addClass('show');
+                $('.ok.small').removeClass('hide').addClass('show');
+            } else {
+                $('.fail').removeClass('hide').addClass('show');
+                $('.ok').removeClass('show').addClass('hide');
+            }
+
         },
 
         MouseMove: function(event) {
@@ -358,9 +382,15 @@ var ColorPicker = function() {
                     _private.colorPickerToolbar.appendChild(_private.colorTxt);
 
                     $('#colorPickerToolbar').append('<Span id="smallSample" class="Sample smallSample">Small Text</Span>');
-                    $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="checkmark" alt="Pass AA" title="Pass AA">');
+                    
+                    $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok small checkmark hide" alt="Pass AA" title="Pass AA">');
+                    $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail small checkmark hide" alt="Pass AA" title="Pass AA">');
+                    
                     $('#colorPickerToolbar').append('<Span id="lasegrSample" class="Sample largeSample">Large Text</Span>');
-                    $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="checkmark" alt="Pass AA" title="Pass AA">');
+                    
+                    $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok large checkmark hide" alt="Pass AA" title="Pass AA">');
+                    $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail large checkmark hide" alt="Pass AA" title="Pass AA">');
+                    
                     $('#colorPickerToolbar').append('<Span id="contrast" class="Contrast">4.50:1</Span>');
 
                     $('#colorPickerToolbar').append('<div style="display: inline-block;">'+
@@ -405,6 +435,7 @@ var ColorPicker = function() {
                     case 'get-colors':
                         $('.Sample').css('color', req.color).css('background-color', req.bgcolor);
                         _private.reqColor = req.reqcolor;
+                        _private.contrast(req.color, req.bgcolor).done(_private.showContrast);
                         break;
                 }
             });
@@ -415,10 +446,32 @@ var ColorPicker = function() {
             _private.screenshot();
         },
 
-        colorToClipboard: function(what) {
+        contrast: function(color1, color2) {
+            var c = null;
+            var contrastDfr = $.Deferred();
+            chrome.runtime.sendMessage({
+                    type: "get-contrast",
+                    c1: _private.rgbToColor(color1),
+                    c2: _private.rgbToColor(color2)
+                },
+                function(result) {
+                    contrastDfr.resolve(result.contrast);
+                    //console.log(result);
+                });
+            return contrastDfr.promise();
+        },
+        
+        rgbToColor: function(rgbStr) {
             var ctx = document.createElement('canvas').getContext('2d');
-            ctx.strokeStyle = $('#smallSample').css(what);
-            var color = ctx.strokeStyle;
+            ctx.strokeStyle = rgbStr;
+            return ctx.strokeStyle; 
+        },
+
+        colorToClipboard: function(what) {
+            //var ctx = document.createElement('canvas').getContext('2d');
+            //ctx.strokeStyle = $('#smallSample').css(what);
+            //var color = ctx.strokeStyle;
+            var color = rgbToColor($('#smallSample').css(what));
             var copyBox = $('#CopyBox')
             copyBox.val(color);
             copyBox.show();
