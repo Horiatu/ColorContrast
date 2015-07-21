@@ -1,6 +1,7 @@
 var Background = Background || {};
 
 Background.Color = null;
+Background.BackgroundColor = null;
 Background.RequestColor = null;
 
 Background.capture = function() {
@@ -39,6 +40,18 @@ chrome.extension.onConnect.addListener(function(port) {
                 break;
             case 'set-color':
                 Background.Color = req.color;
+                break;
+            case 'set-colors':
+                Background.Color = req.color;
+                Background.BackgroundColor = req.bgcolor;
+                break;
+            case 'get-colors':
+                Background.sendMessage({
+                  type: req.type,
+                  color: Background.Color,
+                  bgcolor: Background.BackgroundColor,
+                  reqcolor: Background.RequestColor
+                });
                 break;
         }
     });

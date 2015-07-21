@@ -32,6 +32,7 @@ var ColorPicker = function() {
         rects: [],
 
         gridSize: 7,
+        reqColor: null,
 
         rectInRect: function(A, B) {
             return (A.x >= B.x && A.y >= B.y && (A.x + A.width) <= (B.x + B.width) && (A.y + A.height) <= (B.y + B.height))
@@ -232,7 +233,15 @@ var ColorPicker = function() {
 
         Click: function(event) {
             if (event.button != 2) {
-                _private.getColor(event, "selected");
+                _private.getColor(event, "selected").done(function() {
+                    if(_private.showToolbar) {
+                        if(_private.reqColor) {
+                        $('.Sample').css(
+                            (_private.reqColor==='foreground')?'color':'background-color',
+                            _private.colorTxt.innerHTML);
+                        }
+                    }
+                });
                 event.stopPropagation();
                 event.preventDefault();
             }
@@ -384,6 +393,7 @@ var ColorPicker = function() {
                         afterHide: _private.addMouseSupport
                     });
                 };
+                _private.sendMessage({type: 'get-colors'});
                 _private.showToolbar = true;
             });
 
@@ -391,6 +401,10 @@ var ColorPicker = function() {
                 switch (req.type) {
                     case 'update-image':
                         _private.capture(req.data);
+                        break;
+                    case 'get-colors':
+                        $('.Sample').css('color', req.color).css('background-color', req.bgcolor);
+                        _private.reqColor = req.reqcolor;
                         break;
                 }
             });
@@ -481,7 +495,7 @@ var ColorPicker = function() {
             _private.imageData = imageData;
 
             if (_private.canvas.width != (_private.width + _private.canvasBorders) || _private.canvas.height != (_private.height + _private.canvasBorders)) {
-                console.log('dropper: creating new canvas');
+                //console.log('creating new canvas');
                 _private.canvas = document.createElement('canvas');
                 _private.canvas.width = _private.width + _private.canvasBorders;
                 _private.canvas.height = _private.height + _private.canvasBorders;
@@ -512,7 +526,7 @@ var ColorPicker = function() {
                         var t = _private.rectMerge(rect, _private.rects[index]);
 
                         if (t != false) {
-                            console.log('dropper: merging');
+                            //console.log('merging');
                             merged = true;
                             _private.rects[index] = t;
                         }

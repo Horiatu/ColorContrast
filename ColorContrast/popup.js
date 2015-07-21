@@ -90,7 +90,9 @@ $(document).ready(function() {
 
     pickAction = function(t) {
         //console.log(t.currentTarget);
-        backgroundPage.requestColor = t.currentTarget.name;
+        backgroundPage.RequestColor = t.currentTarget.name;
+        backgroundPage.Color = $("#foreground").val();
+        backgroundPage.BackgroundColor = $("#background").val();
         getSelectedTab().done(function(tab) {
             validateTab(tab).always(
                 function(err) {
@@ -111,6 +113,7 @@ $(document).ready(function() {
                                             "file": "ColorPicker.js"
                                         },
                                         function() {
+
                                             chrome.tabs.executeScript(tab.id, {
                                                     allFrames: true,
                                                     "code": "ColorPicker.Hide(document);\n" +
@@ -194,7 +197,7 @@ $(document).ready(function() {
             },
             function() {
                 var color = backgroundPage.Color;
-                var rqColor = backgroundPage.requestColor;
+                var rqColor = backgroundPage.RequestColor;
                 if (color != null && rqColor != null) {
                     $('#' + rqColor).val(color);
                     getContrast(rqColor);
