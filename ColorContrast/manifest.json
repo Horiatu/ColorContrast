@@ -37,13 +37,17 @@
 
   "web_accessible_resources": [
     "jquery-2.1.4.js",
-    "edropper2.js",
-    "font/*.woff2",
+    "dropit.js",
+    "fonts/*.woff2",
     "Images/magnifierGlass.png",
     "Images/magnifierGlass2.png",
     "Images/magnifierGlass3.png",
     "Images/mapbg.png",
+    "Images/Ok.png",
+    "Images/NotOk.png",
+    "Images/menu.png",
     "Images/Cursors/pickColor.cur",
-    "ColorPicker.css"
+    "ColorPicker.css",
+    "dropit.css"
   ]
 }

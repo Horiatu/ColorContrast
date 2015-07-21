@@ -104,6 +104,10 @@ $(document).ready(function() {
                             function() {
                                 chrome.tabs.executeScript(tab.id, {
                                         allFrames: true,
+                                        "file": "dropit.js"
+                                    },                            function() {
+                                chrome.tabs.executeScript(tab.id, {
+                                        allFrames: true,
                                         "file": "ColorPicker.js"
                                     },
                                     function() {
@@ -118,6 +122,7 @@ $(document).ready(function() {
                                                 closePopup();
                                             });
                                     });
+                              });
                             });
                     }
                 }
