@@ -278,17 +278,19 @@ var ColorPicker = function() {
         },
 
         addMouseSupport: function() {
-            document.addEventListener("click", _private.Click, false);
-            document.addEventListener("mousemove", _private.MouseMove, false);
-            document.addEventListener('scroll', _private.onScrollStop, true);
+            $ColorPickerOvr = $('#ColorPickerOvr');
+            $ColorPickerOvr.bind("click", _private.Click);
+            $ColorPickerOvr.bind("mousemove", _private.MouseMove);
+            $ColorPickerOvr.bind('scroll', _private.onScrollStop);
             $(window).bind('resize', _private.onWindowResize);
             $(_public.colorPickerViewer).css('display', 'inherit');
         },
 
         removeMouseSupport: function() {
-            document.removeEventListener("click", _private.Click);
-            document.removeEventListener("mousemove", _private.MouseMove);
-            document.removeEventListener('scroll', _private.onScrollStop);
+            $ColorPickerOvr = $('#ColorPickerOvr');
+            $ColorPickerOvr.unbind("click", _private.Click);
+            $ColorPickerOvr.unbind("mousemove", _private.MouseMove);
+            $ColorPickerOvr.unbind('scroll', _private.onScrollStop);
             $(window).unbind('resize', _private.onWindowResize);
             $(_public.colorPickerViewer).css('display', 'none');
         },
@@ -314,6 +316,7 @@ var ColorPicker = function() {
             $("body").prepend('<div id="ColorPickerLdr"></div>');
             $("#ColorPickerLdr").append('<div id="ColorPickerOvr" style="cursor: url(' + chrome.extension.getURL("Images/Cursors/pickColor.cur") + '), crosshair !important;"></div>');
             
+            _private.removeMouseSupport();
             _private.addMouseSupport();
 
             _private.retrieveGlass().then(function() {
@@ -371,7 +374,14 @@ var ColorPicker = function() {
                     _private.colorPickerToolbar = contentDocument.createElement("Div");
                     _private.colorPickerToolbar.setAttribute("id", "colorPickerToolbar");
                     $('#ColorPickerOvr').append(_private.colorPickerToolbar);
-
+                    chrome.storage.sync.get(['position'], function(a) {
+                        if(a['position']) {
+                            _private.setToolbarPosition(a['position']);
+                        }
+                        else {
+                            _private.setToolbarPosition({up:true, left:true});
+                        }
+                    });
 
                     _private.colorDiv = contentDocument.createElement("Div");
                     _private.colorDiv.setAttribute("id", "colorDiv");
@@ -381,40 +391,44 @@ var ColorPicker = function() {
                     _private.colorTxt.setAttribute("id", "colorTxt");
                     _private.colorPickerToolbar.appendChild(_private.colorTxt);
 
-                    $('#colorPickerToolbar').append('<Span id="smallSample" class="Sample smallSample">Small Text</Span>');
+                    $('#colorPickerToolbar').append('<Span id="smallSample" class="Sample smallSample" title="Min required: 4.5:1">Small Text</Span>');
                     
                     $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok small checkmark hide" alt="Pass AA" title="Pass AA">');
-                    $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail small checkmark hide" alt="Pass AA" title="Pass AA">');
+                    $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail small checkmark hide" alt="Failled AA" title="Failled AA">');
                     
-                    $('#colorPickerToolbar').append('<Span id="lasegrSample" class="Sample largeSample">Large Text</Span>');
+                    $('#colorPickerToolbar').append('<Span id="lasegrSample" class="Sample largeSample" title="Min required: 3.0:1">Large Text</Span>');
                     
                     $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok large checkmark hide" alt="Pass AA" title="Pass AA">');
-                    $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail large checkmark hide" alt="Pass AA" title="Pass AA">');
+                    $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail large checkmark hide" alt="Failled AA" title="Failled AA">');
                     
                     $('#colorPickerToolbar').append('<Span id="contrast" class="Contrast">4.50:1</Span>');
 
                     $('#colorPickerToolbar').append('<div style="display: inline-block;">'+
                         '<ul id="menu1" class="menu dropit"></ul></div>');
-                    $('#menu1').append('<li class="dropit-trigger"><a href="#" class="btn">'+
+                    $('#menu1').append('<li class="dropit-trigger"><a class="btn">'+
                         '<img src='+chrome.extension.getURL("Images/menu.png")+'></img>'+
                         '</a></li>');
                     $('.dropit-trigger').append('<ul class="dropit-submenu" style="display: none;"></ul>');
                     $('.dropit-submenu').append('<li><a id="CopyFr">Copy Foreground</a></li>');
                     $('.dropit-submenu').append('<li><a id="CopyBg">Copy Background</a></li>');
                     $('.dropit-submenu').append('<li><hr/></li>');
-                    $('.dropit-submenu').append('<li><a id="UpRight">Up-Right</a></li>');
                     $('.dropit-submenu').append('<li><a id="UpLeft">Up-Left</a></li>');
-                    $('.dropit-submenu').append('<li><a id="DownRight">Down-Right</a></li>');
-                    $('.dropit-submenu').append('<li><a id="DownLeft">Down-Left</a></li>');
+                    $('.dropit-submenu').append('<li><a id="UpRight">Up-Right</a></li>');
+                    // $('.dropit-submenu').append('<li><a id="DownRight">Down-Right</a></li>');
+                    // $('.dropit-submenu').append('<li><a id="DownLeft">Down-Left</a></li>');
 
                     $('#colorPickerToolbar').append('<input id="CopyBox" type="text" style="display: none; position: absolute;overflow-x: hidden;"></input>');
                     
 
-                    $('#CopyFr').click(function() {
+                    $('#CopyFr').click(function(e) {
+                        e.stopPropagation();
+                        e.preventDefault();
                         alert('Foreground color "'+_private.colorToClipboard('color')+'" copyed to clipboard');
                     });
 
-                    $('#CopyBg').click(function() {
+                    $('#CopyBg').click(function(e) {
+                        e.stopPropagation();
+                        e.preventDefault();
                         alert('Background color "'+_private.colorToClipboard('background-color')+'" copyed to clipboard');
                     });
 
@@ -422,7 +436,50 @@ var ColorPicker = function() {
                         beforeShow: _private.removeMouseSupport,
                         afterHide: _private.addMouseSupport
                     });
+
+                    $('#colorPickerToolbar').on('mouseenter', _private.removeMouseSupport).on('mouseleave', _private.addMouseSupport);
                 };
+
+                $('#UpLeft').click(function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    pos = {up:true, left:true};
+                    chrome.storage.sync.set({
+                        'position': pos
+                    });
+                    _private.setToolbarPosition(pos);
+                });
+
+                $('#UpRight').click(function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    pos = {up:true, left:false}
+                    chrome.storage.sync.set({
+                        'position': pos
+                    });
+                    _private.setToolbarPosition(pos);
+                });
+
+                // $('#DownRight').click(function(e) {
+                //     e.stopPropagation();
+                //     e.preventDefault();
+                //     // pos = {up:false, left:false}
+                //     // chrome.storage.sync.set({
+                //     //     'position': pos
+                //     // });
+                //     // _private.setToolbarPosition(pos);
+                // });
+
+                // $('#DownLeft').click(function(e) {
+                //     e.stopPropagation();
+                //     e.preventDefault();
+                //     // pos = {up:false, left:true}
+                //     // chrome.storage.sync.set({
+                //     //     'position': pos
+                //     // });
+                //     // _private.setToolbarPosition(pos);
+                // });
+
                 _private.sendMessage({type: 'get-colors'});
                 _private.showToolbar = true;
             });
@@ -444,6 +501,20 @@ var ColorPicker = function() {
             _private.XOffset = $(document).scrollLeft();
 
             _private.screenshot();
+        },
+
+        setToolbarPosition: function(pos){
+            toolbar = $('#colorPickerToolbar');
+
+            if(pos.up) 
+                toolbar.removeClass('down').addClass('up');
+            else 
+                toolbar.removeClass('up').addClass('down');
+
+            if(pos.left) 
+                toolbar.removeClass('right').addClass('left');
+            else 
+                toolbar.removeClass('left').addClass('right');
         },
 
         contrast: function(color1, color2) {
@@ -468,10 +539,7 @@ var ColorPicker = function() {
         },
 
         colorToClipboard: function(what) {
-            //var ctx = document.createElement('canvas').getContext('2d');
-            //ctx.strokeStyle = $('#smallSample').css(what);
-            //var color = ctx.strokeStyle;
-            var color = rgbToColor($('#smallSample').css(what));
+            var color = _private.rgbToColor($('#smallSample').css(what));
             var copyBox = $('#CopyBox')
             copyBox.val(color);
             copyBox.show();
@@ -623,6 +691,7 @@ var ColorPicker = function() {
 
         Hide: function(contentDocument) {
             try {
+                _private.removeMouseSupport();
                 _private.destroy(contentDocument);
             } catch (err) {
                 console.log(err);
