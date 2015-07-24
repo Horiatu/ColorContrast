@@ -25,15 +25,21 @@
       <tr>
         <th><label for="background">Background:</label></th>
         <td><input class="txInput" type="text" size="20" id="background" aria-required="true" required value="#037EAF" /></td>
-        <td><div class="btn"><img class="pick" name="background" src="images/pick-color.png" alt="pick color" title="pick color"></img></div></td>
+        <td><div class="pickOne btn"><img class="pick" name="background" src="images/pick-color.png" alt="pick color" title="Pick Color"></img></div></td>
         <td><div class="btn"><img class="code" id="bgCode" src="images/copy-code.png" alt="copy code" title="copy code"></img></div></td>
-        <td rowspan="2"><div class="btn"><img id="toggle" src="images/toggle.png" alt="toggle" title="toggle colors"></img></div></td>
+        <td rowspan="2">
+            <div class="btn"><img id="toggle" src="images/toggle.png" alt="toggle" title="toggle colors"></img></div>
+        </td>
+        <td rowspan="2">
+            <div class="pickAll btn"><img class="pick1" name="background" src="images/pick-color.png" alt="pick color" 
+            title="Pick Color Click:&#13;background - Left&#13;foreground - Right"></img></div>
+        </td>
         <td id="contrast" rowspan="2"><span>4.35:1</span></td>
       </tr>
       <tr>
         <th><label for="foreground">Foreground:</label></th>
         <td><input class="txInput" type="text" size="20" id="foreground" aria-required="true" required value="#0ff" /></td>
-        <td><div class="btn"><img class="pick" name="foreground" src="images/pick-color.png" alt="pick color" title="pick color"></img><div></td>
+        <td><div class="pickOne btn"><img class="pick" name="foreground" src="images/pick-color.png" alt="pick color" title="Pick Color"></img><div></td>
         <td><div class="btn"><img class="code" id="frCode" src="images/copy-code.png" alt="copy code" title="copy code"></img></div></td>
       </tr>
     </table>

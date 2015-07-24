@@ -118,7 +118,7 @@ var ColorPicker = function() {
             chrome.extension.connect().postMessage(message);
         },
 
-        getColor: function(event, type) {
+        getColor: function(event, type, reqColor) {
             getColorDfr = $.Deferred();
 
             var eventTarget = event.target;
@@ -129,7 +129,8 @@ var ColorPicker = function() {
                 if (type == "selected") {
                     _private.sendMessage({
                         type: 'set-color',
-                        color: color
+                        color: color,
+                        reqColor: reqColor
                     });
                 };
 
@@ -233,7 +234,7 @@ var ColorPicker = function() {
 
         Click: function(event) {
             if (event.button != 2) {
-                _private.getColor(event, "selected").done(function() {
+                _private.getColor(event, "selected", _private.reqColor).done(function() {
                     if(_private.showToolbar) {
                         if(_private.reqColor) {
                         $('.Sample').css(
@@ -250,6 +251,22 @@ var ColorPicker = function() {
                 event.stopPropagation();
                 event.preventDefault();
             }
+        },
+
+        RightClick: function(event) {
+            _private.getColor(event, "selected", 'foreground').done(function() {
+                if(_private.showToolbar) {
+                    $Sample = $('.Sample');
+                    $Sample.css('color', _private.colorTxt.innerHTML);
+                }
+            });
+
+            var c1 = $('.Sample').css('color');
+            var c2 = $('.Sample').css('background-color');
+            _private.contrast(c1, c2).done(_private.showContrast);
+
+            event.stopPropagation();
+            event.preventDefault();
         },
 
         showContrast: function (c) {
@@ -272,7 +289,7 @@ var ColorPicker = function() {
         },
 
         MouseMove: function(event) {
-                _private.getColor(event, "hover");
+                _private.getColor(event, "hover", null);
                 event.stopPropagation();
                 event.preventDefault();
         },
@@ -280,6 +297,7 @@ var ColorPicker = function() {
         addMouseSupport: function() {
             $ColorPickerOvr = $('#ColorPickerOvr');
             $ColorPickerOvr.bind("click", _private.Click);
+            $ColorPickerOvr.bind("contextmenu",_private.RightClick);
             $ColorPickerOvr.bind("mousemove", _private.MouseMove);
             $(window).bind('scrollstop', _private.onScrollStop);
             $(window).bind('resize', _private.onWindowResize);
@@ -289,6 +307,7 @@ var ColorPicker = function() {
         removeMouseSupport: function() {
             $ColorPickerOvr = $('#ColorPickerOvr');
             $ColorPickerOvr.unbind("click", _private.Click);
+            $ColorPickerOvr.unbind("contextmenu",_private.RightClick);
             $ColorPickerOvr.unbind("mousemove", _private.MouseMove);
             $(window).unbind('scrollstop', _private.onScrollStop);
             $(window).unbind('resize', _private.onWindowResize);

@@ -380,7 +380,20 @@ $(document).ready(function() {
         getContrast(e.currentTarget.id);
     });
 
-    $('.pick').on('click', pickAction);
+    chrome.storage.sync.get(['clickType'], function(a) {
+        if(a['clickType']) {
+            $('.pickOne').hide();
+
+            $('.pickAll').show();
+            $('.pick1').on('click', pickAction);
+        } else {
+            $('.pickAll').hide();
+
+            $('.pickOne').show();
+            $('.pick').on('click', pickAction);
+        }
+    });
+    
     $('.code').on('click', copyCode);
 
     $('#toggle').on('click', function(t) {
@@ -414,11 +427,12 @@ $(document).ready(function() {
             },
             function() {
                 var color = backgroundPage.Color;
-                var rqColor = backgroundPage.RequestColor;
-                if (color != null && rqColor != null) {
-                    $('#' + rqColor).val(color);
-                    getContrast(rqColor);
-                }
+                var bgColor = backgroundPage.BackgroundColor;
+                if (color != null) 
+                    $('#foreground').val(color);
+                if (bgColor != null) 
+                    $('#background').val(bgColor);
+                getContrast(null);
             }
         );
     });

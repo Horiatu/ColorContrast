@@ -102,8 +102,7 @@ function showDirections(show) {
             '<li>Click Color-Picker button.</li>' +
             '<li>Explore the page for the desired color (wait the piker lents to catch up with the current position.)</li>' +
             '<li>Left or right-click the point - you may repeat this step.</li>' +
-            '<li>Open again the extension to finish the selection.</li>' +
-            '<li>(not available yet)</li>');
+            '<li>Open again the extension to finish the selection.</li>');
     } else {
         $('#directionList').html(
             '<li>Click Color-Picker button for either Background or Foreground.</li>' +

@@ -40,6 +40,10 @@ chrome.extension.onConnect.addListener(function(port) {
                 break;
             case 'set-color':
                 Background.Color = req.color;
+                if(req.reqColor === 'foreground')
+                    Background.Color = req.color;
+                else
+                    Background.BackgroundColor = req.color;
                 break;
             case 'set-colors':
                 Background.Color = req.color;
