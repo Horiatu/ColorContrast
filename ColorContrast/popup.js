@@ -286,45 +286,69 @@ $(document).ready(function() {
         backgroundPage.RequestColor = t.currentTarget.name;
         backgroundPage.Color = $("#foreground").val();
         backgroundPage.BackgroundColor = $("#background").val();
-        getSelectedTab().done(function(tab) {
-            validateTab(tab).always(
-                function(err) {
-                    if (err) {
-                        alert(err);
-                    } else {
-                        chrome.tabs.executeScript(tab.id, {
+        getSelectedTab().done(
+            function(tab) {
+                validateTab(tab).always(
+                    function(err) {
+                        if (err) {
+                            alert(err);
+                        } else {
+                            loadScripts(tab.id, [{
                                 allFrames: true,
-                                "file": "jquery-2.1.4.js"
-                            },
-                            function() {
-                                chrome.tabs.executeScript(tab.id, {
-                                    allFrames: true,
-                                    "file": "dropit.js"
-                                }, function() {
-                                    chrome.tabs.executeScript(tab.id, {
-                                            allFrames: true,
-                                            "file": "ColorPicker.js"
-                                        },
-                                        function() {
-
-                                            chrome.tabs.executeScript(tab.id, {
-                                                    allFrames: true,
-                                                    "code": "ColorPicker.Hide(document);\n" +
-                                                        "ColorPicker.Show(document);\n" +
-                                                        "ColorPicker.refresh();"
-                                                },
-                                                function() {
-                                                    console.log('done');
-                                                    closePopup();
-                                                });
-                                        });
+                                file: true,
+                                content: "jquery-2.1.4.js"
+                            }, {
+                                allFrames: true,
+                                file: true,
+                                content: "dropit.js"
+                            }, {
+                                allFrames: true,
+                                file: true,
+                                content: "inc/scrollstop.js"
+                            }, {
+                                allFrames: true,
+                                file: true,
+                                content: "ColorPicker.js"
+                            }, {
+                                allFrames: true,
+                                file: false,
+                                content: 
+                                    "ColorPicker.Hide(document);\n" +
+                                    "ColorPicker.Show(document);\n" +
+                                    "ColorPicker.refresh();"
+                            }], $.Deferred()).done(
+                                function() {
+                                    // console.log('done');
+                                    closePopup();
                                 });
-                            });
+                        }
                     }
-                }
-            );
-        });
+                );
+            });
     };
+
+    scriptDesc = function(script) {
+            return (
+                script.file ? {
+                    allFrames: script.allFrames,
+                    "file": script.content
+                } : {
+                    allFrames: script.allFrames,
+                    "code": script.content
+                }
+            )
+        },
+
+        loadScripts = function(tabid, scripts, dfr) {
+            options = scriptDesc(scripts.shift());
+            chrome.tabs.executeScript(tabid, options, function() {
+                if (scripts.length != 0)
+                    loadScripts(tabid, scripts, dfr);
+                else
+                    dfr.resolve();
+            });
+            return dfr.promise();
+        }
 
     closePopup = function() {
         window.close();

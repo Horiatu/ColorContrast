@@ -259,7 +259,7 @@ var ColorPicker = function() {
             if(c>4.5) {
                 $('.fail').removeClass('show').addClass('hide');
                 $('.ok').removeClass('hide').addClass('show');
-            } else if(c>3.5) {
+            } else if(c>3.0) {
                 $('.fail.large').removeClass('show').addClass('hide');
                 $('.ok.large').removeClass('hide').addClass('show');
                 $('.fail.small').removeClass('hide').addClass('show');
@@ -281,7 +281,7 @@ var ColorPicker = function() {
             $ColorPickerOvr = $('#ColorPickerOvr');
             $ColorPickerOvr.bind("click", _private.Click);
             $ColorPickerOvr.bind("mousemove", _private.MouseMove);
-            $ColorPickerOvr.bind('scroll', _private.onScrollStop);
+            $(window).bind('scrollstop', _private.onScrollStop);
             $(window).bind('resize', _private.onWindowResize);
             $(_public.colorPickerViewer).css('display', 'inherit');
         },
@@ -290,7 +290,7 @@ var ColorPicker = function() {
             $ColorPickerOvr = $('#ColorPickerOvr');
             $ColorPickerOvr.unbind("click", _private.Click);
             $ColorPickerOvr.unbind("mousemove", _private.MouseMove);
-            $ColorPickerOvr.unbind('scroll', _private.onScrollStop);
+            $(window).unbind('scrollstop', _private.onScrollStop);
             $(window).unbind('resize', _private.onWindowResize);
             $(_public.colorPickerViewer).css('display', 'none');
         },
@@ -313,7 +313,7 @@ var ColorPicker = function() {
                 }
             }
 
-            $("body").prepend('<div id="ColorPickerLdr"></div>');
+            $("body").append('<div id="ColorPickerLdr"></div>');
             $("#ColorPickerLdr").append('<div id="ColorPickerOvr" style="cursor: url(' + chrome.extension.getURL("Images/Cursors/pickColor.cur") + '), crosshair !important;"></div>');
             
             _private.removeMouseSupport();
@@ -411,7 +411,7 @@ var ColorPicker = function() {
                     $('.dropit-trigger').append('<ul class="dropit-submenu" style="display: none;"></ul>');
                     $('.dropit-submenu').append('<li><a id="CopyFr">Copy Foreground</a></li>');
                     $('.dropit-submenu').append('<li><a id="CopyBg">Copy Background</a></li>');
-                    $('.dropit-submenu').append('<li><hr/></li>');
+                    $('.dropit-submenu').append('<li><hr style="margin: 2px;"/></li>');
                     $('.dropit-submenu').append('<li><a id="UpLeft">Up-Left</a></li>');
                     $('.dropit-submenu').append('<li><a id="UpRight">Up-Right</a></li>');
                     // $('.dropit-submenu').append('<li><a id="DownRight">Down-Right</a></li>');
@@ -564,9 +564,13 @@ var ColorPicker = function() {
         screenChanged: function(force) {
             //if (!dropperActivated) return;
 
-            console.log("screenChanged");
+            //console.log("screen changed");
             _private.YOffset = $(document).scrollTop();
             _private.XOffset = $(document).scrollLeft();
+
+            $ColorPickerLdr = $('#ColorPickerLdr');
+            $ColorPickerLdr.css('top', _private.YOffset+'px');
+            $ColorPickerLdr.css('left', _private.XOffset+'px');
 
             var rect = {
                 x: _private.XOffset,
@@ -598,10 +602,7 @@ var ColorPicker = function() {
         onWindowResize: function(e) {
             //if (!_private.dropperActivated) return;
 
-            console.log('window resized');
-
-            //// set defaults
-            //_private.defaults();
+            //console.log('window resized');
 
             // width and height changed so we have to get new one
             _private.width = $(document).width();
@@ -699,7 +700,7 @@ var ColorPicker = function() {
         },
 
         refresh: function() {
-            _private.screenshot();
+            _private.screenChanged();
         },
     }
 

@@ -38,6 +38,7 @@
   "web_accessible_resources": [
     "jquery-2.1.4.js",
     "dropit.js",
+    "inc/scrollstop.js",
     "fonts/*.woff2",
     "Images/magnifierGlass.png",
     "Images/magnifierGlass2.png",

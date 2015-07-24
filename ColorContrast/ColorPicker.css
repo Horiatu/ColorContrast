@@ -32,16 +32,21 @@
 }
 
 #colorPickerToolbar {
-    position: fixed; padding:2px;
+    position: fixed; 
+    padding: 0px;
     background-color:white; 
     border-style:inset; 
+    border-width: 2px;
     visibility:visible;
     cursor: default;
 }
 
 #colorDiv {
 	position: fixed; 
-	width:15px; height:22px;
+	width: 20px;
+    height: 22px;
+    margin-top: 2px;
+    margin-left: 2px;
 }
 
 #colorTxt {
@@ -74,6 +79,7 @@
 	height: 100%;
 	width: 100%;
 	cursor:crosshair;
+	--border: 1px solid red;
 }
 #ColorPickerLdr {
 	position: absolute; 
@@ -89,6 +95,7 @@
 	white-space: nowrap;
 	font-family: sans-serif;
 	background-color: cyan;
+	line-height: 24px;
 }
 .smallSample {
   	font-size: 12px;
@@ -118,8 +125,8 @@
   	font-family: 'Source Code Pro';
   	font-size: 14px;
   	font-weight: bold;
-  	padding-bottom: 0px;
-  	padding-top: 1px;
+  	padding-bottom: 1px;
+  	padding-top: 0px;
 }
 
 .hide {
