@@ -4,6 +4,11 @@
 	font-weight: 400;
 	src: url('fonts/SourceCodePro.woff2') format('woff2');
 }
+@font-face {
+	font-family: "Poiret One";
+	font-weight: 400;
+	src: url('fonts/Poiret One.woff2') format('woff2');
+}
 
 #colorPickerViewer {
 	position: fixed; 
@@ -40,24 +45,26 @@
     visibility:visible;
     cursor: default;
 	font: 100%/1.0 sans-serif;
+	font-size: 14px;
+}
+
+#colorPickerToolbar table {
+	display: table;
+    border-collapse: separate;
+    border-spacing: 2px;
+    border-color: grey;
 }
 
 #colorDiv {
-	position: fixed; 
-	width: 20px;
-    height: 20px;
-    margin-top: 2px;
-    margin-left: 2px;
-    box-shadow: 1px 1px 2px 2px gray;
+	width: 22px;
+    box-shadow: 1px 1px 3px 2px gray;
 }
 
 #colorTxt {
-	font-weight:bold; width:50px; 
-	font-size: 14px;
-	margin-right:4px;
+	padding-left: 4px;
+	padding-right: 4px;
 	font-family: 'Source Code Pro';
     font-weight: bold;
-	margin-left:28px; 
 }
 
 .marker{
@@ -82,7 +89,6 @@
 	height: 100%;
 	width: 100%;
 	cursor:crosshair;
-	--border: 1px solid red;
 }
 #ColorPickerLdr {
 	position: absolute; 
@@ -93,42 +99,33 @@
 .Sample {
 	padding-left: 8px;
 	padding-right: 40px;
-	margin-left: 2px;
-	margin-right: 2px;
 	white-space: nowrap;
 	font-family: sans-serif;
-	background-color: cyan;
+	vertical-align: baseline;
 	line-height: 24px;
 }
 .smallSample {
   	font-size: 12px;
-  	padding-top:4px;
-  	padding-bottom:3px;
 }
 .largeSample {
   	font-size: 14px;
   	font-weight: bold;
-  	padding-top:2px;
-  	padding-bottom:3px;
 }
 
 .checkmark {
-	width:18px; height:18px;
+	width:20px; height:20px;
 	display: inline-block;
 	margin-left: -30px;
-	margin-bottom: -3px;
+	margin-bottom: -5px;
   	margin-right: 12px;
 }
 .Contrast {
-  	font-size: 14px;
-  	font-weight: bold;
-  	border: 1px solid black;
   	padding-left: 8px;
   	padding-right: 8px;
-  	font-family: 'Source Code Pro';
-  	font-size: 14px;
+  	font-family: 'Poiret One';
+  	font-size: 18px;
   	font-weight: bold;
-  	padding-bottom: 1px;
+  	padding-bottom: 0px;
   	padding-top: 0px;
 }
 

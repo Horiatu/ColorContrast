@@ -237,16 +237,17 @@ var ColorPicker = function() {
                 _private.getColor(event, "selected", _private.reqColor).done(function() {
                     if(_private.showToolbar) {
                         if(_private.reqColor) {
-                        $('.Sample').css(
-                            (_private.reqColor==='foreground')?'color':'background-color',
-                            _private.colorTxt.innerHTML);
+                            $Sample = $('.Sample').parent();
+                            $Sample.css(
+                                (_private.reqColor==='foreground')?'color':'background-color',
+                                _private.colorTxt.innerHTML);
+
+                            var c1 = $Sample.css('color');
+                            var c2 = $Sample.css('background-color');
+                            _private.contrast(c1, c2).done(_private.showContrast);
                         }
                     }
                 });
-
-                var c1 = $('.Sample').css('color');
-                var c2 = $('.Sample').css('background-color');
-                _private.contrast(c1, c2).done(_private.showContrast);
 
                 event.stopPropagation();
                 event.preventDefault();
@@ -256,14 +257,14 @@ var ColorPicker = function() {
         RightClick: function(event) {
             _private.getColor(event, "selected", 'foreground').done(function() {
                 if(_private.showToolbar) {
-                    $Sample = $('.Sample');
+                    $Sample = $('.Sample').parent();
                     $Sample.css('color', _private.colorTxt.innerHTML);
+
+                    var c1 = $Sample.css('color');
+                    var c2 = $Sample.css('background-color');
+                    _private.contrast(c1, c2).done(_private.showContrast);
                 }
             });
-
-            var c1 = $('.Sample').css('color');
-            var c2 = $('.Sample').css('background-color');
-            _private.contrast(c1, c2).done(_private.showContrast);
 
             event.stopPropagation();
             event.preventDefault();
@@ -402,27 +403,46 @@ var ColorPicker = function() {
                         }
                     });
 
-                    _private.colorDiv = contentDocument.createElement("Div");
-                    _private.colorDiv.setAttribute("id", "colorDiv");
-                    _private.colorPickerToolbar.appendChild(_private.colorDiv);
+                    table = contentDocument.createElement("Table");
+                    _private.colorPickerToolbar.appendChild(table);
+                    row = contentDocument.createElement("tr");
+                    table.appendChild(row);
+                    _private.colorDiv = contentDocument.createElement("td"); row.appendChild(_private.colorDiv);
 
+                    //_private.colorDiv = contentDocument.createElement("Div");
+                    _private.colorDiv.setAttribute("id", "colorDiv");
+                    //td1.appendChild(_private.colorDiv);
+                    //_private.colorPickerToolbar.appendChild(_private.colorDiv);
+
+                    td2 = contentDocument.createElement("td"); row.appendChild(td2);
                     _private.colorTxt = contentDocument.createElement("Span");
                     _private.colorTxt.setAttribute("id", "colorTxt");
-                    _private.colorPickerToolbar.appendChild(_private.colorTxt);
+                    td2.appendChild(_private.colorTxt);
+                    //_private.colorPickerToolbar.appendChild(_private.colorTxt);
 
-                    $('#colorPickerToolbar').append('<Span id="smallSample" class="Sample smallSample" title="Min required: 4.5:1">Small Text</Span>');
+                    //$('#colorPickerToolbar')
+                    td3 = contentDocument.createElement("td"); row.appendChild(td3); 
+                    $(td3).append('<Span id="smallSample" class="Sample smallSample" title="Min required: 4.5:1">Small Text</Span>');
                     
-                    $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok small checkmark hide" alt="Pass AA" title="Pass AA">');
-                    $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail small checkmark hide" alt="Failled AA" title="Failled AA">');
+                    $(td3).append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok small checkmark hide" alt="Pass AA" title="Pass AA">');
+                    $(td3).append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail small checkmark hide" alt="Failled AA" title="Failled AA">');
                     
-                    $('#colorPickerToolbar').append('<Span id="lasegrSample" class="Sample largeSample" title="Min required: 3.0:1">Large Text</Span>');
+                    td4 = contentDocument.createElement("td"); row.appendChild(td4); 
+                    $(td4).append('<Span id="lasegrSample" class="Sample largeSample" title="Min required: 3.0:1">Large Text</Span>');
                     
-                    $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok large checkmark hide" alt="Pass AA" title="Pass AA">');
-                    $('#colorPickerToolbar').append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail large checkmark hide" alt="Failled AA" title="Failled AA">');
+                    $(td4).append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok large checkmark hide" alt="Pass AA" title="Pass AA">');
+                    $(td4).append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail large checkmark hide" alt="Failled AA" title="Failled AA">');
                     
-                    $('#colorPickerToolbar').append('<Span id="contrast" class="Contrast">4.50:1</Span>');
+                    td5 = contentDocument.createElement("td"); row.appendChild(td5); 
+                    $(td5)
+                    .css("border", "1px solid black")
+                    .css("min-width", "80px")
+                    .css("text-align", "center")
+                    .attr("title", "Contrast")
+                    .append('<Span id="contrast" class="Contrast">4.50:1</Span>');
 
-                    $('#colorPickerToolbar').append('<div style="display: inline-block;">'+
+                    td6 = contentDocument.createElement("td"); row.appendChild(td6); 
+                    $(td6).append('<div style="display: inline-block;">'+
                         '<ul id="menu1" class="menu dropit"></ul></div>');
                     $('#menu1').append('<li class="dropit-trigger"><a class="btn">'+
                         '<img src='+chrome.extension.getURL("Images/menu.png")+'></img>'+
@@ -509,7 +529,7 @@ var ColorPicker = function() {
                         _private.capture(req.data);
                         break;
                     case 'get-colors':
-                        $('.Sample').css('color', req.color).css('background-color', req.bgcolor);
+                        $('.Sample').parent().css('color', req.color).css('background-color', req.bgcolor);
                         _private.reqColor = req.reqcolor;
                         _private.contrast(req.color, req.bgcolor).done(_private.showContrast);
                         break;
