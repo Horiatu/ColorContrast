@@ -294,23 +294,23 @@ $(document).ready(function() {
                             alert(err);
                         } else {
                             loadScripts(tab.id, [{
-                                allFrames: true,
+                                allFrames: false,
                                 file: true,
                                 content: "jquery-2.1.4.js"
                             }, {
-                                allFrames: true,
+                                allFrames: false,
                                 file: true,
                                 content: "dropit.js"
                             }, {
-                                allFrames: true,
+                                allFrames: false,
                                 file: true,
                                 content: "inc/scrollstop.js"
                             }, {
-                                allFrames: true,
+                                allFrames: false,
                                 file: true,
                                 content: "ColorPicker.js"
                             }, {
-                                allFrames: true,
+                                allFrames: false,
                                 file: false,
                                 content: 
                                     "ColorPicker.Hide(document);\n" +

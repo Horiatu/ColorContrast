@@ -39,6 +39,7 @@
     border-width: 2px;
     visibility:visible;
     cursor: default;
+	font: 100%/1.0 sans-serif;
 }
 
 #colorDiv {
@@ -52,10 +53,11 @@
 
 #colorTxt {
 	font-weight:bold; width:50px; 
-	margin-left:28px; 
+	font-size: 14px;
 	margin-right:4px;
 	font-family: 'Source Code Pro';
     font-weight: bold;
+	margin-left:28px; 
 }
 
 .marker{

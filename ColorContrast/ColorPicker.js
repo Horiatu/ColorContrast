@@ -523,17 +523,17 @@ var ColorPicker = function() {
         },
 
         setToolbarPosition: function(pos){
-            toolbar = $('#colorPickerToolbar');
+            $toolbar = $('#colorPickerToolbar');
 
             if(pos.up) 
-                toolbar.removeClass('down').addClass('up');
+                $toolbar.removeClass('down').addClass('up');
             else 
-                toolbar.removeClass('up').addClass('down');
+                $toolbar.removeClass('up').addClass('down');
 
             if(pos.left) 
-                toolbar.removeClass('right').addClass('left');
+                $toolbar.removeClass('right').addClass('left');
             else 
-                toolbar.removeClass('left').addClass('right');
+                $toolbar.removeClass('left').addClass('right');
         },
 
         contrast: function(color1, color2) {
