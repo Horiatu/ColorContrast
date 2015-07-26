@@ -142,7 +142,7 @@ var ColorPicker = function() {
                     // If the event target is not the color picker, the color picker is not an ancestor of the event target and the event target is not a scrollbar
                     if (eventTarget != colorPickerViewer && !_private.isAncestor(eventTarget, colorPickerViewer) && tagName && tagName.toLowerCase() != "scrollbar") {
                         // place viewer
-                        var size = _private.gridSize * 8;
+                        var size = _private.gridSize * 7;
                         var w = window.innerWidth - size - 24;
                         var h = window.innerHeight - size - 24;
                         if (event.clientX < w) {
