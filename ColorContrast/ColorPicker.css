@@ -31,9 +31,10 @@
 
 #colorPickerViewer table td {
 	padding:0px; 
-	border:1px solid rgba(128, 128, 128, 0.1); 
+	--border:1px solid rgba(128, 128, 128, 0.1); 
 	width:7px; 
 	height:7px; 
+	border-radius: 1px;
 }
 
 #colorPickerToolbar {
