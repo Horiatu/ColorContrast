@@ -405,6 +405,7 @@ var ColorPicker = function() {
 
                     table = contentDocument.createElement("Table");
                     _private.colorPickerToolbar.appendChild(table);
+                    $(table).css('margin-bottom', '-2px').css('margin-right', '-2px;');
                     row = contentDocument.createElement("tr");
                     table.appendChild(row);
                     _private.colorDiv = contentDocument.createElement("td"); row.appendChild(_private.colorDiv);
@@ -442,8 +443,7 @@ var ColorPicker = function() {
                     .append('<Span id="contrast" class="Contrast">4.50:1</Span>');
 
                     td6 = contentDocument.createElement("td"); row.appendChild(td6); 
-                    $(td6).append('<div style="display: inline-block;">'+
-                        '<ul id="menu1" class="menu dropit"></ul></div>');
+                    $(td6).css('padding','0 1px').append('<ul id="menu1" class="menu dropit"></ul>');
                     $('#menu1').append('<li class="dropit-trigger"><a class="btn">'+
                         '<img src='+chrome.extension.getURL("Images/menu.png")+'></img>'+
                         '</a></li>');

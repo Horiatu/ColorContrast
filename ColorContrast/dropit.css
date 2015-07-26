@@ -10,8 +10,10 @@
 /* These styles assume you are using ul and li */
 .dropit {
     list-style: none;
-	padding: 0;
-	margin: 0;
+	 padding: 0;
+	 margin: 0;
+   position:relative;
+   width:inherit;
 }
 .dropit .dropit-trigger { position: relative; }
 .dropit .dropit-submenu {
@@ -31,16 +33,15 @@
     font-family: sans-serif;
     font-weight: bold;
     white-space: nowrap;
-    border: gray solid 1px;
-    left: -138px;
-    box-shadow: 2px 2px rgba(0, 0, 0, 0.35);
+    left: -143px;
+    box-shadow: 1px 1px 3px 2px gray;
 }
 
 .menu ul.dropit-submenu a {
   display: block;
   font-size: 14px;
   line-height: 25px;
-  color: #7a868e;
+  color: #3F4448;
   padding: 0 18px;
   text-decoration: none;
 }
@@ -53,7 +54,7 @@
 
 .dropit .btn {
   display: inline-block;
-  padding: 0px 2px 0px 2px;
+  padding: 1px 3px;
   margin: 0px;
   text-align: center;
   cursor: pointer;
@@ -67,6 +68,9 @@
   line-height: 22px;
 }
 
+.dropit .btn:hover {
+  background-color: #C1C1C1;
+}
 .dropit .btn img {
     width:11px; height:11px;
 }
