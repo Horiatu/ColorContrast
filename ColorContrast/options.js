@@ -22,11 +22,14 @@ $(document).ready(function() {
     $('#clickType').change(function() {
         showDirections($(this).is(':checked'))
     });
+    $('#autoCopy').change(function() {
+        showAutoCopy($(this).is(':checked'))
+    });
 });
 
 // Restores select box state to saved value from localStorage.
 function restore_options() {
-    chrome.storage.sync.get(['magnifierGlass', 'MapBg', 'clickType', 'toolbar', 'gridSize'],
+    chrome.storage.sync.get(['magnifierGlass', 'MapBg', 'clickType', 'autoCopy', 'toolbar', 'gridSize'],
         function(a) {
             var magnifyGlass = $('.magnifyGlass input');
 
@@ -39,6 +42,8 @@ function restore_options() {
             showMapBg(a['MapBg']);
 
             $('#toolbar').prop('checked', a['toolbar']);
+
+            $('#autoCopy').prop('checked', a['autoCopy']);
 
             $('#clickType').prop('checked', a['clickType']);
             showDirections(a['clickType']);
@@ -113,5 +118,11 @@ function showDirections(show) {
 
     chrome.storage.sync.set({
         'clickType': $('#clickType').is(':checked')
+    });
+}
+
+function showAutoCopy(show) {
+    chrome.storage.sync.set({
+        'autoCopy': $('#autoCopy').is(':checked')
     });
 }

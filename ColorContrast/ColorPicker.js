@@ -132,28 +132,29 @@ var ColorPicker = function() {
                         color: color,
                         reqColor: reqColor
                     });
+                    _private.copyToClipboard(color);
                 };
 
-                var colorPickerViewer = $("#colorPickerViewer");
-                if (_private.showMagnifier && colorPickerViewer) {
+                var $colorPickerViewer = $("#colorPickerViewer");
+                if (_private.showMagnifier && $colorPickerViewer) {
 
                     var tagName = eventTarget.tagName;
 
                     // If the event target is not the color picker, the color picker is not an ancestor of the event target and the event target is not a scrollbar
-                    if (eventTarget != colorPickerViewer && !_private.isAncestor(eventTarget, colorPickerViewer) && tagName && tagName.toLowerCase() != "scrollbar") {
+                    if (eventTarget != $colorPickerViewer && !_private.isAncestor(eventTarget, $colorPickerViewer) && tagName && tagName.toLowerCase() != "scrollbar") {
                         // place viewer
                         var size = _private.gridSize * 7;
                         var w = window.innerWidth - size - 24;
                         var h = window.innerHeight - size - 24;
                         if (event.clientX < w) {
-                            colorPickerViewer.css("left", (event.clientX + 4) + "px");
+                            $colorPickerViewer.css("left", (event.clientX + 4) + "px");
                         } else {
-                            colorPickerViewer.css("left", (event.clientX - size - 4) + "px");
+                            $colorPickerViewer.css("left", (event.clientX - size - 4) + "px");
                         }
                         if (event.clientY < h) {
-                            colorPickerViewer.css("top", (event.clientY + 4) + "px");
+                            $colorPickerViewer.css("top", (event.clientY + 4) + "px");
                         } else {
-                            colorPickerViewer.css("top", (event.clientY - size - 4) + "px");
+                            $colorPickerViewer.css("top", (event.clientY - size - 4) + "px");
                         }
 
                     }
@@ -237,10 +238,12 @@ var ColorPicker = function() {
                 _private.getColor(event, "selected", _private.reqColor).done(function() {
                     if(_private.showToolbar) {
                         if(_private.reqColor) {
-                            $Sample = $('.Sample').parent();
+                            $Sample = $('.Sample');
+                            color = _private.colorTxt.innerHTML;
                             $Sample.css(
-                                (_private.reqColor==='foreground')?'color':'background-color',
-                                _private.colorTxt.innerHTML);
+                                (_private.reqColor==='foreground')?'color':'background-color', color);
+                            $Sample.parent().css(
+                                (_private.reqColor==='foreground')?'color':'background-color', color);
 
                             var c1 = $Sample.css('color');
                             var c2 = $Sample.css('background-color');
@@ -579,14 +582,18 @@ var ColorPicker = function() {
 
         colorToClipboard: function(what) {
             var color = _private.rgbToColor($('#smallSample').css(what));
+            copyToClipboard(color)
+            return color;
+        },
+
+        copyToClipboard: function(txt) {
             var copyBox = $('#CopyBox')
-            copyBox.val(color);
+            copyBox.val(txt);
             copyBox.show();
             copyBox.focus();
             copyBox.select();
             document.execCommand("Copy", false, null);
             copyBox.hide();
-            return color;
         },
 
         screenshot: function() {
