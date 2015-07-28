@@ -3,9 +3,9 @@ $(document).ready(function() {
     // show tabs
     restore_options();
 
-    $("#saveButton").click(function() {
-        save_options()
-    });
+    // $("#saveButton").click(function() {
+    //     save_options()
+    // });
 
     $('input[name="magnifyGlass"]').on('change', function() {
         showGlass($(this).val())
@@ -15,6 +15,9 @@ $(document).ready(function() {
     });
     $('#toolbar').change(function() {
         showToolbar($(this).is(':checked'))
+    });
+    $('#sample').change(function() {
+        showSample($(this).is(':checked'))
     });
     $('#gridSize').change(function() {
         showGrid($(this).val());
@@ -29,7 +32,7 @@ $(document).ready(function() {
 
 // Restores select box state to saved value from localStorage.
 function restore_options() {
-    chrome.storage.sync.get(['magnifierGlass', 'MapBg', 'clickType', 'autoCopy', 'toolbar', 'gridSize'],
+    chrome.storage.sync.get(['magnifierGlass', 'MapBg', 'clickType', 'autoCopy', 'toolbar', 'sample', 'gridSize'],
         function(a) {
             var magnifyGlass = $('.magnifyGlass input');
 
@@ -42,6 +45,8 @@ function restore_options() {
             showMapBg(a['MapBg']);
 
             $('#toolbar').prop('checked', a['toolbar']);
+
+            $('#sample').prop('checked', a['sample']);
 
             $('#autoCopy').prop('checked', a['autoCopy']);
 
@@ -77,6 +82,12 @@ function showMapBg(show) {
 function showToolbar(show) {
     chrome.storage.sync.set({
         'toolbar': $('#toolbar').is(':checked')
+    });
+}
+
+function showSample(show) {
+    chrome.storage.sync.set({
+        'sample': $('#sample').is(':checked')
     });
 }
 

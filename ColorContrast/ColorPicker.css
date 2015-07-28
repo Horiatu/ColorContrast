@@ -173,6 +173,7 @@
 #colorPickerSample a {
 	font-size: 10px;
 	font-weight: normal;
+	opacity: 0.75;
 }
 
 #PickerSampleclose {
