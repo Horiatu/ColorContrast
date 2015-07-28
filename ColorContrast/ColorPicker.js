@@ -248,6 +248,7 @@ var ColorPicker = function() {
                             var c1 = $Sample.css('color');
                             var c2 = $Sample.css('background-color');
                             _private.contrast(c1, c2).done(_private.showContrast);
+                            _private.setSampleColors();
                         }
                     }
                 });
@@ -266,6 +267,7 @@ var ColorPicker = function() {
                     var c1 = $Sample.css('color');
                     var c2 = $Sample.css('background-color');
                     _private.contrast(c1, c2).done(_private.showContrast);
+                    _private.setSampleColors();
                 }
             });
 
