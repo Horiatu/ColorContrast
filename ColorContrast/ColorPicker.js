@@ -570,17 +570,14 @@ var ColorPicker = function() {
         },
 
         setToolbarPosition: function(pos){
-            $toolbar = $('#colorPickerToolbar');
-
-            if(pos.up) 
-                $toolbar.removeClass('down').addClass('up');
-            else 
-                $toolbar.removeClass('up').addClass('down');
-
-            if(pos.left) 
-                $toolbar.removeClass('right').addClass('left');
-            else 
-                $toolbar.removeClass('left').addClass('right');
+            if(pos.left) {
+                $('#colorPickerToolbar').removeClass('right').addClass('left');
+                $('#colorPickerSample').removeClass('right').addClass('left');
+            }
+            else {
+                $('#colorPickerToolbar').removeClass('left').addClass('right');
+                $('#colorPickerSample').removeClass('left').addClass('right');
+            }
         },
 
         contrast: function(color1, color2) {
