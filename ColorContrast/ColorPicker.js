@@ -283,8 +283,8 @@ var ColorPicker = function() {
             } else if(c>3.0) {
                 $('.fail.large').removeClass('show').addClass('hide');
                 $('.ok.large').removeClass('hide').addClass('show');
+                $('.ok.small').removeClass('show').addClass('hide');
                 $('.fail.small').removeClass('hide').addClass('show');
-                $('.ok.small').removeClass('hide').addClass('show');
             } else {
                 $('.fail').removeClass('hide').addClass('show');
                 $('.ok').removeClass('show').addClass('hide');
@@ -427,14 +427,14 @@ var ColorPicker = function() {
                     td3 = contentDocument.createElement("td"); row.appendChild(td3); 
                     $(td3).append('<Span id="smallSample" class="Sample smallSample" title="Min required: 4.5:1">Small Text</Span>');
                     
-                    $(td3).append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok small checkmark hide" alt="Pass AA" title="Pass AA">');
-                    $(td3).append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail small checkmark hide" alt="Failled AA" title="Failled AA">');
+                    $(td3).append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok small checkmark hide" alt="Pass AAA" title="Pass AAA">');
+                    $(td3).append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail small checkmark hide" alt="Failed AAA" title="Failed AAA">');
                     
                     td4 = contentDocument.createElement("td"); row.appendChild(td4); 
                     $(td4).append('<Span id="lasegrSample" class="Sample largeSample" title="Min required: 3.0:1">Large Text</Span>');
                     
                     $(td4).append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok large checkmark hide" alt="Pass AA" title="Pass AA">');
-                    $(td4).append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail large checkmark hide" alt="Failled AA" title="Failled AA">');
+                    $(td4).append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail large checkmark hide" alt="Failed AA" title="Failed AA">');
                     
                     td5 = contentDocument.createElement("td"); row.appendChild(td5); 
                     $(td5)
@@ -557,12 +557,16 @@ var ColorPicker = function() {
                $colorPickerSample = $('#colorPickerSample');
                $colorPickerSample.on('mouseenter', _private.removeMouseSupport).on('mouseleave', _private.addMouseSupport);
                $colorPickerSample.width($('#colorPickerToolbar').width());
-               $colorPickerSample.load(chrome.extension.getURL("TextSample.html"));
+               $colorPickerSample.load(chrome.extension.getURL("TextSample.html"), function() {
+                    $colorPickerSample.append("<div id='PickerSampleclose'><img src='"+chrome.extension.getURL("Images/close.png")+"' title='close (image)'></img></div>");
+                    $('#PickerSampleclose').click(function() {$colorPickerSample.hide();});
+                });
             }
             $colorPickerSample.addClass($('#colorPickerToolbar').hasClass('left') ? 'left' : 'right');
             $Sample = $('.smallSample').parent();
             $colorPickerSample.css('color',$Sample.css('color'));
             $colorPickerSample.css('background-color',$Sample.css('background-color'));
+            $colorPickerSample.show();
         },
 
         setToolbarPosition: function(pos){
@@ -585,7 +589,7 @@ var ColorPicker = function() {
             chrome.runtime.sendMessage({
                     type: "get-contrast",
                     c1: _private.rgbToColor(color1),
-                   c2: _private.rgbToColor(color2)
+                    c2: _private.rgbToColor(color2)
                 },
                 function(result) {
                     contrastDfr.resolve(result.contrast);
@@ -773,10 +777,3 @@ var ColorPicker = function() {
     return _public;
 
 }();
-
-/*
-1.4.3 Contrast (Minimum): 
-The visual presentation of text and images of text has a contrast ratio of at least 4.5:1, except for the following: (Level AA)
-Large Text: Large-scale text and images of large-scale text have a contrast ratio of at least 3:1;
-Incidental: Text or images of text that are part of an inactive user interface component, that are pure decoration, that are not visible to anyone, or that are part of a picture that contains significant other visual content, have no contrast requirement.
-Logotypes: Text that is part of a logo or brand name has no minimum contrast requirement.*/

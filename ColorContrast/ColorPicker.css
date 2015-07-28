@@ -169,3 +169,14 @@
 	font-size: 10px;
 	font-weight: normal;
 }
+
+#PickerSampleclose {
+	position:absolute;
+	right:4px;
+	top:4px;
+	opacity:0.5;
+}
+
+#PickerSampleclose:hover {
+	opacity:1;
+}
