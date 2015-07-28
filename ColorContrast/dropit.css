@@ -14,7 +14,12 @@
 	 margin: 0;
    position:relative;
    width:inherit;
-}
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    -webkit-padding-start: 0;
+  }
 .dropit .dropit-trigger { position: relative; }
 .dropit .dropit-submenu {
     position: absolute;
@@ -37,7 +42,7 @@
     box-shadow: 1px 1px 3px 2px gray;
 }
 
-.menu ul.dropit-submenu a {
+.Menu ul.dropit-submenu a {
   display: block;
   font-size: 14px;
   line-height: 25px;
@@ -46,7 +51,7 @@
   text-decoration: none;
 }
 
-.menu ul.dropit-submenu a:hover {
+.Menu ul.dropit-submenu a:hover {
   background: #248fc1;
   color: #fff;
   text-decoration: none;
@@ -73,5 +78,9 @@
 }
 .dropit .btn img {
     width:11px; height:11px;
+}
+
+.dropit li hr {
+  margin: 2px;
 }
 

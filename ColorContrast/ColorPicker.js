@@ -162,7 +162,7 @@ var ColorPicker = function() {
 
                 if (_private.showToolbar && _private.colorDiv && _private.colorTxt) {
                     _private.colorDiv.setAttribute("style", "background-color:" + color + ";");
-                    _private.colorTxt.innerHTML = color;
+                    _private.colorTxt.innerHTML = color !=='transparent' ? color : '#ffffff';
                 }
 
                 if (!_private.showMagnifier || !ColorPicker.colorPickerViewer) return;
@@ -408,7 +408,6 @@ var ColorPicker = function() {
 
                     table = contentDocument.createElement("Table");
                     _private.colorPickerToolbar.appendChild(table);
-                    $(table).css('margin-bottom', '-2px').css('margin-right', '-2px;');
                     row = contentDocument.createElement("tr");
                     table.appendChild(row);
                     _private.colorDiv = contentDocument.createElement("td"); row.appendChild(_private.colorDiv);
@@ -446,32 +445,38 @@ var ColorPicker = function() {
                     .append('<Span id="contrast" class="Contrast">4.50:1</Span>');
 
                     td6 = contentDocument.createElement("td"); row.appendChild(td6); 
-                    $(td6).css('padding','0 1px').append('<ul id="menu1" class="menu dropit"></ul>');
+                    $(td6).css('padding','0 1px').append('<ul id="menu1" class="Menu dropit"></ul>');
                     $('#menu1').append('<li class="dropit-trigger"><a class="btn">'+
                         '<img src='+chrome.extension.getURL("Images/menu.png")+'></img>'+
                         '</a></li>');
                     $('.dropit-trigger').append('<ul class="dropit-submenu" style="display: none;"></ul>');
                     $('.dropit-submenu').append('<li><a id="CopyFr">Copy Foreground</a></li>');
                     $('.dropit-submenu').append('<li><a id="CopyBg">Copy Background</a></li>');
-                    $('.dropit-submenu').append('<li><hr style="margin: 2px;"/></li>');
+                    $('.dropit-submenu').append('<li><hr/></li>');
                     $('.dropit-submenu').append('<li><a id="UpLeft">Up-Left</a></li>');
                     $('.dropit-submenu').append('<li><a id="UpRight">Up-Right</a></li>');
                     // $('.dropit-submenu').append('<li><a id="DownRight">Down-Right</a></li>');
                     // $('.dropit-submenu').append('<li><a id="DownLeft">Down-Left</a></li>');
+                    $('.dropit-submenu').append('<li><hr/></li>');
+                    $('.dropit-submenu').append('<li><a id="ShowSample">Show Sample</a></li>');
 
                     $('#colorPickerToolbar').append('<input id="CopyBox" type="text" style="display: none; position: absolute;overflow-x: hidden;"></input>');
                     
 
                     $('#CopyFr').click(function(e) {
-                        e.stopPropagation();
-                        e.preventDefault();
+                        // e.stopPropagation();
+                        // e.preventDefault();
                         alert('Foreground color "'+_private.colorToClipboard('color')+'" copyed to clipboard');
                     });
 
                     $('#CopyBg').click(function(e) {
-                        e.stopPropagation();
-                        e.preventDefault();
+                        // e.stopPropagation();
+                        // e.preventDefault();
                         alert('Background color "'+_private.colorToClipboard('background-color')+'" copyed to clipboard');
+                    });
+
+                    $('#ShowSample').click(function() {
+                        _private.ShowContrastSample();
                     });
 
                     $('#menu1').dropit({
@@ -483,8 +488,8 @@ var ColorPicker = function() {
                 };
 
                 $('#UpLeft').click(function(e) {
-                    e.stopPropagation();
-                    e.preventDefault();
+                    // e.stopPropagation();
+                    // e.preventDefault();
                     pos = {up:true, left:true};
                     chrome.storage.sync.set({
                         'position': pos
@@ -493,8 +498,8 @@ var ColorPicker = function() {
                 });
 
                 $('#UpRight').click(function(e) {
-                    e.stopPropagation();
-                    e.preventDefault();
+                    // e.stopPropagation();
+                    // e.preventDefault();
                     pos = {up:true, left:false}
                     chrome.storage.sync.set({
                         'position': pos
@@ -545,6 +550,21 @@ var ColorPicker = function() {
             _private.screenshot();
         },
 
+        ShowContrastSample:function(){
+            $colorPickerSample = $('#colorPickerSample');
+            if (!$colorPickerSample.length) {
+               $('#ColorPickerOvr').append("<div id='colorPickerSample'></div>");
+               $colorPickerSample = $('#colorPickerSample');
+               $colorPickerSample.on('mouseenter', _private.removeMouseSupport).on('mouseleave', _private.addMouseSupport);
+               $colorPickerSample.width($('#colorPickerToolbar').width());
+               $colorPickerSample.load(chrome.extension.getURL("TextSample.html"));
+            }
+            $colorPickerSample.addClass($('#colorPickerToolbar').hasClass('left') ? 'left' : 'right');
+            $Sample = $('.smallSample').parent();
+            $colorPickerSample.css('color',$Sample.css('color'));
+            $colorPickerSample.css('background-color',$Sample.css('background-color'));
+        },
+
         setToolbarPosition: function(pos){
             $toolbar = $('#colorPickerToolbar');
 
@@ -565,7 +585,7 @@ var ColorPicker = function() {
             chrome.runtime.sendMessage({
                     type: "get-contrast",
                     c1: _private.rgbToColor(color1),
-                    c2: _private.rgbToColor(color2)
+                   c2: _private.rgbToColor(color2)
                 },
                 function(result) {
                     contrastDfr.resolve(result.contrast);
@@ -582,7 +602,7 @@ var ColorPicker = function() {
 
         colorToClipboard: function(what) {
             var color = _private.rgbToColor($('#smallSample').css(what));
-            copyToClipboard(color)
+            _private.copyToClipboard(color)
             return color;
         },
 
@@ -753,3 +773,10 @@ var ColorPicker = function() {
     return _public;
 
 }();
+
+/*
+1.4.3 Contrast (Minimum): 
+The visual presentation of text and images of text has a contrast ratio of at least 4.5:1, except for the following: (Level AA)
+Large Text: Large-scale text and images of large-scale text have a contrast ratio of at least 3:1;
+Incidental: Text or images of text that are part of an inactive user interface component, that are pure decoration, that are not visible to anyone, or that are part of a picture that contains significant other visual content, have no contrast requirement.
+Logotypes: Text that is part of a logo or brand name has no minimum contrast requirement.*/

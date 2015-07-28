@@ -21,10 +21,9 @@
 
 #colorPickerViewer table{
 	border-collapse:collapse; 
-	margin:0; 
-	margin-right:-1px;
-	margin-bottom:-1px;
-	padding:0; box-sizing:content-box !important; 
+	margin: 0px -2px -2px 0px;
+	padding:0; 
+	box-sizing:content-box !important; 
 	-webkit-box-sizing:content-box !important;
 	background-color: indigo;
 }
@@ -144,3 +143,29 @@
 .down { bottom:10px; }
 .left { left:10px; }
 .right { right:10px; }
+
+#colorPickerSample {
+	position: absolute;
+	padding:15px;
+	bottom:10px;
+	cursor:help;
+    border-style:outset; 
+    border-width: 2px;
+    font-family: sans-serif;
+    font-size: 12px;
+}
+
+#colorPickerSample h1 {
+	font-size: 18px;
+	font-weight: normal;
+}
+
+#colorPickerSample strong {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+#colorPickerSample a {
+	font-size: 10px;
+	font-weight: normal;
+}
