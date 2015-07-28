@@ -146,7 +146,7 @@
 
 #colorPickerSample {
 	position: absolute;
-	padding:15px;
+	padding-bottom:15px;
 	bottom:10px;
 	cursor:help;
     border-style:outset; 
@@ -155,9 +155,14 @@
     font-size: 12px;
 }
 
+#colorPickerSample h1, #colorPickerSample p, #colorPickerSample a {
+	margin: 20px;
+}
+
 #colorPickerSample h1 {
 	font-size: 18px;
 	font-weight: normal;
+	margin-top: 30px;
 }
 
 #colorPickerSample strong {
@@ -175,6 +180,7 @@
 	right:4px;
 	top:4px;
 	opacity:0.5;
+	cursor:pointer;
 }
 
 #PickerSampleclose:hover {
