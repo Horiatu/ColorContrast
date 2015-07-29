@@ -556,7 +556,7 @@ var ColorPicker = function() {
             $colorPickerSample = $('#colorPickerSample');
             $colorPickerSample.css('color',$Sample.css('color'));
             $colorPickerSample.css('background-color',$Sample.css('background-color'));
-            $('#colorPickerSample a').css('color',$Sample.css('color'));
+            $('#colorPickerSample h1, #colorPickerSample p, #colorPickerSample a').css('color',$Sample.css('color'));
         },
 
         setToolbarPosition: function(pos){

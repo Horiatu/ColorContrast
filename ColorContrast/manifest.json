@@ -28,13 +28,6 @@
     "tabs", "activeTab", "<all_urls>", "storage", "clipboardRead", "clipboardWrite"
   ],
 
-  //"content_scripts": [{
-  //  "js": ["jquery-2.1.4.js", "ColorPicker.js"],
-  //  "all_frames": true,
-  //  "run_at" : "document_start",
-  //  "matches": ["*://*/*"]
-  //}],
-
   "web_accessible_resources": [
     "jquery-2.1.4.js",
     "dropit.js",

@@ -20,7 +20,9 @@
     -webkit-margin-end: 0px;
     -webkit-padding-start: 0;
   }
-.dropit .dropit-trigger { position: relative; }
+.dropit .dropit-trigger { 
+  position: relative; 
+}
 .dropit .dropit-submenu {
     position: absolute;
     top: 100%;
@@ -32,6 +34,13 @@
 	padding: 0;
 	margin: 0;
 }
+
+.dropit, .dropit-trigger, .dropit-trigger ul li, .dropit-trigger ol ul li {
+    margin: 0;
+    background: transparent;
+    padding:0;
+}
+
 .dropit .dropit-open .dropit-submenu { 
     display: block; 
     background-color: white;
