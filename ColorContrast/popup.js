@@ -296,7 +296,7 @@ $(document).ready(function() {
                             loadScripts(tab.id, [{
                                 allFrames: false,
                                 file: true,
-                                content: "jquery-2.1.4.js"
+                                content: "jquery-2.1.4.min.js"
                             }, {
                                 allFrames: false,
                                 file: true,

@@ -29,7 +29,7 @@
   ],
 
   "web_accessible_resources": [
-    "jquery-2.1.4.js",
+    "jquery-2.1.4.min.js",
     "dropit.js",
     "inc/scrollstop.js",
     "fonts/*.woff2",
