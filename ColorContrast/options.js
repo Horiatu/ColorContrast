@@ -1,11 +1,7 @@
 // On document load
 $(document).ready(function() {
     // show tabs
-    restore_options();
-
-    // $("#saveButton").click(function() {
-    //     save_options()
-    // });
+    restore_options($.Deferred());
 
     $('input[name="magnifyGlass"]').on('change', function() {
         showGlass($(this).val())
@@ -30,32 +26,45 @@ $(document).ready(function() {
     });
 });
 
+function getOptions(optionsDfr) {
+    chrome.extension.connect().postMessage({type: 'get-defaults'});
+    return optionsDfr.promise();
+};
+        
+
 // Restores select box state to saved value from localStorage.
-function restore_options() {
-    chrome.storage.sync.get(['magnifierGlass', 'MapBg', 'clickType', 'autoCopy', 'toolbar', 'sample', 'gridSize'],
-        function(a) {
-            var magnifyGlass = $('.magnifyGlass input');
+function restore_options(optionsDfr) {
+    chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
+        switch (req.type) {
+            case 'defaults':
+                optionsDfr.resolve(req);
+                break;
+        }
+    });
 
-            for (i = 0; i < magnifyGlass.length; i++) {
-                magnifyGlass[i].checked = (magnifyGlass[i].value === a['magnifierGlass']);
-            }
-            $('#gridSettings').css('display',(a['magnifierGlass'] == 'none')?'none':'inherit');
+    getOptions(optionsDfr).done(function(options) {
+        var magnifyGlass = $('.magnifyGlass input');
 
-            $('#mapbg').prop('checked', a['MapBg']);
-            showMapBg(a['MapBg']);
+        for (i = 0; i < magnifyGlass.length; i++) {
+            magnifyGlass[i].checked = (magnifyGlass[i].value === options.magnifierGlass);
+        }
+        $('#gridSettings').css('display',(options.magnifierGlass == 'none')?'none':'inherit');
 
-            $('#toolbar').prop('checked', a['toolbar']);
+        $('#mapbg').prop('checked', options.MapBg);
+        showMapBg(options.MapBg);
 
-            $('#sample').prop('checked', a['sample']);
+        $('#toolbar').prop('checked', options.toolbar);
 
-            $('#autoCopy').prop('checked', a['autoCopy']);
+        $('#sample').prop('checked', options.sample);
 
-            $('#clickType').prop('checked', a['clickType']);
-            showDirections(a['clickType']);
+        $('#autoCopy').prop('checked', options.autoCopy);
 
-            $('#gridSize').val(a['gridSize']);
-            showGrid(a['gridSize']);
-            $('#gridSize').css("display", "block");
+        $('#clickType').prop('checked', options.clickType);
+        showDirections(options.clickType);
+
+        $('#gridSize').val(options.gridSize);
+        showGrid(options.gridSize);
+        $('#gridSize').css("display", "block");
         }
     );
 }
@@ -116,13 +125,13 @@ function showDirections(show) {
     if (show) {
         $('#directionList').html(
             '<li>Click Color-Picker button.</li>' +
-            '<li>Explore the page for the desired color (wait the piker lents to catch up with the current position.)</li>' +
+            '<li>Explore the page for the desired color.</li>' +
             '<li>Left or right-click the point - you may repeat this step.</li>' +
             '<li>Open again the extension to finish the selection.</li>');
     } else {
         $('#directionList').html(
             '<li>Click Color-Picker button for either Background or Foreground.</li>' +
-            '<li>Explore the page for the desired color (wait the piker lents to catch up with the current position.)</li>' +
+            '<li>Explore the page for the desired color.</li>' +
             '<li>Click the point - you may repeat this step.</li>' +
             '<li>Open again the extension to finish the selection.</li>');
     }

@@ -22,7 +22,12 @@ Background.doCapture = function(data) {
             data: data
         }, function() {});
     } else {
-        console.error('bg: did not receive data from captureVisibleTab');
+        msg = 'Did not receive data from captureVisibleTab.';
+        Background.sendMessage({
+            type: 'error',
+            msg: msg
+        }, function() {});
+        console.error(msg);
     }
 };
 
@@ -30,6 +35,33 @@ Background.sendMessage = function(message, callback) {
     chrome.tabs.getSelected(null, function(tab) {
         chrome.tabs.sendMessage(tab.id, message, callback);
     });
+};
+
+Background.getOptionOrDefault = function(a, option, value) {
+    if(a[option] == undefined) {
+        a[option] = value;
+    }
+    return a[option];
+};
+
+Background.getDefaults = function() {
+    var gdDfr = $.Deferred();
+    chrome.storage.sync.get(['magnifierGlass', 'MapBg', 'clickType', 'autoCopy', 'toolbar', 'sample', 'position', 'gridSize'],
+    function(a) {
+        defaults = {
+            type:'defaults',
+            magnifierGlass : Background.getOptionOrDefault(a, 'magnifierGlass', 'magnifierGlass3'),
+            MapBg : Background.getOptionOrDefault(a, 'MapBg', true), 
+            clickType : Background.getOptionOrDefault(a, 'clickType', true), 
+            autoCopy : Background.getOptionOrDefault(a, 'autoCopy', true), 
+            toolbar : Background.getOptionOrDefault(a, 'toolbar', true), 
+            sample : Background.getOptionOrDefault(a, 'sample', true), 
+            position : Background.getOptionOrDefault(a, 'position', {up:true, left:true}), 
+            gridSize : Background.getOptionOrDefault(a, 'gridSize', 13)
+        };
+        gdDfr.resolve(defaults);
+    });
+    return gdDfr.promise();
 };
 
 chrome.extension.onConnect.addListener(function(port) {
@@ -55,6 +87,12 @@ chrome.extension.onConnect.addListener(function(port) {
                   color: Background.Color,
                   bgcolor: Background.BackgroundColor,
                   reqcolor: Background.RequestColor
+                });
+                break;
+            case 'get-defaults':
+                Background.getDefaults().done(function(defaults) {
+                    Background.sendMessage(defaults);
+                    //console.log(defaults);
                 });
                 break;
         }

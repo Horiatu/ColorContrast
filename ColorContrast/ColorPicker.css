@@ -36,7 +36,7 @@
 }
 
 #colorPickerToolbar {
-    position: fixed; 
+    position: absolute; 
     padding: 0px;
     background-color:white; 
     border-style:inset; 
