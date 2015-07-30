@@ -383,6 +383,7 @@ var ColorPicker = function() {
                         _private.colorDiv.setAttribute("id", "colorDiv");
 
                         td2 = contentDocument.createElement("td"); row.appendChild(td2);
+                        td2.setAttribute("style", "width: 70px;");
                         _private.colorTxt = contentDocument.createElement("Span");
                         _private.colorTxt.setAttribute("id", "colorTxt");
                         td2.appendChild(_private.colorTxt);
@@ -423,7 +424,7 @@ var ColorPicker = function() {
                         $('.dropit-submenu').append('<li><hr/></li>');
                         $('.dropit-submenu').append('<li><a id="ShowSample">Show Sample</a></li>');
 
-                        $('#colorPickerToolbar').append('<input id="CopyBox" type="text" style="display: none; position: absolute;overflow-x: hidden;"></input>');
+                        $('#colorPickerToolbar').append('<input id="CopyBox" type="text" style="display: none; position: absolute; overflow-x: hidden; overflow-y: hidden;"></input>');
                         
 
                         $('#CopyFr').click(function(e) {
