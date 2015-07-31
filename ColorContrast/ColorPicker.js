@@ -312,6 +312,14 @@ var ColorPicker = function() {
             $("body").append('<div id="ColorPickerLdr"></div>');
             $("#ColorPickerLdr").append('<div id="ColorPickerOvr" style="cursor: url(' + chrome.extension.getURL("Images/Cursors/pickColor.cur") + '), crosshair !important;"></div>');
             
+            $(window).keyup(function(e) {
+                if(e.keyCode == 27) {
+                    _public.Hide(document);
+                    e.stopPropagation();
+                    e.preventDefault();
+                };
+            });
+
             _private.removeMouseSupport();
             _private.addMouseSupport();
 
@@ -637,17 +645,10 @@ var ColorPicker = function() {
         },
 
         onScrollStop: function() {
-            //if (!page.dropperActivated) return;
-
-            console.log("Scroll stop");
             _private.screenChanged();
         },
 
         onWindowResize: function(e) {
-            //if (!_private.dropperActivated) return;
-
-            //console.log('window resized');
-
             // width and height changed so we have to get new one
             _private.width = $(document).width();
             _private.height = $(document).height();
