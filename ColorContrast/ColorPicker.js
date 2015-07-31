@@ -312,13 +312,7 @@ var ColorPicker = function() {
             $("body").append('<div id="ColorPickerLdr"></div>');
             $("#ColorPickerLdr").append('<div id="ColorPickerOvr" style="cursor: url(' + chrome.extension.getURL("Images/Cursors/pickColor.cur") + '), crosshair !important;"></div>');
             
-            $(window).keyup(function(e) {
-                if(e.keyCode == 27) {
-                    _public.Hide(document);
-                    e.stopPropagation();
-                    e.preventDefault();
-                };
-            });
+            $(window).bind('keyup', _private.EscShortcut);
 
             _private.removeMouseSupport();
             _private.addMouseSupport();
@@ -427,23 +421,16 @@ var ColorPicker = function() {
                         $('.dropit-submenu').append('<li><hr/></li>');
                         $('.dropit-submenu').append('<li><a id="UpLeft">Up-Left</a></li>');
                         $('.dropit-submenu').append('<li><a id="UpRight">Up-Right</a></li>');
-                        // $('.dropit-submenu').append('<li><a id="DownRight">Down-Right</a></li>');
-                        // $('.dropit-submenu').append('<li><a id="DownLeft">Down-Left</a></li>');
                         $('.dropit-submenu').append('<li><hr/></li>');
                         $('.dropit-submenu').append('<li><a id="ShowSample">Show Sample</a></li>');
 
                         $('#colorPickerToolbar').append('<input id="CopyBox" type="text" style="display: none; position: absolute; overflow-x: hidden; overflow-y: hidden;"></input>');
-                        
 
                         $('#CopyFr').click(function(e) {
-                            // e.stopPropagation();
-                            // e.preventDefault();
                             alert('Foreground color "'+_private.colorToClipboard('color')+'" copyed to clipboard');
                         });
 
                         $('#CopyBg').click(function(e) {
-                            // e.stopPropagation();
-                            // e.preventDefault();
                             alert('Background color "'+_private.colorToClipboard('background-color')+'" copyed to clipboard');
                         });
 
@@ -457,27 +444,27 @@ var ColorPicker = function() {
                         });
 
                         $('#colorPickerToolbar').on('mouseenter', _private.removeMouseSupport).on('mouseleave', _private.addMouseSupport);
+ 
+                        $('#UpLeft').click(function(e) {
+                            pos = {up:true, left:true};
+                            chrome.storage.sync.set({
+                                'position': pos
+                            });
+                            _private.setToolbarPosition(pos);
+                        });
+
+                        $('#UpRight').click(function(e) {
+                            pos = {up:true, left:false}
+                            chrome.storage.sync.set({
+                                'position': pos
+                            });
+                            _private.setToolbarPosition(pos);
+                        });
+
+                        _private.sendMessage({type: 'get-colors'});
+                        _private.showToolbar = true;
                     };
-
-                    $('#UpLeft').click(function(e) {
-                        pos = {up:true, left:true};
-                        chrome.storage.sync.set({
-                            'position': pos
-                        });
-                        _private.setToolbarPosition(pos);
-                    });
-
-                    $('#UpRight').click(function(e) {
-                        pos = {up:true, left:false}
-                        chrome.storage.sync.set({
-                            'position': pos
-                        });
-                        _private.setToolbarPosition(pos);
-                    });
-
-                    _private.sendMessage({type: 'get-colors'});
-                    _private.showToolbar = true;
-                };
+               };
             });
 
             chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
@@ -488,8 +475,8 @@ var ColorPicker = function() {
                     case 'get-colors':
                         $('.Sample').parent().css('color', req.color).css('background-color', req.bgcolor);
                         _private.reqColor = req.reqcolor;
-                        _private.contrast(req.color, req.bgcolor).done(function() {
-                            _private.showContrast;
+                        _private.contrast(req.color, req.bgcolor).done(function(c) {
+                            _private.showContrast(c);
                             _private.colorTxt.innerHTML = req.color !=='transparent' ? req.color : '#ffffff';
 
                             if(options.sample) _private.ShowContrastSample();
@@ -502,7 +489,6 @@ var ColorPicker = function() {
                         options = req;
                         optionsDfr.resolve(req);
                         break;
-
                 }
             });
 
@@ -512,6 +498,14 @@ var ColorPicker = function() {
             _private.screenshot().done(function() {
                 console.log(0);
             });
+        },
+
+        EscShortcut: function(e) {
+            if(e.keyCode == 27) {
+                _public.Hide(document);
+                e.stopPropagation();
+                e.preventDefault();
+            };
         },
 
         ShowContrastSample:function(){
@@ -741,6 +735,7 @@ var ColorPicker = function() {
             try {
                 _private.removeMouseSupport();
                 _private.destroy(contentDocument);
+                $(window).unbind('keyup', _private.EscShortcut);
             } catch (err) {
                 console.log(err);
             };
