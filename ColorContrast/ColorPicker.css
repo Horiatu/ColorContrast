@@ -157,12 +157,14 @@
 #colorPickerSample h1, #colorPickerSample p, #colorPickerSample a {
 	margin: 20px;
 	font-family: sans-serif; 
+	color: inherit;
+	background-color: inherit;
 }
 
 #colorPickerSample h1 {
 	font-size: 18px;
 	font-weight: normal;
-	margin-top: 30px;
+	margin-top: 40px;
 }
 
 #colorPickerSample strong {
@@ -182,14 +184,29 @@
 	background: transparent none;
 }
 
-#PickerSampleclose {
+.PickerSampleBtn {
 	position:absolute;
-	right:4px;
 	top:4px;
 	opacity:0.5;
 	cursor:pointer;
 }
 
-#PickerSampleclose:hover {
+.PickerSampleBtn:hover {
 	opacity:1;
+}
+
+#PickerSampleclose {
+	right:4px;
+}
+
+#PickerSampleToggle {
+	left:20px;
+}
+
+#PickerSampleFix {
+	left: 44px;
+}
+
+#PickerSampleEye {
+	left:68px;
 }

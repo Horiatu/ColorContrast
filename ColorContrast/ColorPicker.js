@@ -209,17 +209,12 @@ var ColorPicker = function() {
                 _private.getColor(event, "selected", _private.reqColor).done(function() {
                     if(_private.showToolbar) {
                         if(_private.reqColor) {
-                            $Sample = $('.Sample');
                             color = _private.colorTxt.innerHTML;
-                            $Sample.css(
-                                (_private.reqColor==='foreground')?'color':'background-color', color);
-                            $Sample.parent().css(
-                                (_private.reqColor==='foreground')?'color':'background-color', color);
 
-                            var c1 = $Sample.css('color');
-                            var c2 = $Sample.css('background-color');
-                            _private.contrast(c1, c2).done(_private.showContrast);
-                            _private.setSampleColors();
+                            colors = _private.setColor(_private.reqColor, color);
+
+                            _private.contrast(colors.foreground, colors.background).done(_private.showContrast);
+                            _private.setSampleColors(colors);
                         }
                     }
                 });
@@ -232,18 +227,40 @@ var ColorPicker = function() {
         RightClick: function(event) {
             _private.getColor(event, "selected", 'foreground').done(function() {
                 if(_private.showToolbar) {
-                    $Sample = $('.Sample').parent();
-                    $Sample.css('color', _private.colorTxt.innerHTML);
+                    colors = _private.setColor('foreground', color);
 
-                    var c1 = $Sample.css('color');
-                    var c2 = $Sample.css('background-color');
-                    _private.contrast(c1, c2).done(_private.showContrast);
-                    _private.setSampleColors();
+                    _private.contrast(colors.foreground, colors.background).done(_private.showContrast);
+                    _private.setSampleColors(colors);
                 }
             });
 
             event.stopPropagation();
             event.preventDefault();
+        },
+
+        setColor: function(req, color) {
+            $Sample = $('.Sample');
+            if(req==='foreground') {
+                $Sample.css('color', color);
+            } else {
+                $Sample.parent().css('background-color', color);
+            }
+
+            chrome.storage.sync.set({
+                req: color
+            }, function() {
+                console.log(req+" "+color+' saved');
+            });
+
+            return _private.getColors();
+        },
+
+        getColors: function() {
+            $Sample = $('.Sample');
+            return {
+                foreground: _private.rgbToColor($Sample.css('color')), 
+                background: _private.rgbToColor($Sample.parent().css('background-color'))
+            };
         },
 
         showContrast: function (c) {
@@ -530,10 +547,46 @@ var ColorPicker = function() {
                $colorPickerSample = $('#colorPickerSample');
                $colorPickerSample.on('mouseenter', _private.removeMouseSupport).on('mouseleave', _private.addMouseSupport);
                $colorPickerSample.load(chrome.extension.getURL("TextSample.html"), function() {
-                    $colorPickerSample.append("<div id='PickerSampleclose'><img src='"+chrome.extension.getURL("Images/close.png")+"' title='close (image)'></img></div>");
-                    $('#PickerSampleclose').click(function() {
+                    $colorPickerSample.append("<div id='PickerSampleclose' class='PickerSampleBtn'><img src='"+chrome.extension.getURL("Images/close.png")+"' title='close (image)'></img></div>");
+                    $('#PickerSampleclose').click(function(e) {
                         $colorPickerSample.hide();
                         chrome.storage.sync.set({'sample': false});
+                        e.stopPropagation();
+                        e.preventDefault();
+                    });
+
+                    $colorPickerSample.append("<div id='PickerSampleToggle' class='PickerSampleBtn'><img src='"+chrome.extension.getURL("Images/toggle.png")+"' title='Toggle Colors'></img></div>");
+                    $colorPickerSample.click(function(e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    });
+
+                    $('#PickerSampleToggle').click(function(e) {
+                        $Sample = $('.Sample');
+
+                        colors = _private.getColors();
+                        _private.setColor('foreground', colors.background);
+                        colors = _private.setColor('background', colors.foreground);
+
+                        //_private.contrast(c2, c1).done(_private.showContrast);
+                        _private.setSampleColors(colors);
+
+                        e.stopPropagation();
+                        e.preventDefault();
+                    });
+
+                    $colorPickerSample.append("<div id='PickerSampleFix' class='PickerSampleBtn'><img src='"+chrome.extension.getURL("Images/FixContrast.png")+"' title='Fix Contrast'></img></div>");
+                    $('#PickerSampleFix').click(function(e) {
+
+                        e.stopPropagation();
+                        e.preventDefault();
+                    });
+
+                    $colorPickerSample.append("<div id='PickerSampleEye' class='PickerSampleBtn'><img src='"+chrome.extension.getURL("Images/DisabledEye.png")+"' title='See through dissabled eye'></img></div>");
+                    $('#PickerSampleEye').click(function(e) {
+
+                        e.stopPropagation();
+                        e.preventDefault();
                     });
                 });
             }
@@ -545,12 +598,15 @@ var ColorPicker = function() {
             _private.setSampleColors();
         },
 
-        setSampleColors: function() {
-            $Sample = $('.smallSample').parent();
+        setSampleColors: function(colors) {
+            //$Sample = $('.smallSample').parent();
+            if(colors==undefined) colors = _private.getColors();
             $colorPickerSample = $('#colorPickerSample');
-            $colorPickerSample.css('color',$Sample.css('color'));
-            $colorPickerSample.css('background-color',$Sample.css('background-color'));
-            $('#colorPickerSample h1, #colorPickerSample p, #colorPickerSample a').css('color',$Sample.css('color'));
+
+            $colorPickerSample.css('color',colors.foreground);
+            $colorPickerSample.css('background-color',colors.background);
+
+            //$('#colorPickerSample h1, #colorPickerSample p, #colorPickerSample a').css('color',$Sample.css('color'));
         },
 
         setToolbarPosition: function(pos){
