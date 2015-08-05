@@ -171,7 +171,7 @@ var ColorPicker = function() {
                 return 'indigo';
             } else {
                 var canvasIndex = (X + Y * _private.canvas.width) * 4;
-                ////console.log(e.pageX + ' ' + e.pageY + ' ' + _private.canvas.width);
+                //console.log(e.pageX + ' ' + e.pageY + ' ' + _private.canvas.width);
 
                 var rgb = {
                     r: _private.canvasData[canvasIndex],
@@ -242,15 +242,11 @@ var ColorPicker = function() {
             $Sample = $('.Sample');
             if(req==='foreground') {
                 $Sample.css('color', color);
+                chrome.storage.sync.set({"foreground": color});
             } else {
                 $Sample.parent().css('background-color', color);
+                chrome.storage.sync.set({"background": color});
             }
-
-            chrome.storage.sync.set({
-                req: color
-            }, function() {
-                console.log(req+" "+color+' saved');
-            });
 
             return _private.getColors();
         },
@@ -528,7 +524,7 @@ var ColorPicker = function() {
             _private.XOffset = $(document).scrollLeft();
 
             _private.screenshot().done(function() {
-                console.log(0);
+                //console.log(0);
             });
         },
 
@@ -700,7 +696,6 @@ var ColorPicker = function() {
             if (!force && _private.rects.length > 0) {
                 for (index in _private.rects) {
                     if (_private.rectInRect(rect, _private.rects[index])) {
-                        console.log('already shoted, skipping');
                         return;
                     }
                 }
@@ -727,7 +722,6 @@ var ColorPicker = function() {
             _private.imageData = imageData;
 
             if (_private.canvas.width != (_private.width + _private.canvasBorders) || _private.canvas.height != (_private.height + _private.canvasBorders)) {
-                //console.log('creating new canvas');
                 _private.canvas = document.createElement('canvas');
                 _private.canvas.width = _private.width + _private.canvasBorders;
                 _private.canvas.height = _private.height + _private.canvasBorders;
@@ -736,7 +730,6 @@ var ColorPicker = function() {
                 _private.rects = [];
             }
 
-            //    var image = new Image();
             var image = document.createElement('img');
 
             image.onload = function() {
@@ -779,7 +772,7 @@ var ColorPicker = function() {
             if (_private.imageData) {
                 image.src = _private.imageData;
             } else {
-                console.error('ed: no imageData');
+                //console.error('ed: no imageData');
             }
         },
 
@@ -808,7 +801,7 @@ var ColorPicker = function() {
                 _private.destroy(contentDocument);
                 $(window).unbind('keyup', _private.EscShortcut);
             } catch (err) {
-                console.log(err);
+                //console.log(err);
             };
         },
 

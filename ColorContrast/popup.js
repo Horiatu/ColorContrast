@@ -388,17 +388,6 @@ $(document).ready(function() {
         o.val(initial);
     };
 
-    chrome.storage.sync.get(['background', 'foreground'], function(a) {
-        //console.log('Restore '+a['background']+' '+a['foreground']);
-        if (a['background']) {
-            $("#background").val(a['background']);
-        }
-        if (a['foreground']) {
-            $("#foreground").val(a['foreground']);
-        }
-        getContrast(null);
-    });
-
     $(".txInput").on("input", function(e) {
         getContrast(e.currentTarget.id);
     });
@@ -425,8 +414,7 @@ $(document).ready(function() {
         $("#background").val(foregroundVal);
         getContrast("background");
         $("#foreground").val(backgroundVal);
-        getContrast("foreground");
-        getContrast("foreground");
+        getContrast();
     });
 
     $('.btn img').on('mouseenter', function(t) {
@@ -439,4 +427,27 @@ $(document).ready(function() {
 
     var backgroundPage = chrome.extension.getBackgroundPage().Background;
 
+    getSelectedTab().done(function(tab) {
+        chrome.tabs.executeScript(tab.id, {
+            allFrames: false,
+            "code":
+                "try {\n"+
+                "   ColorPicker.Hide(document);\n" +
+                "} catch(e) {\n"+
+                "   //console.log(e);\n"+
+                "};"
+            }, function() {
+                chrome.storage.sync.get(['background', 'foreground'], function(a) {
+                    //console.log('Restore '+a['background']+' '+a['foreground']);
+                    if (a['background']) {
+                        $("#background").val(a['background']);
+                    }
+                    if (a['foreground']) {
+                        $("#foreground").val(a['foreground']);
+                    }
+                    getContrast(null);
+                });
+            }
+        )
+    });
 });

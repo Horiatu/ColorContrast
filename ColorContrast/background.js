@@ -27,7 +27,7 @@ Background.doCapture = function(data) {
             type: 'error',
             msg: msg
         }, function() {});
-        console.error(msg);
+        //console.error(msg);
     }
 };
 
