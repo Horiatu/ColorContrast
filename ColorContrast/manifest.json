@@ -3,7 +3,7 @@
 
   "name": "WCAG Luminosity Contrast Ratio Analyser",
   "description": "Color Contrast Analyser for WCAG 2.0 compliance",
-  "version": "1.0.0.5",
+  "version": "1.0.0.6",
 
   "browser_action": {
     "default_icon": "Images/icon.png",
@@ -39,6 +39,7 @@
     "Images/mapbg.png",
     "Images/Ok.png",
     "Images/NotOk.png",
+    "Images/SoSo.png",
     "Images/menu.png",
     "Images/close.png",
     "Images/Cursors/pickColor.cur",

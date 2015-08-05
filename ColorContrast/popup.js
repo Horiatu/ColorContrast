@@ -251,22 +251,45 @@ $(document).ready(function() {
 
                     $("#contrast span").html(parseFloat(cc).toFixed(2) + ":1");
 
-                    if (cc >= 4.5) {
+                    if (cc > 7.0) {
                         $("#contrast span").css("text-shadow", "2px 2px 2px darkgreen");
-                        $(".largeOK").show();
-                        $(".smallOK").show();
+                        $(".largeAAA").show();
+                        $(".smallAAA").show();
+
+                        $(".largeAA").hide();
+                        $(".smallAA").hide();
+
                         $(".large").hide();
                         $(".small").hide();
-                    } else if (cc >= 3.0) {
+                    }
+                    else if (cc > 4.5) {
+                        $("#contrast span").css("text-shadow", "2px 2px 2px orange");
+                        $(".largeAAA").show();
+                        $(".smallAAA").hide();
+
+                        $(".largeAA").hide();
+                        $(".smallAA").show();
+
+                        $(".large").hide();
+                        $(".small").hide();
+                    } else if (cc > 3.0) {
                         $("#contrast span").css("text-shadow", "2px 2px 2px orangered");
-                        $(".largeOK").show();
-                        $(".smallOK").hide();
+                        $(".largeAAA").hide();
+                        $(".smallAAA").hide();
+
+                        $(".largeAA").show();
+                        $(".smallAA").hide();
+
                         $(".large").hide();
                         $(".small").show();
                     } else {
                         $("#contrast span").css("text-shadow", "2px 2px 2px red");
-                        $(".largeOK").hide();
-                        $(".smallOK").hide();
+                        $(".largeAAA").hide();
+                        $(".smallAAA").hide();
+
+                        $(".largeAA").hide();
+                        $(".smallAA").hide();
+
                         $(".large").show();
                         $(".small").show();
                     }
@@ -415,26 +438,5 @@ $(document).ready(function() {
     });
 
     var backgroundPage = chrome.extension.getBackgroundPage().Background;
-
-    getSelectedTab().done(function(tab) {
-        chrome.tabs.executeScript(tab.id, {
-                allFrames: false,
-                "code": "try {\n" +
-                    "    ColorPicker.Hide(document);\n" + "}\n" +
-                    "catch (err) {\n" +
-                    //"  console.log('Init error: '+err);\n" +
-                    "};"
-            },
-            function() {
-                var color = backgroundPage.Color;
-                var bgColor = backgroundPage.BackgroundColor;
-                if (color != null) 
-                    $('#foreground').val(color);
-                if (bgColor != null) 
-                    $('#background').val(bgColor);
-                getContrast(null);
-            }
-        );
-    });
 
 });

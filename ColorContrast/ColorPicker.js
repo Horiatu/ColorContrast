@@ -249,18 +249,31 @@ var ColorPicker = function() {
         showContrast: function (c) {
             //console.log(c);
             $("#contrast").html(parseFloat(c).toFixed(2) + ":1");
-
-            if(c>4.5) {
-                $('.fail').removeClass('show').addClass('hide');
-                $('.ok').removeClass('hide').addClass('show');
-            } else if(c>3.0) {
-                $('.fail.large').removeClass('show').addClass('hide');
-                $('.ok.large').removeClass('hide').addClass('show');
-                $('.ok.small').removeClass('show').addClass('hide');
-                $('.fail.small').removeClass('hide').addClass('show');
-            } else {
+    
+            if(c<3.0) {
                 $('.fail').removeClass('hide').addClass('show');
+                $('.SoSo').removeClass('show').addClass('hide');
                 $('.ok').removeClass('show').addClass('hide');
+            } else if (c<=4.5) {
+                $('.small.fail').removeClass('hide').addClass('show');
+                $('.small.SoSo').removeClass('show').addClass('hide');
+                $('.small.ok').removeClass('show').addClass('hide');
+
+                $('.large.fail').removeClass('show').addClass('hide');
+                $('.large.SoSo').removeClass('hide').addClass('show');
+                $('.large.ok').removeClass('show').addClass('hide');
+            } else if (c<=7.0) {
+                $('.small.fail').removeClass('show').addClass('hide');
+                $('.small.SoSo').removeClass('hide').addClass('show');
+                $('.small.ok').removeClass('show').addClass('hide');
+
+                $('.large.fail').removeClass('show').addClass('hide');
+                $('.large.SoSo').removeClass('show').addClass('hide');
+                $('.large.ok').removeClass('hide').addClass('show');
+            } else {
+                $('.fail').removeClass('show').addClass('hide');
+                $('.SoSo').removeClass('show').addClass('hide');
+                $('.ok').removeClass('hide').addClass('show');
             }
 
         },
@@ -391,15 +404,17 @@ var ColorPicker = function() {
                         td2.appendChild(_private.colorTxt);
 
                         td3 = contentDocument.createElement("td"); row.appendChild(td3); 
-                        $(td3).append('<Span id="smallSample" class="Sample smallSample" title="Min required: 4.5:1">Small Text</Span>');
+                        $(td3).append('<Span id="smallSample" class="Sample smallSample" title="Min required:&#13; AA - 4.5:1&#13; AAA - 7.0:1">Small Text</Span>');
                         
                         $(td3).append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok small checkmark hide" alt="Pass AAA" title="Pass AAA">');
+                        $(td3).append('<img src='+chrome.extension.getURL("Images/SoSo.png")+' class="SoSo small checkmark hide" alt="Pass AA" title="Pass AA">');
                         $(td3).append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail small checkmark hide" alt="Failed AAA" title="Failed AAA">');
                         
                         td4 = contentDocument.createElement("td"); row.appendChild(td4); 
-                        $(td4).append('<Span id="lasegrSample" class="Sample largeSample" title="Min required: 3.0:1">Large Text</Span>');
+                        $(td4).append('<Span id="lasegrSample" class="Sample largeSample" title="Min required:&#13; AA - 3.0:1&#13; AAA - 4.5:1">Large Text</Span>');
                         
-                        $(td4).append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok large checkmark hide" alt="Pass AA" title="Pass AA">');
+                        $(td4).append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok large checkmark hide" alt="Pass AAA" title="Pass AAA">');
+                        $(td4).append('<img src='+chrome.extension.getURL("Images/SoSo.png")+' class="SoSo large checkmark hide" alt="Pass AA" title="Pass AA">');
                         $(td4).append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail large checkmark hide" alt="Failed AA" title="Failed AA">');
                         
                         td5 = contentDocument.createElement("td"); row.appendChild(td5); 
