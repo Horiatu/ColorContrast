@@ -205,8 +205,10 @@
 
 #PickerSampleFix {
 	left: 28px;
+	visibility: collapse;
 }
 
 #PickerSampleEye {
 	left:52px;
+	visibility: collapse;
 }

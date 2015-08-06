@@ -465,7 +465,7 @@ var ColorPicker = function() {
                         });
 
                         $('#ShowSample').click(function() {
-                            _private.ShowContrastSample();
+                            _private.ShowContrastSample(false);
                         });
 
                         $('#ToggleColors').click(function(e) {
@@ -517,7 +517,7 @@ var ColorPicker = function() {
                             _private.showContrast(c);
                             _private.colorTxt.innerHTML = req.color !=='transparent' ? req.color : '#ffffff';
 
-                            if(options.sample) _private.ShowContrastSample();
+                            if(options.sample) _private.ShowContrastSample(true);
                         });
                         break;
                     case 'error':
@@ -546,7 +546,7 @@ var ColorPicker = function() {
             };
         },
 
-        ShowContrastSample:function(){
+        ShowContrastSample:function(showAnyway){
             $colorPickerSample = $('#colorPickerSample');
             if (!$colorPickerSample.length) {
                $('#ColorPickerOvr').prepend("<div id='colorPickerSample'></div>");
@@ -557,6 +557,7 @@ var ColorPicker = function() {
                     $('#PickerSampleclose').click(function(e) {
                         $colorPickerSample.hide();
                         chrome.storage.sync.set({'sample': false});
+                        $('#ShowSample').html("Show Sample");
                         e.stopPropagation();
                         e.preventDefault();
                     });
@@ -588,13 +589,27 @@ var ColorPicker = function() {
                         e.preventDefault();
                     });
                 });
+                $colorPickerSample.hide();
+                $('#ShowSample').html("Show Sample");
             }
             $colorPickerSample.width($('#colorPickerToolbar').width());
             $colorPickerSample.addClass($('#colorPickerToolbar').hasClass('left') ? 'left' : 'right');
 
-            $colorPickerSample.show();
-            chrome.storage.sync.set({'sample': true});
-            _private.setSampleColors();
+            if(showAnyway) {
+                $colorPickerSample.show("slow", _private.setSampleColors);
+                $('#ShowSample').html("Hide Sample");
+            } else {
+                if(!$colorPickerSample.is(":visible")) 
+                {
+                    _private.setSampleColors();
+                }
+                $colorPickerSample.animate({width: "toggle"},
+                    function() {
+                        chrome.storage.sync.set({'sample': $colorPickerSample.is(":visible")});
+                        $('#ShowSample').html($colorPickerSample.is(":visible") ? "Hide Sample" : "Show Sample");
+                    }
+                 );
+            }
         },
 
         toggleColors: function() {
@@ -605,7 +620,7 @@ var ColorPicker = function() {
             //_private.contrast(c2, c1).done(_private.showContrast);
             _private.setSampleColors(colors);
         },
-        
+
         setSampleColors: function(colors) {
             //$Sample = $('.smallSample').parent();
             if(colors==undefined) colors = _private.getColors();
