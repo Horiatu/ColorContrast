@@ -187,7 +187,7 @@
 .PickerSampleBtn {
 	position:absolute;
 	top:4px;
-	opacity:0.5;
+	opacity:0.25;
 	cursor:pointer;
 }
 
@@ -200,13 +200,13 @@
 }
 
 #PickerSampleToggle {
-	left:20px;
+	left:4px;
 }
 
 #PickerSampleFix {
-	left: 44px;
+	left: 28px;
 }
 
 #PickerSampleEye {
-	left:68px;
+	left:52px;
 }

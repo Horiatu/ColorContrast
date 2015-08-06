@@ -84,8 +84,13 @@
         background-color: rgb(216, 216, 216);
       }
       .btn img {
-        vertical-align: middle;
+        margin-top: 1px;
+        margin-bottom: -2px;
         cursor: pointer;
+        opacity: 0.25;
+      }
+      .btn img:hover {
+        opacity: 1;
       }
       .pick{
         margin-left: -46px;

@@ -451,6 +451,8 @@ var ColorPicker = function() {
                         $('.dropit-submenu').append('<li><a id="UpRight">Up-Right</a></li>');
                         $('.dropit-submenu').append('<li><hr/></li>');
                         $('.dropit-submenu').append('<li><a id="ShowSample">Show Sample</a></li>');
+                        $('.dropit-submenu').append('<li><a id="ToggleColors">Toggle Colors</a></li>');
+                        $('.dropit-submenu').append('<li><a id="ExitColorPicker">Exit</a></li>');
 
                         $('#colorPickerToolbar').append('<input id="CopyBox" type="text" style="display: none; position: absolute; overflow-x: hidden; overflow-y: hidden;"></input>');
 
@@ -464,6 +466,14 @@ var ColorPicker = function() {
 
                         $('#ShowSample').click(function() {
                             _private.ShowContrastSample();
+                        });
+
+                        $('#ToggleColors').click(function(e) {
+                            _private.toggleColors();
+                        });
+
+                        $('#ExitColorPicker').click(function(e) {
+                            _public.Hide();
                         });
 
                         $('#menu1').dropit({
@@ -558,14 +568,7 @@ var ColorPicker = function() {
                     });
 
                     $('#PickerSampleToggle').click(function(e) {
-                        $Sample = $('.Sample');
-
-                        colors = _private.getColors();
-                        _private.setColor('foreground', colors.background);
-                        colors = _private.setColor('background', colors.foreground);
-
-                        //_private.contrast(c2, c1).done(_private.showContrast);
-                        _private.setSampleColors(colors);
+                        _private.toggleColors();
 
                         e.stopPropagation();
                         e.preventDefault();
@@ -594,6 +597,15 @@ var ColorPicker = function() {
             _private.setSampleColors();
         },
 
+        toggleColors: function() {
+            colors = _private.getColors();
+            _private.setColor('foreground', colors.background);
+            colors = _private.setColor('background', colors.foreground);
+
+            //_private.contrast(c2, c1).done(_private.showContrast);
+            _private.setSampleColors(colors);
+        },
+        
         setSampleColors: function(colors) {
             //$Sample = $('.smallSample').parent();
             if(colors==undefined) colors = _private.getColors();

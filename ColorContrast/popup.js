@@ -417,14 +417,6 @@ $(document).ready(function() {
         getContrast();
     });
 
-    $('.btn img').on('mouseenter', function(t) {
-        t.currentTarget["src"] = t.currentTarget["src"].replace(".png", ".color.png");
-    });
-
-    $('.btn img').on('mouseleave', function(t) {
-        t.currentTarget["src"] = t.currentTarget["src"].replace(".color.png", ".png");
-    });
-
     var backgroundPage = chrome.extension.getBackgroundPage().Background;
 
     getSelectedTab().done(function(tab) {
