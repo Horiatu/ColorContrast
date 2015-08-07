@@ -409,6 +409,7 @@ var ColorPicker = function() {
                         table.appendChild(row);
                         _private.colorDiv = contentDocument.createElement("td"); row.appendChild(_private.colorDiv);
                         _private.colorDiv.setAttribute("id", "colorDiv");
+                        _private.colorDiv.setAttribute("class", "shadowedBlack");
 
                         td2 = contentDocument.createElement("td"); row.appendChild(td2);
                         td2.setAttribute("style", "width: 70px;");
@@ -419,16 +420,16 @@ var ColorPicker = function() {
                         td3 = contentDocument.createElement("td"); row.appendChild(td3); 
                         $(td3).append('<Span id="smallSample" class="Sample smallSample" title="Min required:&#13; AA - 4.5:1&#13; AAA - 7.0:1">Small Text</Span>');
                         
-                        $(td3).append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok small checkmark hide" alt="Pass AAA" title="Pass AAA">');
-                        $(td3).append('<img src='+chrome.extension.getURL("Images/SoSo.png")+' class="SoSo small checkmark hide" alt="Pass AA" title="Pass AA">');
-                        $(td3).append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail small checkmark hide" alt="Failed AAA" title="Failed AAA">');
+                        $(td3).append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok small checkmark shadowed hide" alt="Pass AAA" title="Pass AAA">');
+                        $(td3).append('<img src='+chrome.extension.getURL("Images/SoSo.png")+' class="SoSo small checkmark shadowed hide" alt="Pass AA" title="Pass AA">');
+                        $(td3).append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail small checkmark shadowed hide" alt="Failed AAA" title="Failed AAA">');
                         
                         td4 = contentDocument.createElement("td"); row.appendChild(td4); 
                         $(td4).append('<Span id="lasegrSample" class="Sample largeSample" title="Min required:&#13; AA - 3.0:1&#13; AAA - 4.5:1">Large Text</Span>');
                         
-                        $(td4).append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok large checkmark hide" alt="Pass AAA" title="Pass AAA">');
-                        $(td4).append('<img src='+chrome.extension.getURL("Images/SoSo.png")+' class="SoSo large checkmark hide" alt="Pass AA" title="Pass AA">');
-                        $(td4).append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail large checkmark hide" alt="Failed AA" title="Failed AA">');
+                        $(td4).append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok large checkmark shadowed hide" alt="Pass AAA" title="Pass AAA">');
+                        $(td4).append('<img src='+chrome.extension.getURL("Images/SoSo.png")+' class="SoSo large checkmark shadowed hide" alt="Pass AA" title="Pass AA">');
+                        $(td4).append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail large checkmark shadowed hide" alt="Failed AA" title="Failed AA">');
                         
                         td5 = contentDocument.createElement("td"); row.appendChild(td5); 
                         $(td5)
@@ -440,19 +441,19 @@ var ColorPicker = function() {
 
                         td6 = contentDocument.createElement("td"); row.appendChild(td6); 
                         $(td6).css('padding','0 1px').append('<ul id="menu1" class="Menu dropit"></ul>');
-                        $('#menu1').append('<li class="dropit-trigger"><a class="btn">'+
-                            '<img src='+chrome.extension.getURL("Images/menu.png")+'></img>'+
+                        $('#menu1').append('<li id="menu1-trigger" class="dropit-trigger"><a>'+
+                            '<img src='+chrome.extension.getURL("Images/menu.png")+' class="shadowedBlack"></img>'+
                             '</a></li>');
-                        $('.dropit-trigger').append('<ul class="dropit-submenu" style="display: none;"></ul>');
-                        $('.dropit-submenu').append('<li><a id="CopyFr">Copy Foreground</a></li>');
-                        $('.dropit-submenu').append('<li><a id="CopyBg">Copy Background</a></li>');
-                        $('.dropit-submenu').append('<li><hr/></li>');
-                        $('.dropit-submenu').append('<li><a id="UpLeft">Up-Left</a></li>');
-                        $('.dropit-submenu').append('<li><a id="UpRight">Up-Right</a></li>');
-                        $('.dropit-submenu').append('<li><hr/></li>');
-                        $('.dropit-submenu').append('<li><a id="ShowSample">Show Sample</a></li>');
-                        $('.dropit-submenu').append('<li><a id="ToggleColors">Toggle Colors</a></li>');
-                        $('.dropit-submenu').append('<li><a id="ExitColorPicker">Exit</a></li>');
+                        $('#menu1-trigger').append('<ul id="menu1-submenu" class="dropit-submenu" style="display: none;"></ul>');
+                        $('#menu1-submenu').append('<li><a id="CopyFr">Copy Foreground</a></li>');
+                        $('#menu1-submenu').append('<li><a id="CopyBg">Copy Background</a></li>');
+                        $('#menu1-submenu').append('<li><hr/></li>');
+                        $('#menu1-submenu').append('<li><a id="UpLeft">Up-Left</a></li>');
+                        $('#menu1-submenu').append('<li><a id="UpRight">Up-Right</a></li>');
+                        $('#menu1-submenu').append('<li><hr/></li>');
+                        $('#menu1-submenu').append('<li><a id="ShowSample">Show Sample</a></li>');
+                        $('#menu1-submenu').append('<li><a id="ToggleColors">Toggle Colors</a></li>');
+                        $('#menu1-submenu').append('<li><a id="ExitColorPicker">Exit</a></li>');
 
                         $('#colorPickerToolbar').append('<input id="CopyBox" type="text" style="display: none; position: absolute; overflow-x: hidden; overflow-y: hidden;"></input>');
 
@@ -553,7 +554,7 @@ var ColorPicker = function() {
                $colorPickerSample = $('#colorPickerSample');
                $colorPickerSample.on('mouseenter', _private.removeMouseSupport).on('mouseleave', _private.addMouseSupport);
                $colorPickerSample.load(chrome.extension.getURL("TextSample.html"), function() {
-                    $colorPickerSample.append("<div id='PickerSampleclose' class='PickerSampleBtn'><img src='"+chrome.extension.getURL("Images/close.png")+"' title='close (image)'></img></div>");
+                    $colorPickerSample.append("<div id='PickerSampleclose' class='PickerSampleBtn PickerSampleHover shadowed'><img src='"+chrome.extension.getURL("Images/close.png")+"' title='close (image)'></img></div>");
                     $('#PickerSampleclose').click(function(e) {
                         $colorPickerSample.hide();
                         chrome.storage.sync.set({'sample': false});
@@ -562,7 +563,7 @@ var ColorPicker = function() {
                         e.preventDefault();
                     });
 
-                    $colorPickerSample.append("<div id='PickerSampleToggle' class='PickerSampleBtn'><img src='"+chrome.extension.getURL("Images/toggle.png")+"' title='Toggle Colors'></img></div>");
+                    $colorPickerSample.append("<div id='PickerSampleToggle' class='PickerSampleBtn PickerSampleHover shadowed'><img src='"+chrome.extension.getURL("Images/toggle.png")+"' title='Toggle Colors'></img></div>");
                     $colorPickerSample.click(function(e) {
                         e.stopPropagation();
                         e.preventDefault();
@@ -575,18 +576,40 @@ var ColorPicker = function() {
                         e.preventDefault();
                     });
 
-                    $colorPickerSample.append("<div id='PickerSampleFix' class='PickerSampleBtn'><img src='"+chrome.extension.getURL("Images/FixContrast.png")+"' title='Fix Contrast'></img></div>");
+                    $colorPickerSample.append("<div id='PickerSampleFix' class='PickerSampleBtn PickerSampleHover shadowed'><img src='"+chrome.extension.getURL("Images/FixContrast.png")+"' title='Fix Contrast'></img></div>");
                     $('#PickerSampleFix').click(function(e) {
 
                         e.stopPropagation();
                         e.preventDefault();
                     });
 
-                    $colorPickerSample.append("<div id='PickerSampleEye' class='PickerSampleBtn'><img src='"+chrome.extension.getURL("Images/DisabledEye.png")+"' title='See through dissabled eye'></img></div>");
-                    $('#PickerSampleEye').click(function(e) {
+                    $colorPickerSample.append("<div id='PickerSampleEye' class='PickerSampleBtn shadowed'>"+
+                        //"<img src='"+chrome.extension.getURL("Images/DisabledEye.png")+"' title='See through dissabled eye'></img>"+
+                        "</div>");
 
-                        e.stopPropagation();
-                        e.preventDefault();
+                    $('#PickerSampleEye').append('<ul id="eye-menu" class="Menu dropit"></ul>');
+                        $('#eye-menu').append('<li id="eye-trigger" class="dropit-trigger"><a>'+
+                            '<img src='+chrome.extension.getURL("Images/DisabledEye.png")+' title="See through dissabled eye"></img>'+
+                            '</a></li>');
+                        $('#eye-trigger').append('<ul id="eye-submenu" class="dropit-submenu" style="display: none;"></ul>');
+                        
+                        $('#eye-submenu').append('<li><a id="EyeNormal"><input checked name="eyeGroup" value="Normal" type="radio">Normal</input></a></li>');
+                        $('#eye-submenu').append('<li><a id="Protanopia"><input name="eyeGroup" value="Protanopia" type="radio">Protanopia</input></a></li>');
+                        $('#eye-submenu').append('<li><a id="Deuteranopia"><input name="eyeGroup" value="Deuteranopia" type="radio">Deuteranopia</input></a></li>');
+                        $('#eye-submenu').append('<li><a id="Tritanopia"><input name="eyeGroup" value="Tritanopia" type="radio">Tritanopia</input></a></li>');
+                        
+                        $('#eye-menu').dropit({
+                            // beforeShow: _private.removeMouseSupport,
+                            // afterHide: _private.addMouseSupport
+                        });
+                    // $('#PickerSampleEye').click(function(e) {
+
+                    //     // e.stopPropagation();
+                    //     // e.preventDefault();
+                    // });
+                    $('#eye-menu li ul li a input[type="radio"]').click(function() { 
+                        console.log($(this).val());
+                        $(this).prop("checked", true);
                     });
                 });
                 $colorPickerSample.hide();

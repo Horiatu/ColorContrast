@@ -22,6 +22,10 @@
   }
 .dropit .dropit-trigger { 
   position: relative; 
+  opacity: 0.25;
+}
+.dropit .dropit-trigger:hover { 
+  opacity: 1;
 }
 .dropit .dropit-submenu {
     position: absolute;
@@ -36,8 +40,8 @@
 }
 
 .dropit, .dropit-trigger, .dropit-trigger ul li, .dropit-trigger ol ul li {
-    margin: 0;
     background: transparent;
+    margin: 0;
     padding:0;
 }
 
@@ -48,7 +52,11 @@
     font-weight: bold;
     white-space: nowrap;
     left: -143px;
-    box-shadow: 1px 1px 3px 2px gray;
+
+    filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=2, OffY=2, Color='#444')";
+    filter: url(#drop-shadow);
+    -webkit-filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.9));
+    filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.9));
 }
 
 .Menu ul.dropit-submenu a {
@@ -58,6 +66,10 @@
   color: #3F4448;
   padding: 0 18px;
   text-decoration: none;
+}
+
+.Menu ul.dropit-submenu a input {
+  margin-left: -10px;
 }
 
 .Menu ul.dropit-submenu a:hover {
@@ -82,13 +94,6 @@
   line-height: 22px;
   width:auto;
   height:auto;
-}
-
-.dropit .btn:hover {
-  background-color: #C1C1C1;
-}
-.dropit .btn img {
-    width:11px; height:11px;
 }
 
 .dropit li hr {

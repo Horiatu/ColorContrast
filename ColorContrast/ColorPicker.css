@@ -54,12 +54,12 @@
     border-color: grey;
     margin:0;
     background-color: white;
-    display: inline-block; 
+    display: block; 
 }
 
 #colorDiv {
 	width: 22px;
-    box-shadow: 1px 1px 3px 2px gray;
+    border: 1px solid gray;
 }
 
 #colorTxt {
@@ -121,6 +121,7 @@
   	margin-right: 12px;
 	vertical-align: top;
 }
+
 .Contrast {
   	padding-left: 8px;
   	padding-right: 8px;
@@ -154,7 +155,7 @@
     font-size: 12px;
 }
 
-#colorPickerSample h1, #colorPickerSample p, #colorPickerSample a {
+#colorPickerSample h1, #colorPickerSample p {
 	margin: 20px;
 	font-family: sans-serif; 
 	color: inherit;
@@ -172,12 +173,6 @@
 	font-weight: bold;
 }
 
-#colorPickerSample a {
-	font-size: 10px;
-	font-weight: normal;
-	opacity: 0.75;
-}
-
 #colorPickerSample li {
 	list-style-type: disc;
 	list-style-position: inside;
@@ -187,11 +182,14 @@
 .PickerSampleBtn {
 	position:absolute;
 	top:4px;
-	opacity:0.25;
 	cursor:pointer;
 }
 
-.PickerSampleBtn:hover {
+.PickerSampleHover {
+	opacity:0.25;
+}
+
+.PickerSampleHover:hover {
 	opacity:1;
 }
 
@@ -205,10 +203,42 @@
 
 #PickerSampleFix {
 	left: 28px;
-	visibility: collapse;
+	--visibility: collapse;
 }
 
 #PickerSampleEye {
 	left:52px;
-	visibility: collapse;
+	position: absolute; 
+}
+#PickerSampleEye li {
+	list-style-type: none;
+}
+#PickerSampleEye a {
+	margin:0;
+}
+#eye-submenu {
+	left:0;
+}
+
+#menu1-trigger .btn img {
+	width:11px; height:11px;
+	opacity: 0.75;
+}
+
+#menu1-trigger .btn img:hover {
+	opacity: 1;
+}
+
+.shadowed {
+	filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=2, OffY=2, Color='#444')";
+	filter: url(#drop-shadow);
+	-webkit-filter: drop-shadow(2px 2px 1px rgba(255,255,255,0.9));
+	filter: drop-shadow(2px 2px 1px rgba(255,255,255,0.9));
+}
+
+.shadowedBlack {
+	filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=2, OffY=2, Color='#444')";
+	filter: url(#drop-shadow);
+	-webkit-filter: drop-shadow(2px 2px 1px rgba(127,127,127,0.9));
+	filter: drop-shadow(2px 2px 1px rgba(127,127,127,0.9));
 }
