@@ -242,3 +242,11 @@
 	-webkit-filter: drop-shadow(2px 2px 1px rgba(127,127,127,0.9));
 	filter: drop-shadow(2px 2px 1px rgba(127,127,127,0.9));
 }
+
+#eye-menu li ul li a img {
+	position: absolute;
+    margin-left: -15px;
+    width: 17px;
+    height: 17px;
+    margin-top: 3px;
+}

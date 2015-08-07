@@ -29,6 +29,7 @@ var ColorPicker = function() {
 
         gridSize: 7,
         reqColor: null,
+        eyeType: 'EyeNormal',
 
         rectInRect: function(A, B) {
             return (A.x >= B.x && A.y >= B.y && (A.x + A.width) <= (B.x + B.width) && (A.y + A.height) <= (B.y + B.height))
@@ -348,6 +349,7 @@ var ColorPicker = function() {
                 if(options.magnifierGlass != 'none') {
                     if (!contentDocument.getElementById("colorPickerViewer")) {
                         _private.gridSize = options.gridSize;
+                        _private.eyeType = options.eyeType;
                         ColorPicker.colorPickerViewer = contentDocument.createElement("Div");
                         ColorPicker.colorPickerViewer.setAttribute("id", "colorPickerViewer");
 
@@ -588,28 +590,29 @@ var ColorPicker = function() {
                         "</div>");
 
                     $('#PickerSampleEye').append('<ul id="eye-menu" class="Menu dropit"></ul>');
-                        $('#eye-menu').append('<li id="eye-trigger" class="dropit-trigger"><a>'+
-                            '<img src='+chrome.extension.getURL("Images/DisabledEye.png")+' title="See through dissabled eye"></img>'+
-                            '</a></li>');
-                        $('#eye-trigger').append('<ul id="eye-submenu" class="dropit-submenu" style="display: none;"></ul>');
-                        
-                        $('#eye-submenu').append('<li><a id="EyeNormal"><input checked name="eyeGroup" value="Normal" type="radio">Normal</input></a></li>');
-                        $('#eye-submenu').append('<li><a id="Protanopia"><input name="eyeGroup" value="Protanopia" type="radio">Protanopia</input></a></li>');
-                        $('#eye-submenu').append('<li><a id="Deuteranopia"><input name="eyeGroup" value="Deuteranopia" type="radio">Deuteranopia</input></a></li>');
-                        $('#eye-submenu').append('<li><a id="Tritanopia"><input name="eyeGroup" value="Tritanopia" type="radio">Tritanopia</input></a></li>');
-                        
-                        $('#eye-menu').dropit({
-                            // beforeShow: _private.removeMouseSupport,
-                            // afterHide: _private.addMouseSupport
-                        });
-                    // $('#PickerSampleEye').click(function(e) {
-
-                    //     // e.stopPropagation();
-                    //     // e.preventDefault();
-                    // });
-                    $('#eye-menu li ul li a input[type="radio"]').click(function() { 
-                        console.log($(this).val());
-                        $(this).prop("checked", true);
+                    $('#eye-menu').append('<li id="eye-trigger" class="dropit-trigger"><a>'+
+                        '<img src='+chrome.extension.getURL("Images/DisabledEye.png")+' title="See through dissabled eye"></img>'+
+                        '</a></li>');
+                    $('#eye-trigger').append('<ul id="eye-submenu" class="dropit-submenu" style="display: none;"></ul>');
+                    
+                    yesSrc = chrome.extension.getURL("Images/Yes.png");
+                    $('#eye-submenu').append('<li><a id="EyeNormal"><img src="'+yesSrc+'"></img>&nbsp;Normal</a></li>');
+                    $('#eye-submenu').append('<li><a id="Protanopia"><img src="'+yesSrc+'"></img>&nbsp;Protanopia</a></li>');
+                    $('#eye-submenu').append('<li><a id="Deuteranopia"><img src="'+yesSrc+'"></img>&nbsp;Deuteranopia</a></li>');
+                    $('#eye-submenu').append('<li><a id="Tritanopia"><img src="'+yesSrc+'"></img>&nbsp;Tritanopia</a></li>');
+                    
+                    $('#eye-menu').dropit({
+                        beforeShow: function() {
+                            $('#eye-menu li ul li a img').hide();
+                            $('#'+_private.eyeType+' img').show();
+                        },
+                    });
+                    $('#eye-menu li ul li a').click(function() { 
+                        //console.log($(this).attr('id'));
+                        $('#eye-menu li ul li a img').hide();
+                        _private.eyeType = $(this).attr('id');
+                        $('#'+_private.eyeType + ' img').show();
+                        chrome.storage.sync.set({'eyeType':_private.eyeType});
                     });
                 });
                 $colorPickerSample.hide();
