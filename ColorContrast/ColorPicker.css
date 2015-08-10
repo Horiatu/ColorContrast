@@ -263,3 +263,27 @@
 	filter: url(desaturate.svg#greyscale);
 }
 
+.protanopia {
+	-webkit-filter: url(#protanopia);
+	   -moz-filter: url(#protanopia);
+	    -ms-filter: url(#protanopia);
+	     -o-filter: url(#protanopia);
+	        filter: url(#protanopia); /* Firefox 3.5+ */
+
+}
+.deuteranopia {
+	-webkit-filter: url(#deuteranopia);
+	   -moz-filter: url(#deuteranopia);
+	    -ms-filter: url(#deuteranopia);
+	     -o-filter: url(#deuteranopia);
+	        filter: url(#deuteranopia); /* Firefox 3.5+ */
+
+}
+.tritanopia {
+	-webkit-filter: url(#tritanopia);
+	   -moz-filter: url(#tritanopia);
+	    -ms-filter: url(#tritanopia);
+	     -o-filter: url(#tritanopia);
+	        filter: url(#tritanopia); /* Firefox 3.5+ */
+
+}

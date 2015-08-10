@@ -335,6 +335,27 @@ var ColorPicker = function() {
                     $("head").append(dropitCss);
                 }
             }
+
+            //_private.addFilters('body');
+        },
+
+        addFilters: function(e) {
+            if(!document.getElementById("svgFilters")) {
+                var s = 
+                    "<svg id='svgFilters' xmlns='http://www.w3.org/2000/svg'>\n"+
+                    "    <filter id='protanopia'>\n"+
+                    "        <feColorMatrix type='matrix' values='0.56667 0.43333 0.00000 0 0 0.55833 0.44167 0.00000 0 0 0.00000 0.24167 0.75833 0 0 0 0 0 1 0'/>\n"+
+                    "    </filter>\n"+
+                    "    <filter id='deuteranopia'>\n"+
+                    "        <feColorMatrix type='matrix' values='0.4251 0.6934 -0.1147 0 0 0.3417 0.5882 0.0692 0 0 -0.0105 0.0234 0.9870 0 0 0 0 0 1 0'/>\n"+
+                    "    </filter>\n"+
+                    "    <filter id='tritanopia'>\n"+
+                    "        <feColorMatrix type='matrix' values='0.95000 0.05000 0.00000 0 0 0.00000 0.43333 0.56700 0 0 0.00000 0.47500 0.52500 0 0 0 0 0 1 0'/>\n"+
+                    "    </filter>\n"+
+                    "</svg>";
+
+                $("body").append(s);
+            }
         },
 
         init: function(contentDocument) {
@@ -362,6 +383,7 @@ var ColorPicker = function() {
                 if(!contentDocument.getElementById("ColorPickerLdr")) {
                     $("body").append('<div id="ColorPickerLdr"></div>');
                     $("#ColorPickerLdr").append('<div id="ColorPickerOvr" style="cursor: url(' + chrome.extension.getURL("Images/Cursors/pickColor.cur") + '), crosshair !important;"></div>');
+                    _private.addFilters('#ColorPickerLdr');
                 }
                 $('#ColorPickerOvr').hide();
 
@@ -663,6 +685,21 @@ var ColorPicker = function() {
                          _private.normalVision();
                         $('body').addClass('Blur');
                     });
+
+                    $('#Protanopia').click(function() {
+                         _private.normalVision();
+                        $('body').addClass('protanopia');
+                    });
+
+                    $('#Deuteranopia').click(function() {
+                         _private.normalVision();
+                        $('body').addClass('deuteranopia');
+                    });
+
+                    $('#Tritanopia').click(function() {
+                         _private.normalVision();
+                        $('body').addClass('tritanopia');
+                    });
                 });
                 $colorPickerSample.hide();
                 $('#ShowSample').html("Show Sample");
@@ -689,7 +726,12 @@ var ColorPicker = function() {
         },
 
         normalVision: function() {
-            $('body').removeClass('Blur').removeClass('Desaturate');
+            $('body')
+                .removeClass('Blur')
+                .removeClass('Desaturate')
+                .removeClass('protanopia')
+                .removeClass('deuteranopia')
+                .removeClass('tritanopia');
         },
 
         toggleColors: function() {
