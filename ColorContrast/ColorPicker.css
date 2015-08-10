@@ -318,10 +318,19 @@
 	     -o-filter: url(#achromatopsia);
 	        filter: url(#achromatopsia); /* Firefox 3.5+ */
 }
+
 .achromatomaly {
 	-webkit-filter: url(#achromatomaly);
 	   -moz-filter: url(#achromatomaly);
 	    -ms-filter: url(#achromatomaly);
 	     -o-filter: url(#achromatomaly);
 	        filter: url(#achromatomaly); /* Firefox 3.5+ */
-}achromatopsia
+}
+
+.normalFilter {
+	-webkit-filter: url(#normalFilter);
+	   -moz-filter: url(#normalFilter);
+	    -ms-filter: url(#normalFilter);
+	     -o-filter: url(#normalFilter);
+	        filter: url(#normalFilter); /* Firefox 3.5+ */
+}

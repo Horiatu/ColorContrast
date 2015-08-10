@@ -1,308 +1,308 @@
 $(document).ready(function() {
 
     getSelectedTab = function() {
-            var dfd = $.Deferred();
+        var dfd = $.Deferred();
 
-            chrome.tabs.query({
-                "active": true,
-                "currentWindow": true
-            }, function(tabs) {
-                dfd.resolve(tabs[0]);
+        chrome.tabs.query({
+            "active": true,
+            "currentWindow": true
+        }, function(tabs) {
+            dfd.resolve(tabs[0]);
+        });
+
+        return dfd.promise();
+    },
+
+    validateTab = function(tab) {
+        var dfd = $.Deferred();
+        var url = tab.url;
+
+        if (url.indexOf("chrome://") === 0 || url.indexOf("chrome-extension://") === 0) {
+            dfd.reject("Warning: Does not work on internal browser pages.");
+        } else if (url.indexOf("https://chrome.google.com/extensions/") === 0 || url.indexOf("https://chrome.google.com/webstore/") === 0) {
+            dfd.reject("Warning: Does not work on the Chrome Extension Gallery.");
+        } else {
+            dfd.resolve();
+        }
+
+        return dfd.promise();
+    },
+
+    colourNameToHex = function(colour) {
+        var colours = {
+            "aliceblue": "#f0f8ff",
+            "antiquewhite": "#faebd7",
+            "aqua": "#00ffff",
+            "aquamarine": "#7fffd4",
+            "azure": "#f0ffff",
+            "beige": "#f5f5dc",
+            "bisque": "#ffe4c4",
+            "black": "#000000",
+            "blanchedalmond": "#ffebcd",
+            "blue": "#0000ff",
+            "blueviolet": "#8a2be2",
+            "brown": "#a52a2a",
+            "burlywood": "#deb887",
+            "cadetblue": "#5f9ea0",
+            "chartreuse": "#7fff00",
+            "chocolate": "#d2691e",
+            "coral": "#ff7f50",
+            "cornflowerblue": "#6495ed",
+            "cornsilk": "#fff8dc",
+            "crimson": "#dc143c",
+            "cyan": "#00ffff",
+            "darkblue": "#00008b",
+            "darkcyan": "#008b8b",
+            "darkgoldenrod": "#b8860b",
+            "darkgray": "#a9a9a9",
+            "darkgreen": "#006400",
+            "darkkhaki": "#bdb76b",
+            "darkmagenta": "#8b008b",
+            "darkolivegreen": "#556b2f",
+            "darkorange": "#ff8c00",
+            "darkorchid": "#9932cc",
+            "darkred": "#8b0000",
+            "darksalmon": "#e9967a",
+            "darkseagreen": "#8fbc8f",
+            "darkslateblue": "#483d8b",
+            "darkslategray": "#2f4f4f",
+            "darkturquoise": "#00ced1",
+            "darkviolet": "#9400d3",
+            "deeppink": "#ff1493",
+            "deepskyblue": "#00bfff",
+            "dimgray": "#696969",
+            "dodgerblue": "#1e90ff",
+            "firebrick": "#b22222",
+            "floralwhite": "#fffaf0",
+            "forestgreen": "#228b22",
+            "fuchsia": "#ff00ff",
+            "gainsboro": "#dcdcdc",
+            "ghostwhite": "#f8f8ff",
+            "gold": "#ffd700",
+            "goldenrod": "#daa520",
+            "gray": "#808080",
+            "green": "#008000",
+            "greenyellow": "#adff2f",
+            "honeydew": "#f0fff0",
+            "hotpink": "#ff69b4",
+            "indianred ": "#cd5c5c",
+            "indigo": "#4b0082",
+            "ivory": "#fffff0",
+            "khaki": "#f0e68c",
+            "lavender": "#e6e6fa",
+            "lavenderblush": "#fff0f5",
+            "lawngreen": "#7cfc00",
+            "lemonchiffon": "#fffacd",
+            "lightblue": "#add8e6",
+            "lightcoral": "#f08080",
+            "lightcyan": "#e0ffff",
+            "lightgoldenrodyellow": "#fafad2",
+            "lightgrey": "#d3d3d3",
+            "lightgreen": "#90ee90",
+            "lightpink": "#ffb6c1",
+            "lightsalmon": "#ffa07a",
+            "lightseagreen": "#20b2aa",
+            "lightskyblue": "#87cefa",
+            "lightslategray": "#778899",
+            "lightsteelblue": "#b0c4de",
+            "lightyellow": "#ffffe0",
+            "lime": "#00ff00",
+            "limegreen": "#32cd32",
+            "linen": "#faf0e6",
+            "magenta": "#ff00ff",
+            "maroon": "#800000",
+            "mediumaquamarine": "#66cdaa",
+            "mediumblue": "#0000cd",
+            "mediumorchid": "#ba55d3",
+            "mediumpurple": "#9370d8",
+            "mediumseagreen": "#3cb371",
+            "mediumslateblue": "#7b68ee",
+            "mediumspringgreen": "#00fa9a",
+            "mediumturquoise": "#48d1cc",
+            "mediumvioletred": "#c71585",
+            "midnightblue": "#191970",
+            "mintcream": "#f5fffa",
+            "mistyrose": "#ffe4e1",
+            "moccasin": "#ffe4b5",
+            "navajowhite": "#ffdead",
+            "navy": "#000080",
+            "oldlace": "#fdf5e6",
+            "olive": "#808000",
+            "olivedrab": "#6b8e23",
+            "orange": "#ffa500",
+            "orangered": "#ff4500",
+            "orchid": "#da70d6",
+            "palegoldenrod": "#eee8aa",
+            "palegreen": "#98fb98",
+            "paleturquoise": "#afeeee",
+            "palevioletred": "#d87093",
+            "papayawhip": "#ffefd5",
+            "peachpuff": "#ffdab9",
+            "peru": "#cd853f",
+            "pink": "#ffc0cb",
+            "plum": "#dda0dd",
+            "powderblue": "#b0e0e6",
+            "purple": "#800080",
+            "red": "#ff0000",
+            "rosybrown": "#bc8f8f",
+            "royalblue": "#4169e1",
+            "saddlebrown": "#8b4513",
+            "salmon": "#fa8072",
+            "sandybrown": "#f4a460",
+            "seagreen": "#2e8b57",
+            "seashell": "#fff5ee",
+            "sienna": "#a0522d",
+            "silver": "#c0c0c0",
+            "skyblue": "#87ceeb",
+            "slateblue": "#6a5acd",
+            "slategray": "#708090",
+            "snow": "#fffafa",
+            "springgreen": "#00ff7f",
+            "steelblue": "#4682b4",
+            "tan": "#d2b48c",
+            "teal": "#008080",
+            "thistle": "#d8bfd8",
+            "tomato": "#ff6347",
+            "turquoise": "#40e0d0",
+            "violet": "#ee82ee",
+            "wheat": "#f5deb3",
+            "white": "#ffffff",
+            "whitesmoke": "#f5f5f5",
+            "yellow": "#ffff00",
+            "yellowgreen": "#9acd32"
+        };
+
+        if (typeof colours[colour.toLowerCase()] != 'undefined')
+            return colours[colour.toLowerCase()];
+
+        return false;
+    },
+
+    stringToColour = function(str) {
+        var hash = 0;
+        for (var i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        var colour = '#';
+        for (var i = 0; i < 3; i++) {
+            var value = (hash >> (i * 8)) & 0xFF;
+            colour += ('00' + value.toString(16)).substr(-2);
+        }
+        return colour;
+    },
+
+    colorNameOrHexToColor = function(str) {
+        str = str.trim();
+        h1 = str.match(/#(?:[0-9a-f]{3}){1,2}$/gi);
+        if (h1 && h1.length == 1) {
+            h = h1[0];
+            if (h.length == 4) {
+                return h[0] + h[1] + h[1] + h[2] + h[2] + h[3] + h[3];
+            }
+            return str;
+        } else {
+            return colourNameToHex(str);
+        }
+    },
+
+    contrast = function(color1, color2) {
+        var c = null;
+        var contrastDfr = $.Deferred();
+        chrome.runtime.sendMessage({
+                type: "get-contrast",
+                c1: color1,
+                c2: color2
+            },
+            function(result) {
+                contrastDfr.resolve(result.contrast);
+                //console.log(result);
+            });
+        return contrastDfr.promise();
+    },
+
+    getContrast = function(id) {
+        var backgroundVal = $("#background").val().trim();
+        var foregroundVal = $("#foreground").val().trim();
+        var backgroundTxt = colorNameOrHexToColor(backgroundVal);
+        var foregroundTxt = colorNameOrHexToColor(foregroundVal);
+        if (backgroundTxt && foregroundTxt) {
+            if (id) {
+                $("#" + id).removeClass("error");
+            } else {
+                $(".txInput").removeClass("error");
+            }
+
+            chrome.storage.sync.set({
+                'background': backgroundVal
+            }, function() {
+                //console.log("background "+backgroundVal+' saved');
+            });
+            chrome.storage.sync.set({
+                'foreground': foregroundVal
+            }, function() {
+                //console.log("foreground "+foregroundVal+' saved');
             });
 
-            return dfd.promise();
-        },
+            $(".example").css("background-color", backgroundTxt);
+            $(".example span").css("color", foregroundTxt);
 
-        validateTab = function(tab) {
-            var dfd = $.Deferred();
-            var url = tab.url;
+            contrast(backgroundTxt, foregroundTxt).done(function(cc) {
+                //cc = Math.round((cc * 10) / 10);
 
-            if (url.indexOf("chrome://") === 0 || url.indexOf("chrome-extension://") === 0) {
-                dfd.reject("Warning: Does not work on internal browser pages.");
-            } else if (url.indexOf("https://chrome.google.com/extensions/") === 0 || url.indexOf("https://chrome.google.com/webstore/") === 0) {
-                dfd.reject("Warning: Does not work on the Chrome Extension Gallery.");
-            } else {
-                dfd.resolve();
-            }
+                $("#contrast span").html(parseFloat(cc).toFixed(2) + ":1");
 
-            return dfd.promise();
-        },
+                if (cc > 7.0) {
+                    $("#contrast span").css("text-shadow", "2px 2px 2px darkgreen");
+                    $(".largeAAA").show();
+                    $(".smallAAA").show();
 
-        colourNameToHex = function(colour) {
-            var colours = {
-                "aliceblue": "#f0f8ff",
-                "antiquewhite": "#faebd7",
-                "aqua": "#00ffff",
-                "aquamarine": "#7fffd4",
-                "azure": "#f0ffff",
-                "beige": "#f5f5dc",
-                "bisque": "#ffe4c4",
-                "black": "#000000",
-                "blanchedalmond": "#ffebcd",
-                "blue": "#0000ff",
-                "blueviolet": "#8a2be2",
-                "brown": "#a52a2a",
-                "burlywood": "#deb887",
-                "cadetblue": "#5f9ea0",
-                "chartreuse": "#7fff00",
-                "chocolate": "#d2691e",
-                "coral": "#ff7f50",
-                "cornflowerblue": "#6495ed",
-                "cornsilk": "#fff8dc",
-                "crimson": "#dc143c",
-                "cyan": "#00ffff",
-                "darkblue": "#00008b",
-                "darkcyan": "#008b8b",
-                "darkgoldenrod": "#b8860b",
-                "darkgray": "#a9a9a9",
-                "darkgreen": "#006400",
-                "darkkhaki": "#bdb76b",
-                "darkmagenta": "#8b008b",
-                "darkolivegreen": "#556b2f",
-                "darkorange": "#ff8c00",
-                "darkorchid": "#9932cc",
-                "darkred": "#8b0000",
-                "darksalmon": "#e9967a",
-                "darkseagreen": "#8fbc8f",
-                "darkslateblue": "#483d8b",
-                "darkslategray": "#2f4f4f",
-                "darkturquoise": "#00ced1",
-                "darkviolet": "#9400d3",
-                "deeppink": "#ff1493",
-                "deepskyblue": "#00bfff",
-                "dimgray": "#696969",
-                "dodgerblue": "#1e90ff",
-                "firebrick": "#b22222",
-                "floralwhite": "#fffaf0",
-                "forestgreen": "#228b22",
-                "fuchsia": "#ff00ff",
-                "gainsboro": "#dcdcdc",
-                "ghostwhite": "#f8f8ff",
-                "gold": "#ffd700",
-                "goldenrod": "#daa520",
-                "gray": "#808080",
-                "green": "#008000",
-                "greenyellow": "#adff2f",
-                "honeydew": "#f0fff0",
-                "hotpink": "#ff69b4",
-                "indianred ": "#cd5c5c",
-                "indigo": "#4b0082",
-                "ivory": "#fffff0",
-                "khaki": "#f0e68c",
-                "lavender": "#e6e6fa",
-                "lavenderblush": "#fff0f5",
-                "lawngreen": "#7cfc00",
-                "lemonchiffon": "#fffacd",
-                "lightblue": "#add8e6",
-                "lightcoral": "#f08080",
-                "lightcyan": "#e0ffff",
-                "lightgoldenrodyellow": "#fafad2",
-                "lightgrey": "#d3d3d3",
-                "lightgreen": "#90ee90",
-                "lightpink": "#ffb6c1",
-                "lightsalmon": "#ffa07a",
-                "lightseagreen": "#20b2aa",
-                "lightskyblue": "#87cefa",
-                "lightslategray": "#778899",
-                "lightsteelblue": "#b0c4de",
-                "lightyellow": "#ffffe0",
-                "lime": "#00ff00",
-                "limegreen": "#32cd32",
-                "linen": "#faf0e6",
-                "magenta": "#ff00ff",
-                "maroon": "#800000",
-                "mediumaquamarine": "#66cdaa",
-                "mediumblue": "#0000cd",
-                "mediumorchid": "#ba55d3",
-                "mediumpurple": "#9370d8",
-                "mediumseagreen": "#3cb371",
-                "mediumslateblue": "#7b68ee",
-                "mediumspringgreen": "#00fa9a",
-                "mediumturquoise": "#48d1cc",
-                "mediumvioletred": "#c71585",
-                "midnightblue": "#191970",
-                "mintcream": "#f5fffa",
-                "mistyrose": "#ffe4e1",
-                "moccasin": "#ffe4b5",
-                "navajowhite": "#ffdead",
-                "navy": "#000080",
-                "oldlace": "#fdf5e6",
-                "olive": "#808000",
-                "olivedrab": "#6b8e23",
-                "orange": "#ffa500",
-                "orangered": "#ff4500",
-                "orchid": "#da70d6",
-                "palegoldenrod": "#eee8aa",
-                "palegreen": "#98fb98",
-                "paleturquoise": "#afeeee",
-                "palevioletred": "#d87093",
-                "papayawhip": "#ffefd5",
-                "peachpuff": "#ffdab9",
-                "peru": "#cd853f",
-                "pink": "#ffc0cb",
-                "plum": "#dda0dd",
-                "powderblue": "#b0e0e6",
-                "purple": "#800080",
-                "red": "#ff0000",
-                "rosybrown": "#bc8f8f",
-                "royalblue": "#4169e1",
-                "saddlebrown": "#8b4513",
-                "salmon": "#fa8072",
-                "sandybrown": "#f4a460",
-                "seagreen": "#2e8b57",
-                "seashell": "#fff5ee",
-                "sienna": "#a0522d",
-                "silver": "#c0c0c0",
-                "skyblue": "#87ceeb",
-                "slateblue": "#6a5acd",
-                "slategray": "#708090",
-                "snow": "#fffafa",
-                "springgreen": "#00ff7f",
-                "steelblue": "#4682b4",
-                "tan": "#d2b48c",
-                "teal": "#008080",
-                "thistle": "#d8bfd8",
-                "tomato": "#ff6347",
-                "turquoise": "#40e0d0",
-                "violet": "#ee82ee",
-                "wheat": "#f5deb3",
-                "white": "#ffffff",
-                "whitesmoke": "#f5f5f5",
-                "yellow": "#ffff00",
-                "yellowgreen": "#9acd32"
-            };
+                    $(".largeAA").hide();
+                    $(".smallAA").hide();
 
-            if (typeof colours[colour.toLowerCase()] != 'undefined')
-                return colours[colour.toLowerCase()];
-
-            return false;
-        },
-
-        stringToColour = function(str) {
-            var hash = 0;
-            for (var i = 0; i < str.length; i++) {
-                hash = str.charCodeAt(i) + ((hash << 5) - hash);
-            }
-            var colour = '#';
-            for (var i = 0; i < 3; i++) {
-                var value = (hash >> (i * 8)) & 0xFF;
-                colour += ('00' + value.toString(16)).substr(-2);
-            }
-            return colour;
-        },
-
-        colorNameOrHexToColor = function(str) {
-            str = str.trim();
-            h1 = str.match(/#(?:[0-9a-f]{3}){1,2}$/gi);
-            if (h1 && h1.length == 1) {
-                h = h1[0];
-                if (h.length == 4) {
-                    return h[0] + h[1] + h[1] + h[2] + h[2] + h[3] + h[3];
+                    $(".large").hide();
+                    $(".small").hide();
                 }
-                return str;
-            } else {
-                return colourNameToHex(str);
-            }
-        },
+                else if (cc > 4.5) {
+                    $("#contrast span").css("text-shadow", "2px 2px 2px orange");
+                    $(".largeAAA").show();
+                    $(".smallAAA").hide();
 
-        contrast = function(color1, color2) {
-            var c = null;
-            var contrastDfr = $.Deferred();
-            chrome.runtime.sendMessage({
-                    type: "get-contrast",
-                    c1: color1,
-                    c2: color2
-                },
-                function(result) {
-                    contrastDfr.resolve(result.contrast);
-                    //console.log(result);
-                });
-            return contrastDfr.promise();
-        },
+                    $(".largeAA").hide();
+                    $(".smallAA").show();
 
-        getContrast = function(id) {
-            var backgroundVal = $("#background").val().trim();
-            var foregroundVal = $("#foreground").val().trim();
-            var backgroundTxt = colorNameOrHexToColor(backgroundVal);
-            var foregroundTxt = colorNameOrHexToColor(foregroundVal);
-            if (backgroundTxt && foregroundTxt) {
-                if (id) {
-                    $("#" + id).removeClass("error");
+                    $(".large").hide();
+                    $(".small").hide();
+                } else if (cc > 3.0) {
+                    $("#contrast span").css("text-shadow", "2px 2px 2px orangered");
+                    $(".largeAAA").hide();
+                    $(".smallAAA").hide();
+
+                    $(".largeAA").show();
+                    $(".smallAA").hide();
+
+                    $(".large").hide();
+                    $(".small").show();
                 } else {
-                    $(".txInput").removeClass("error");
+                    $("#contrast span").css("text-shadow", "2px 2px 2px red");
+                    $(".largeAAA").hide();
+                    $(".smallAAA").hide();
+
+                    $(".largeAA").hide();
+                    $(".smallAA").hide();
+
+                    $(".large").show();
+                    $(".small").show();
                 }
-
-                chrome.storage.sync.set({
-                    'background': backgroundVal
-                }, function() {
-                    //console.log("background "+backgroundVal+' saved');
-                });
-                chrome.storage.sync.set({
-                    'foreground': foregroundVal
-                }, function() {
-                    //console.log("foreground "+foregroundVal+' saved');
-                });
-
-                $(".example").css("background-color", backgroundTxt);
-                $(".example span").css("color", foregroundTxt);
-
-                contrast(backgroundTxt, foregroundTxt).done(function(cc) {
-                    //cc = Math.round((cc * 10) / 10);
-
-                    $("#contrast span").html(parseFloat(cc).toFixed(2) + ":1");
-
-                    if (cc > 7.0) {
-                        $("#contrast span").css("text-shadow", "2px 2px 2px darkgreen");
-                        $(".largeAAA").show();
-                        $(".smallAAA").show();
-
-                        $(".largeAA").hide();
-                        $(".smallAA").hide();
-
-                        $(".large").hide();
-                        $(".small").hide();
-                    }
-                    else if (cc > 4.5) {
-                        $("#contrast span").css("text-shadow", "2px 2px 2px orange");
-                        $(".largeAAA").show();
-                        $(".smallAAA").hide();
-
-                        $(".largeAA").hide();
-                        $(".smallAA").show();
-
-                        $(".large").hide();
-                        $(".small").hide();
-                    } else if (cc > 3.0) {
-                        $("#contrast span").css("text-shadow", "2px 2px 2px orangered");
-                        $(".largeAAA").hide();
-                        $(".smallAAA").hide();
-
-                        $(".largeAA").show();
-                        $(".smallAA").hide();
-
-                        $(".large").hide();
-                        $(".small").show();
-                    } else {
-                        $("#contrast span").css("text-shadow", "2px 2px 2px red");
-                        $(".largeAAA").hide();
-                        $(".smallAAA").hide();
-
-                        $(".largeAA").hide();
-                        $(".smallAA").hide();
-
-                        $(".large").show();
-                        $(".small").show();
-                    }
-                });
+            });
+        } else {
+            if (id) {
+                $("#" + id).addClass("error");
             } else {
-                if (id) {
-                    $("#" + id).addClass("error");
-                } else {
-                    $(".txInput").addClass("error");
-                }
-                $("#contrast span").css("text-shadow", "2px 2px 2px transparent");
-            };
+                $(".txInput").addClass("error");
+            }
+            $("#contrast span").css("text-shadow", "2px 2px 2px transparent");
         };
+    };
 
     pickAction = function(t) {
         //console.log(t.currentTarget);
@@ -351,27 +351,27 @@ $(document).ready(function() {
     };
 
     scriptDesc = function(script) {
-            return (
-                script.file ? {
-                    allFrames: script.allFrames,
-                    "file": script.content
-                } : {
-                    allFrames: script.allFrames,
-                    "code": script.content
-                }
-            )
-        },
+        return (
+            script.file ? {
+                allFrames: script.allFrames,
+                "file": script.content
+            } : {
+                allFrames: script.allFrames,
+                "code": script.content
+            }
+        )
+    },
 
-        loadScripts = function(tabid, scripts, dfr) {
-            options = scriptDesc(scripts.shift());
-            chrome.tabs.executeScript(tabid, options, function() {
-                if (scripts.length != 0)
-                    loadScripts(tabid, scripts, dfr);
-                else
-                    dfr.resolve();
-            });
-            return dfr.promise();
-        }
+    loadScripts = function(tabid, scripts, dfr) {
+        options = scriptDesc(scripts.shift());
+        chrome.tabs.executeScript(tabid, options, function() {
+            if (scripts.length != 0)
+                loadScripts(tabid, scripts, dfr);
+            else
+                dfr.resolve();
+        });
+        return dfr.promise();
+    }
 
     closePopup = function() {
         window.close();
@@ -393,14 +393,12 @@ $(document).ready(function() {
     });
 
     chrome.storage.sync.get(['clickType'], function(a) {
-        if(a['clickType']) {
+        if(a['clickType'] == undefined || a['clickType']) {
             $('.pickOne').hide();
-
             $('.pickAll').show();
             $('.pick1').on('click', pickAction);
         } else {
             $('.pickAll').hide();
-
             $('.pickOne').show();
             $('.pick').on('click', pickAction);
         }

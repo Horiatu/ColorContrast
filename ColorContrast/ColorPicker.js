@@ -367,6 +367,9 @@ var ColorPicker = function() {
                     "    <filter id='achromatomaly'>\n"+
                     "        <feColorMatrix type='matrix' values='0.618 0.320 0.062 0 0 0.163 0.775 0.062 0 0 0.163 0.320 0.516 0 0 0 0 0 1 0'/>\n"+
                     "    </filter>\n"+
+                    "    <filter id='normalFilter'>\n"+
+                    "        <feColorMatrix type='matrix' values='1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0'/>\n"+
+                    "    </filter>\n"+
                     "</svg>";
 
                 $("body").append(s);
@@ -416,6 +419,7 @@ var ColorPicker = function() {
 
                         var t = contentDocument.createElement("Table");
                         t.setAttribute("cellspacing", 1);
+                        //t.setAttribute("class", "normalFilter");
                         ColorPicker.colorPickerViewer.appendChild(t);
 
                         _public.dotArray = Array();
@@ -516,6 +520,8 @@ var ColorPicker = function() {
                         $('#menu1-submenu').append('<li><a id="UpRight">Up-Right</a></li>');
                         $('#menu1-submenu').append('<li><hr/></li>');
                         $('#menu1-submenu').append('<li><a id="ShowSample">Show Sample</a></li>');
+                        $('#menu1-submenu').append('<li><a id="FContrast">Fix Contrast</a></li>');
+                        $('#menu1-submenu').append('<li><a id="ApplyFilter">Challenged Vision</a></li>');
                         $('#menu1-submenu').append('<li><a id="ExitColorPicker">Exit</a></li>');
 
                         $('#colorPickerToolbar').append('<input id="CopyBox" type="text" style="display: none; position: absolute; overflow-x: hidden; overflow-y: hidden;"></input>');
