@@ -46,7 +46,7 @@ Background.getOptionOrDefault = function(a, option, value) {
 
 Background.getDefaults = function() {
     var gdDfr = $.Deferred();
-    chrome.storage.sync.get(['magnifierGlass', 'MapBg', 'clickType', 'autoCopy', 'toolbar', 'sample', 'position', 'gridSize'],
+    chrome.storage.sync.get(['magnifierGlass', 'MapBg', 'clickType', 'autoCopy', 'toolbar', 'sample', 'position', 'gridSize', 'eyeType'],
     function(a) {
         defaults = {
             type:'defaults',
@@ -58,7 +58,7 @@ Background.getDefaults = function() {
             sample : Background.getOptionOrDefault(a, 'sample', true), 
             position : Background.getOptionOrDefault(a, 'position', {up:true, left:true}), 
             gridSize : Background.getOptionOrDefault(a, 'gridSize', 13),
-            eyeType : Background.getOptionOrDefault(a, 'eyeType', 'EyeNormal')
+            eyeType : Background.getOptionOrDefault(a, 'eyeType', 'NormalVision')
         };
         gdDfr.resolve(defaults);
     });

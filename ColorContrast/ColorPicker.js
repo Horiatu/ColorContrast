@@ -22,14 +22,13 @@ var ColorPicker = function() {
         showToolbar: false,
 
         screenshotDfr: null,
-        optionsDfr: null,
 
         canvas: document.createElement("canvas"),
         rects: [],
 
         gridSize: 7,
         reqColor: null,
-        eyeType: 'EyeNormal',
+        eyeType: 'NormalVision',
 
         rectInRect: function(A, B) {
             return (A.x >= B.x && A.y >= B.y && (A.x + A.width) <= (B.x + B.width) && (A.y + A.height) <= (B.y + B.height))
@@ -318,8 +317,7 @@ var ColorPicker = function() {
             $(_public.colorPickerViewer).css('display', 'none');
         },
 
-        init: function(contentDocument) {
-
+        injectCss: function(contentDocument) {
             if(!contentDocument.getElementById("colorPickerCss")) {
                 var colorPickerCss = '<link id="colorPickerCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('ColorPicker.css') + '" />';
                 if ($("head").length == 0) {
@@ -327,7 +325,9 @@ var ColorPicker = function() {
                 } else {
                     $("head").append(colorPickerCss);
                 }
+            }
 
+            if(!contentDocument.getElementById("dropitrCss")) {
                 var dropitCss = '<link id="dropitrCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('dropit.css') + '" />';
                 if ($("head").length == 0) {
                     $("body").before(dropitCss);
@@ -335,16 +335,40 @@ var ColorPicker = function() {
                     $("head").append(dropitCss);
                 }
             }
+        },
 
-            $("body").append('<div id="ColorPickerLdr"></div>');
-            $("#ColorPickerLdr").append('<div id="ColorPickerOvr" style="cursor: url(' + chrome.extension.getURL("Images/Cursors/pickColor.cur") + '), crosshair !important;"></div>');
-            
-            $(window).bind('keyup', _private.EscShortcut);
+        init: function(contentDocument) {
 
-            _private.removeMouseSupport();
-            _private.addMouseSupport();
+            _private.YOffset = $(document).scrollTop();
+            _private.XOffset = $(document).scrollLeft();
 
-            _private.getOptions().done(function() {
+            optionsDfr = $.Deferred();
+            chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
+                switch (req.type) {
+                    case 'defaults':
+                        options = req;
+                        optionsDfr.resolve(req);
+                        break;
+                    case 'error':
+                        alert(req.msg);
+                        break;
+                }
+            });
+
+            _private.getOptions(optionsDfr).done(function() {
+
+                _private.injectCss(contentDocument);
+                
+                if(!contentDocument.getElementById("ColorPickerLdr")) {
+                    $("body").append('<div id="ColorPickerLdr"></div>');
+                    $("#ColorPickerLdr").append('<div id="ColorPickerOvr" style="cursor: url(' + chrome.extension.getURL("Images/Cursors/pickColor.cur") + '), crosshair !important;"></div>');
+                }
+                $('#ColorPickerOvr').hide();
+
+                $(window).bind('keyup', _private.EscShortcut);
+
+                _private.removeMouseSupport();
+                _private.addMouseSupport();
 
                 if(options.magnifierGlass != 'none') {
                     if (!contentDocument.getElementById("colorPickerViewer")) {
@@ -449,12 +473,12 @@ var ColorPicker = function() {
                         $('#menu1-trigger').append('<ul id="menu1-submenu" class="dropit-submenu" style="display: none;"></ul>');
                         $('#menu1-submenu').append('<li><a id="CopyFr">Copy Foreground</a></li>');
                         $('#menu1-submenu').append('<li><a id="CopyBg">Copy Background</a></li>');
+                        $('#menu1-submenu').append('<li><a id="ToggleColors">Toggle Colors</a></li>');
                         $('#menu1-submenu').append('<li><hr/></li>');
                         $('#menu1-submenu').append('<li><a id="UpLeft">Up-Left</a></li>');
                         $('#menu1-submenu').append('<li><a id="UpRight">Up-Right</a></li>');
                         $('#menu1-submenu').append('<li><hr/></li>');
                         $('#menu1-submenu').append('<li><a id="ShowSample">Show Sample</a></li>');
-                        $('#menu1-submenu').append('<li><a id="ToggleColors">Toggle Colors</a></li>');
                         $('#menu1-submenu').append('<li><a id="ExitColorPicker">Exit</a></li>');
 
                         $('#colorPickerToolbar').append('<input id="CopyBox" type="text" style="display: none; position: absolute; overflow-x: hidden; overflow-y: hidden;"></input>');
@@ -502,42 +526,35 @@ var ColorPicker = function() {
                             _private.setToolbarPosition(pos);
                         });
 
-                        _private.sendMessage({type: 'get-colors'});
+                        // _private.sendMessage({type: 'get-colors'});
                         _private.showToolbar = true;
                     };
-               };
-            });
+                };
 
-            chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
-                switch (req.type) {
-                    case 'update-image':
-                        _private.capture(req.data);
-                        break;
-                    case 'get-colors':
-                        $('.Sample').parent().css('color', req.color).css('background-color', req.bgcolor);
-                        _private.reqColor = req.reqcolor;
-                        _private.contrast(req.color, req.bgcolor).done(function(c) {
-                            _private.showContrast(c);
-                            _private.colorTxt.innerHTML = req.color !=='transparent' ? req.color : '#ffffff';
+                chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
+                    switch (req.type) {
+                        case 'update-image':
+                            _private.capture(req.data);
+                            break;
+                        case 'get-colors':
+                            $('.Sample').parent().css('color', req.color).css('background-color', req.bgcolor);
+                            _private.reqColor = req.reqcolor;
+                            _private.contrast(req.color, req.bgcolor).done(function(c) {
+                                _private.showContrast(c);
+                                _private.colorTxt.innerHTML = req.color !=='transparent' ? req.color : '#ffffff';
 
-                            if(options.sample) _private.ShowContrastSample(true);
-                        });
-                        break;
-                    case 'error':
-                        alert(req.msg);
-                        break;
-                    case 'defaults':
-                        options = req;
-                        optionsDfr.resolve(req);
-                        break;
-                }
-            });
+                                if(options.sample) _private.ShowContrastSample(true);
+                            });
+                            break;
+                    }
+                });
 
-            _private.YOffset = $(document).scrollTop();
-            _private.XOffset = $(document).scrollLeft();
-
-            _private.screenshot().done(function() {
-                //console.log(0);
+                _private.screenshot().done(function() {
+                    $('#ColorPickerOvr').show(function() {
+                        if(_private.showToolbar)
+                            _private.sendMessage({type: 'get-colors'});
+                    });
+                });
             });
         },
 
@@ -554,7 +571,21 @@ var ColorPicker = function() {
             if (!$colorPickerSample.length) {
                $('#ColorPickerOvr').prepend("<div id='colorPickerSample'></div>");
                $colorPickerSample = $('#colorPickerSample');
-               $colorPickerSample.on('mouseenter', _private.removeMouseSupport).on('mouseleave', _private.addMouseSupport);
+               $colorPickerSample
+                    .on('mouseenter', function() {
+                        $ColorPickerViewer = $('#ColorPickerViewer');
+                        if($ColorPickerViewer.length) {
+                            $ColorPickerViewer.hide();
+                        }
+                        _private.removeMouseSupport();
+                    })
+                    .on('mouseleave', function() {
+                        $ColorPickerViewer = $('#ColorPickerViewer');
+                        if($ColorPickerViewer.length) {
+                            $ColorPickerViewer.show();
+                        }
+                        _private.addMouseSupport();
+                    });
                $colorPickerSample.load(chrome.extension.getURL("TextSample.html"), function() {
                     $colorPickerSample.append("<div id='PickerSampleclose' class='PickerSampleBtn PickerSampleHover shadowed'><img src='"+chrome.extension.getURL("Images/close.png")+"' title='close (image)'></img></div>");
                     $('#PickerSampleclose').click(function(e) {
@@ -586,17 +617,17 @@ var ColorPicker = function() {
                     });
 
                     $colorPickerSample.append("<div id='PickerSampleEye' class='PickerSampleBtn shadowed'>"+
-                        //"<img src='"+chrome.extension.getURL("Images/DisabledEye.png")+"' title='See through dissabled eye'></img>"+
+                        //"<img src='"+chrome.extension.getURL("Images/DisabledEye.png")+"' title='Challenged vision'></img>"+
                         "</div>");
 
                     $('#PickerSampleEye').append('<ul id="eye-menu" class="Menu dropit"></ul>');
                     $('#eye-menu').append('<li id="eye-trigger" class="dropit-trigger"><a>'+
-                        '<img src='+chrome.extension.getURL("Images/DisabledEye.png")+' title="See through dissabled eye"></img>'+
+                        '<img src='+chrome.extension.getURL("Images/DisabledEye.png")+' title="Challenged vision"></img>'+
                         '</a></li>');
                     $('#eye-trigger').append('<ul id="eye-submenu" class="dropit-submenu" style="display: none;"></ul>');
                     
                     yesSrc = chrome.extension.getURL("Images/Yes.png");
-                    $('#eye-submenu').append('<li><a id="EyeNormal"><img src="'+yesSrc+'"></img>&nbsp;Normal</a></li>');
+                    $('#eye-submenu').append('<li><a id="NormalVision"><img src="'+yesSrc+'"></img>&nbsp;Normal Vision</a></li>');
                     $('#eye-submenu').append('<li><a id="Protanopia"><img src="'+yesSrc+'"></img>&nbsp;Protanopia</a></li>');
                     $('#eye-submenu').append('<li><a id="Deuteranopia"><img src="'+yesSrc+'"></img>&nbsp;Deuteranopia</a></li>');
                     $('#eye-submenu').append('<li><a id="Tritanopia"><img src="'+yesSrc+'"></img>&nbsp;Tritanopia</a></li>');
@@ -618,6 +649,7 @@ var ColorPicker = function() {
                 $colorPickerSample.hide();
                 $('#ShowSample').html("Show Sample");
             }
+
             $colorPickerSample.width($('#colorPickerToolbar').width());
             $colorPickerSample.addClass($('#colorPickerToolbar').hasClass('left') ? 'left' : 'right');
 
@@ -684,8 +716,7 @@ var ColorPicker = function() {
             return contrastDfr.promise();
         },
 
-        getOptions: function() {
-            optionsDfr = $.Deferred();
+        getOptions: function(optionsDfr) {
             if(_private.options) {
                optionsDfr.resolve(_private.options); 
             } 
