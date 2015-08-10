@@ -520,9 +520,10 @@ var ColorPicker = function() {
                         $('#menu1-submenu').append('<li><a id="UpRight">Up-Right</a></li>');
                         $('#menu1-submenu').append('<li><hr/></li>');
                         $('#menu1-submenu').append('<li><a id="ShowSample">Show Sample</a></li>');
-                        $('#menu1-submenu').append('<li><a id="FContrast">Fix Contrast</a></li>');
-                        $('#menu1-submenu').append('<li><a id="ApplyFilter">Challenged Vision</a></li>');
+                        //$('#menu1-submenu').append('<li><a id="ApplyFilter">Challenged Vision</a></li>');
+                        //$('#menu1-submenu').append('<li><a id="FContrast">Fix Contrast</a></li>');
                         $('#menu1-submenu').append('<li><a id="ExitColorPicker">Exit</a></li>');
+
 
                         $('#colorPickerToolbar').append('<input id="CopyBox" type="text" style="display: none; position: absolute; overflow-x: hidden; overflow-y: hidden;"></input>');
 
@@ -616,16 +617,14 @@ var ColorPicker = function() {
                $colorPickerSample = $('#colorPickerSample');
                $colorPickerSample
                     .on('mouseenter', function() {
-                        $ColorPickerViewer = $('#ColorPickerViewer');
-                        if($ColorPickerViewer.length) {
-                            $ColorPickerViewer.hide();
+                        if(options.magnifierGlass != 'none') {
+                            $('#ColorPickerViewer').hide();
                         }
                         _private.removeMouseSupport();
                     })
                     .on('mouseleave', function() {
-                        $ColorPickerViewer = $('#ColorPickerViewer');
-                        if($ColorPickerViewer.length) {
-                            $ColorPickerViewer.show();
+                        if(options.magnifierGlass != 'none') {
+                            $('#ColorPickerViewer').show();
                         }
                         _private.addMouseSupport();
                     });
@@ -693,64 +692,18 @@ var ColorPicker = function() {
                     $('#eye-menu li ul li a').click(function() { 
                         //console.log($(this).attr('id'));
                         $('#eye-menu li ul li a img').hide();
-                        _private.eyeType = $(this).attr('id');
+                        id = $(this).attr('id');
+                        _private.eyeType = id;
                         $('#'+_private.eyeType + ' img').show();
+                        
                         chrome.storage.sync.set({'eyeType':_private.eyeType});
-                    });
-
-                    $('#NormalVision').click(function() {
+                        
                         _private.normalVision();
+                        if(id != 'NormalVision') {
+                            $('body').addClass(id);
+                        }
                     });
 
-                    $('#BlackAndWhite').click(function() {
-                         _private.normalVision();
-                        $('body').addClass('Desaturate');
-                    });
-
-                    $('#BlurVision').click(function() {
-                         _private.normalVision();
-                        $('body').addClass('Blur');
-                    });
-
-                    $('#Protanopia').click(function() {
-                         _private.normalVision();
-                        $('body').addClass('protanopia');
-                    });
-
-                    $('#Protanomaly').click(function() {
-                         _private.normalVision();
-                        $('body').addClass('protanomaly');
-                    });
-
-                    $('#Deuteranopia').click(function() {
-                         _private.normalVision();
-                        $('body').addClass('deuteranopia');
-                    });
-
-                    $('#Deuteranomaly').click(function() {
-                         _private.normalVision();
-                        $('body').addClass('deuteranomaly');
-                    });
-
-                    $('#Tritanopia').click(function() {
-                         _private.normalVision();
-                        $('body').addClass('tritanopia');
-                    });
-
-                    $('#Tritanomaly').click(function() {
-                         _private.normalVision();
-                        $('body').addClass('tritanomaly');
-                    });
-
-                    $('#Achromatopsia').click(function() {
-                         _private.normalVision();
-                        $('body').addClass('achromatopsia');
-                    });
-
-                    $('#Achromatomaly').click(function() {
-                         _private.normalVision();
-                        $('body').addClass('achromatomaly');
-                    });
                 });
                 $colorPickerSample.hide();
                 $('#ShowSample').html("Show Sample");
@@ -760,8 +713,13 @@ var ColorPicker = function() {
             $colorPickerSample.addClass($('#colorPickerToolbar').hasClass('left') ? 'left' : 'right');
 
             if(showAnyway) {
-                $colorPickerSample.show("slow", _private.setSampleColors);
-                $('#ShowSample').html("Hide Sample");
+                $colorPickerSample.show("slow", function() {
+                    _private.setSampleColors();
+                    $('#ShowSample').html("Hide Sample");
+
+                    _private.normalVision();
+                    $('body').addClass(_private.eyeType);
+                });
             } else {
                 if(!$colorPickerSample.is(":visible")) 
                 {
@@ -778,12 +736,11 @@ var ColorPicker = function() {
 
         normalVision: function() {
             $('body')
-                .removeClass('Blur')
-                .removeClass('Desaturate')
-                .removeClass('protanopia').removeClass('protanomaly')
-                .removeClass('deuteranopia').removeClass('deuteranomaly')
-                .removeClass('tritanopia').removeClass('tritanomaly')
-                .removeClass('achromatopsia').removeClass('achromatomaly')
+                .removeClass('BlackAndWhite').removeClass('BlurVision')
+                .removeClass('Protanopia').removeClass('Protanomaly')
+                .removeClass('Deuteranopia').removeClass('Deuteranomaly')
+                .removeClass('Tritanopia').removeClass('Tritanomaly')
+                .removeClass('Achromatopsia').removeClass('Achromatomaly')
                 ;
         },
 

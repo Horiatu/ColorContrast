@@ -251,19 +251,19 @@
     margin-top: 3px;
 }
 
-.Blur {
+.BlurVision {
 	-webkit-filter: blur(1px);
 	filter: url(#blur);
 	filter: blur(1px);
 }
 
-.Desaturate{
+.BlackAndWhite{
 	-webkit-filter: grayscale(100%);
 	filter: grayscale(100%);
 	filter: url(desaturate.svg#greyscale);
 }
 
-.protanopia {
+.Protanopia {
 	-webkit-filter: url(#protanopia);
 	   -moz-filter: url(#protanopia);
 	    -ms-filter: url(#protanopia);
@@ -271,7 +271,7 @@
 	        filter: url(#protanopia); /* Firefox 3.5+ */
 }
 
-.protanomaly {
+.Protanomaly {
 	-webkit-filter: url(#protanomaly);
 	   -moz-filter: url(#protanomaly);
 	    -ms-filter: url(#protanomaly);
@@ -279,7 +279,7 @@
 	        filter: url(#protanomaly); /* Firefox 3.5+ */
 }
 
-.deuteranopia {
+.Deuteranopia {
 	-webkit-filter: url(#deuteranopia);
 	   -moz-filter: url(#deuteranopia);
 	    -ms-filter: url(#deuteranopia);
@@ -287,7 +287,7 @@
 	        filter: url(#deuteranopia); /* Firefox 3.5+ */
 }
 
-.deuteranomaly {
+.Deuteranomaly {
 	-webkit-filter: url(#deuteranomaly);
 	   -moz-filter: url(#deuteranomaly);
 	    -ms-filter: url(#deuteranomaly);
@@ -295,7 +295,7 @@
 	        filter: url(#deuteranomaly); /* Firefox 3.5+ */
 }
 
-.tritanopia {
+.Tritanopia {
 	-webkit-filter: url(#tritanopia);
 	   -moz-filter: url(#tritanopia);
 	    -ms-filter: url(#tritanopia);
@@ -303,7 +303,7 @@
 	        filter: url(#tritanopia); /* Firefox 3.5+ */
 }
 
-.tritanomaly {
+.Tritanomaly {
 	-webkit-filter: url(#tritanomaly);
 	   -moz-filter: url(#tritanomaly);
 	    -ms-filter: url(#tritanomaly);
@@ -311,7 +311,7 @@
 	        filter: url(#tritanomaly); /* Firefox 3.5+ */
 }
 
-.achromatopsia {
+.Achromatopsia {
 	-webkit-filter: url(#achromatopsia);
 	   -moz-filter: url(#achromatopsia);
 	    -ms-filter: url(#achromatopsia);
@@ -319,7 +319,7 @@
 	        filter: url(#achromatopsia); /* Firefox 3.5+ */
 }
 
-.achromatomaly {
+.Achromatomaly {
 	-webkit-filter: url(#achromatomaly);
 	   -moz-filter: url(#achromatomaly);
 	    -ms-filter: url(#achromatomaly);
@@ -327,7 +327,7 @@
 	        filter: url(#achromatomaly); /* Firefox 3.5+ */
 }
 
-.normalFilter {
+.NormalFilter {
 	-webkit-filter: url(#normalFilter);
 	   -moz-filter: url(#normalFilter);
 	    -ms-filter: url(#normalFilter);

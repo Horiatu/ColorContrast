@@ -100,3 +100,7 @@
   margin: 2px;
 }
 
+.dropit .dropit-open {
+  opacity:1;
+}
+
