@@ -346,11 +346,26 @@ var ColorPicker = function() {
                     "    <filter id='protanopia'>\n"+
                     "        <feColorMatrix type='matrix' values='0.56667 0.43333 0.00000 0 0 0.55833 0.44167 0.00000 0 0 0.00000 0.24167 0.75833 0 0 0 0 0 1 0'/>\n"+
                     "    </filter>\n"+
+                    "    <filter id='protanomaly'>\n"+
+                    "        <feColorMatrix type='matrix' values='0.817 0.183 0 0 0 0.333 0.667 0 0 0 0 0.125 0.875 0 0 0 0 0 1 0'/>\n"+
+                    "    </filter>\n"+
                     "    <filter id='deuteranopia'>\n"+
                     "        <feColorMatrix type='matrix' values='0.4251 0.6934 -0.1147 0 0 0.3417 0.5882 0.0692 0 0 -0.0105 0.0234 0.9870 0 0 0 0 0 1 0'/>\n"+
                     "    </filter>\n"+
+                    "    <filter id='deuteranomaly'>\n"+
+                    "        <feColorMatrix type='matrix' values='0.8 0.2 0 0 0 0.258 0.742 0 0 0 0 0.142 0.858 0 0 0 0 0 1 0'/>\n"+
+                    "    </filter>\n"+
                     "    <filter id='tritanopia'>\n"+
                     "        <feColorMatrix type='matrix' values='0.95000 0.05000 0.00000 0 0 0.00000 0.43333 0.56700 0 0 0.00000 0.47500 0.52500 0 0 0 0 0 1 0'/>\n"+
+                    "    </filter>\n"+
+                    "    <filter id='tritanomaly'>\n"+
+                    "        <feColorMatrix type='matrix' values='0.967 0.033 0 0 0 0 0.733 0.267 0 0 0 0.183 0.817 0 0 0 0 0 1 0'/>\n"+
+                    "    </filter>\n"+
+                    "    <filter id='achromatopsia'>\n"+
+                    "        <feColorMatrix type='matrix' values='0.299 0.587 0.114 0 0 0.299 0.587 0.114 0 0 0.299 0.587 0.114 0 0 0 0 0 1 0'/>\n"+
+                    "    </filter>\n"+
+                    "    <filter id='achromatomaly'>\n"+
+                    "        <feColorMatrix type='matrix' values='0.618 0.320 0.062 0 0 0.163 0.775 0.062 0 0 0.163 0.320 0.516 0 0 0 0 0 1 0'/>\n"+
                     "    </filter>\n"+
                     "</svg>";
 
@@ -651,8 +666,13 @@ var ColorPicker = function() {
                     yesSrc = chrome.extension.getURL("Images/Yes.png");
                     $('#eye-submenu').append('<li><a id="NormalVision"><img src="'+yesSrc+'"></img>&nbsp;Normal Vision</a></li>');
                     $('#eye-submenu').append('<li><a id="Protanopia"><img src="'+yesSrc+'"></img>&nbsp;Protanopia</a></li>');
+                    $('#eye-submenu').append('<li><a id="Protanomaly"><img src="'+yesSrc+'"></img>&nbsp;Protanomaly</a></li>');
                     $('#eye-submenu').append('<li><a id="Deuteranopia"><img src="'+yesSrc+'"></img>&nbsp;Deuteranopia</a></li>');
+                    $('#eye-submenu').append('<li><a id="Deuteranomaly"><img src="'+yesSrc+'"></img>&nbsp;Deuteranomaly</a></li>');
                     $('#eye-submenu').append('<li><a id="Tritanopia"><img src="'+yesSrc+'"></img>&nbsp;Tritanopia</a></li>');
+                    $('#eye-submenu').append('<li><a id="Tritanomaly"><img src="'+yesSrc+'"></img>&nbsp;Tritanomaly</a></li>');
+                    $('#eye-submenu').append('<li><a id="Achromatopsia"><img src="'+yesSrc+'"></img>&nbsp;Achromatopsia</a></li>');
+                    $('#eye-submenu').append('<li><a id="Achromatomaly"><img src="'+yesSrc+'"></img>&nbsp;Achromatomaly</a></li>');
                     $('#eye-submenu').append('<li><hr></hr></li>');
                     $('#eye-submenu').append('<li><a id="BlackAndWhite"><img src="'+yesSrc+'"></img>&nbsp;Black And White</a></li>');
                     $('#eye-submenu').append('<li><a id="BlurVision"><img src="'+yesSrc+'"></img>&nbsp;Blur</a></li>');
@@ -691,14 +711,39 @@ var ColorPicker = function() {
                         $('body').addClass('protanopia');
                     });
 
+                    $('#Protanomaly').click(function() {
+                         _private.normalVision();
+                        $('body').addClass('protanomaly');
+                    });
+
                     $('#Deuteranopia').click(function() {
                          _private.normalVision();
                         $('body').addClass('deuteranopia');
                     });
 
+                    $('#Deuteranomaly').click(function() {
+                         _private.normalVision();
+                        $('body').addClass('deuteranomaly');
+                    });
+
                     $('#Tritanopia').click(function() {
                          _private.normalVision();
                         $('body').addClass('tritanopia');
+                    });
+
+                    $('#Tritanomaly').click(function() {
+                         _private.normalVision();
+                        $('body').addClass('tritanomaly');
+                    });
+
+                    $('#Achromatopsia').click(function() {
+                         _private.normalVision();
+                        $('body').addClass('achromatopsia');
+                    });
+
+                    $('#Achromatomaly').click(function() {
+                         _private.normalVision();
+                        $('body').addClass('achromatomaly');
                     });
                 });
                 $colorPickerSample.hide();
@@ -729,9 +774,11 @@ var ColorPicker = function() {
             $('body')
                 .removeClass('Blur')
                 .removeClass('Desaturate')
-                .removeClass('protanopia')
-                .removeClass('deuteranopia')
-                .removeClass('tritanopia');
+                .removeClass('protanopia').removeClass('protanomaly')
+                .removeClass('deuteranopia').removeClass('deuteranomaly')
+                .removeClass('tritanopia').removeClass('tritanomaly')
+                .removeClass('achromatopsia').removeClass('achromatomaly')
+                ;
         },
 
         toggleColors: function() {
