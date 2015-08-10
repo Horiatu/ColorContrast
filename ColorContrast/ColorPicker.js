@@ -631,6 +631,10 @@ var ColorPicker = function() {
                     $('#eye-submenu').append('<li><a id="Protanopia"><img src="'+yesSrc+'"></img>&nbsp;Protanopia</a></li>');
                     $('#eye-submenu').append('<li><a id="Deuteranopia"><img src="'+yesSrc+'"></img>&nbsp;Deuteranopia</a></li>');
                     $('#eye-submenu').append('<li><a id="Tritanopia"><img src="'+yesSrc+'"></img>&nbsp;Tritanopia</a></li>');
+                    $('#eye-submenu').append('<li><hr></hr></li>');
+                    $('#eye-submenu').append('<li><a id="BlackAndWhite"><img src="'+yesSrc+'"></img>&nbsp;Black And White</a></li>');
+                    $('#eye-submenu').append('<li><a id="BlurVision"><img src="'+yesSrc+'"></img>&nbsp;Blur</a></li>');
+
                     
                     $('#eye-menu').dropit({
                         beforeShow: function() {
@@ -644,6 +648,20 @@ var ColorPicker = function() {
                         _private.eyeType = $(this).attr('id');
                         $('#'+_private.eyeType + ' img').show();
                         chrome.storage.sync.set({'eyeType':_private.eyeType});
+                    });
+
+                    $('#NormalVision').click(function() {
+                        _private.normalVision();
+                    });
+
+                    $('#BlackAndWhite').click(function() {
+                         _private.normalVision();
+                        $('body').addClass('Desaturate');
+                    });
+
+                    $('#BlurVision').click(function() {
+                         _private.normalVision();
+                        $('body').addClass('Blur');
                     });
                 });
                 $colorPickerSample.hide();
@@ -668,6 +686,10 @@ var ColorPicker = function() {
                     }
                  );
             }
+        },
+
+        normalVision: function() {
+            $('body').removeClass('Blur').removeClass('Desaturate');
         },
 
         toggleColors: function() {

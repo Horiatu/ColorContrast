@@ -250,3 +250,16 @@
     height: 17px;
     margin-top: 3px;
 }
+
+.Blur {
+	-webkit-filter: blur(1px);
+	filter: url(#blur);
+	filter: blur(1px);
+}
+
+.Desaturate{
+	-webkit-filter: grayscale(100%);
+	filter: grayscale(100%);
+	filter: url(desaturate.svg#greyscale);
+}
+
