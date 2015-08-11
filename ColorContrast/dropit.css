@@ -104,3 +104,14 @@
   opacity:1;
 }
 
+.dropit .shortcut {
+    position: absolute;
+    right: 4px;
+    background-color: transparent;
+    color: #248fc1;
+    text-shadow: 2px 2px 1px white;
+}
+
+.Menu ul.dropit-submenu a {
+    padding-right: 20px;
+}

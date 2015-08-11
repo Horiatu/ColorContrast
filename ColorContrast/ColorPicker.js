@@ -29,6 +29,7 @@ var ColorPicker = function() {
         gridSize: 7,
         reqColor: null,
         eyeType: 'NormalVision',
+        $ColorPickerViewer: null,
 
         rectInRect: function(A, B) {
             return (A.x >= B.x && A.y >= B.y && (A.x + A.width) <= (B.x + B.width) && (A.y + A.height) <= (B.y + B.height))
@@ -105,26 +106,26 @@ var ColorPicker = function() {
                     _private.copyToClipboard(color);
                 };
 
-                var $colorPickerViewer = $("#colorPickerViewer");
-                if (_private.showMagnifier && $colorPickerViewer) {
+                //var $ColorPickerViewer = $("#colorPickerViewer");
+                if (_private.showMagnifier && _private.$ColorPickerViewer) {
 
                     var tagName = eventTarget.tagName;
 
                     // If the event target is not the color picker, the color picker is not an ancestor of the event target and the event target is not a scrollbar
-                    if (eventTarget != $colorPickerViewer && !_private.isAncestor(eventTarget, $colorPickerViewer) && tagName && tagName.toLowerCase() != "scrollbar") {
+                    if (eventTarget != _private.$ColorPickerViewer && !_private.isAncestor(eventTarget, _private.$ColorPickerViewer) && tagName && tagName.toLowerCase() != "scrollbar") {
                         // place viewer
                         var size = _private.gridSize * 7;
                         var w = window.innerWidth - size - 24;
                         var h = window.innerHeight - size - 24;
                         if (event.clientX < w) {
-                            $colorPickerViewer.css("left", (event.clientX + 4) + "px");
+                            _private.$ColorPickerViewer.css("left", (event.clientX + 4) + "px");
                         } else {
-                            $colorPickerViewer.css("left", (event.clientX - size - 4) + "px");
+                            _private.$ColorPickerViewer.css("left", (event.clientX - size - 4) + "px");
                         }
                         if (event.clientY < h) {
-                            $colorPickerViewer.css("top", (event.clientY + 4) + "px");
+                            _private.$ColorPickerViewer.css("top", (event.clientY + 4) + "px");
                         } else {
-                            $colorPickerViewer.css("top", (event.clientY - size - 4) + "px");
+                            _private.$ColorPickerViewer.css("top", (event.clientY - size - 4) + "px");
                         }
 
                     }
@@ -135,7 +136,7 @@ var ColorPicker = function() {
                     _private.colorTxt.innerHTML = color !=='transparent' ? color : '#ffffff';
                 }
 
-                if (_private.showMagnifier && ColorPicker.colorPickerViewer) {
+                if (_private.showMagnifier && _private.$ColorPickerViewer) {
                     var deep = (_private.gridSize - 1) / 2;
                     for (i = -deep; i <= deep; i++) {
                         for (j = -deep; j <= deep; j++) {
@@ -245,6 +246,7 @@ var ColorPicker = function() {
                 chrome.storage.sync.set({"foreground": color});
             } else {
                 $Sample.parent().css('background-color', color);
+                $Sample.css('background-color', color);
                 chrome.storage.sync.set({"background": color});
             }
 
@@ -304,7 +306,7 @@ var ColorPicker = function() {
             $ColorPickerOvr.bind("mousemove", _private.MouseMove);
             $(window).bind('scrollstop', _private.onScrollStop);
             $(window).bind('resize', _private.onWindowResize);
-            $(_public.colorPickerViewer).css('display', 'inherit');
+            $(_private.$ColorPickerViewer).css('display', 'inherit');
         },
 
         removeMouseSupport: function() {
@@ -314,7 +316,7 @@ var ColorPicker = function() {
             $ColorPickerOvr.unbind("mousemove", _private.MouseMove);
             $(window).unbind('scrollstop', _private.onScrollStop);
             $(window).unbind('resize', _private.onWindowResize);
-            $(_public.colorPickerViewer).css('display', 'none');
+            $(_private.$ColorPickerViewer).css('display', 'none');
         },
 
         injectCss: function(contentDocument) {
@@ -405,13 +407,13 @@ var ColorPicker = function() {
                 }
                 $('#ColorPickerOvr').hide();
 
-                $(window).bind('keyup', _private.EscShortcut);
+                $(window).bind('keyup', _private.Shortcuts);
 
                 _private.removeMouseSupport();
                 _private.addMouseSupport();
 
                 if(options.magnifierGlass != 'none') {
-                    if (!contentDocument.getElementById("colorPickerViewer")) {
+                    if (!_private.$ColorPickerViewer) {
                         _private.gridSize = options.gridSize;
                         _private.eyeType = options.eyeType;
                         ColorPicker.colorPickerViewer = contentDocument.createElement("Div");
@@ -458,8 +460,12 @@ var ColorPicker = function() {
 
                         $('#ColorPickerOvr').append(ColorPicker.colorPickerViewer);
 
-                        $('#colorPickerViewer').css('border-radius', deep * 8 + 6);
+                        // _private.$ColorPickerViewer = $(ColorPicker.colorPickerViewer);
+                        // _private.$ColorPickerViewer.css('border-radius', deep * 8 + 6);
                     }
+                    _private.$ColorPickerViewer = $(ColorPicker.colorPickerViewer);
+                    _private.$ColorPickerViewer.css('border-radius', '100%');
+
                     _private.showMagnifier = true;
                 };
 
@@ -468,7 +474,7 @@ var ColorPicker = function() {
                         _private.colorPickerToolbar = contentDocument.createElement("Div");
                         _private.colorPickerToolbar.setAttribute("id", "colorPickerToolbar");
                         $('#ColorPickerOvr').append(_private.colorPickerToolbar);
-                        _private.setToolbarPosition(options.position);
+                        _private.setToolbarPosition(options.position, false);
 
                         table = contentDocument.createElement("Table");
                         _private.colorPickerToolbar.appendChild(table);
@@ -512,27 +518,27 @@ var ColorPicker = function() {
                             '<img src='+chrome.extension.getURL("Images/menu.png")+' class="shadowedBlack"></img>'+
                             '</a></li>');
                         $('#menu1-trigger').append('<ul id="menu1-submenu" class="dropit-submenu" style="display: none;"></ul>');
-                        $('#menu1-submenu').append('<li><a id="CopyFr">Copy Foreground</a></li>');
-                        $('#menu1-submenu').append('<li><a id="CopyBg">Copy Background</a></li>');
-                        $('#menu1-submenu').append('<li><a id="ToggleColors">Toggle Colors</a></li>');
+                        $('#menu1-submenu').append('<li><a id="CopyFr"><span class="shortcut">F</span>Copy Foreground</a></li>');
+                        $('#menu1-submenu').append('<li><a id="CopyBg"><span class="shortcut">B</span>Copy Background</a></li>');
+                        $('#menu1-submenu').append('<li><a id="ToggleColors"><span class="shortcut">T</span>Toggle Colors</a></li>');
                         $('#menu1-submenu').append('<li><hr/></li>');
-                        $('#menu1-submenu').append('<li><a id="UpLeft">Up-Left</a></li>');
-                        $('#menu1-submenu').append('<li><a id="UpRight">Up-Right</a></li>');
+                        $('#menu1-submenu').append('<li><a id="UpLeft"><span class="shortcut">home</span>Up-Left</a></li>');
+                        $('#menu1-submenu').append('<li><a id="UpRight"><span class="shortcut">pg-up</span>Up-Right</a></li>');
                         $('#menu1-submenu').append('<li><hr/></li>');
-                        $('#menu1-submenu').append('<li><a id="ShowSample">Show Sample</a></li>');
+                        $('#menu1-submenu').append('<li><a id="ShowSample"><span class="shortcut">S</span>Show Sample</a></li>');
                         //$('#menu1-submenu').append('<li><a id="ApplyFilter">Challenged Vision</a></li>');
                         //$('#menu1-submenu').append('<li><a id="FContrast">Fix Contrast</a></li>');
-                        $('#menu1-submenu').append('<li><a id="ExitColorPicker">Exit</a></li>');
+                        $('#menu1-submenu').append('<li><a id="ExitColorPicker"><span class="shortcut">esc</span>Exit</a></li>');
 
 
                         $('#colorPickerToolbar').append('<input id="CopyBox" type="text" style="display: none; position: absolute; overflow-x: hidden; overflow-y: hidden;"></input>');
 
                         $('#CopyFr').click(function(e) {
-                            alert('Foreground color "'+_private.colorToClipboard('color')+'" copyed to clipboard');
+                            _private.foregroundToClipboard();
                         });
 
                         $('#CopyBg').click(function(e) {
-                            alert('Background color "'+_private.colorToClipboard('background-color')+'" copyed to clipboard');
+                            _private.backgroundToClipboard();
                         });
 
                         $('#ShowSample').click(function() {
@@ -555,19 +561,11 @@ var ColorPicker = function() {
                         $('#colorPickerToolbar').on('mouseenter', _private.removeMouseSupport).on('mouseleave', _private.addMouseSupport);
  
                         $('#UpLeft').click(function(e) {
-                            pos = {up:true, left:true};
-                            chrome.storage.sync.set({
-                                'position': pos
-                            });
-                            _private.setToolbarPosition(pos);
+                            _private.setToolbarPosition({up:true, left:true}, true);
                         });
 
                         $('#UpRight').click(function(e) {
-                            pos = {up:true, left:false}
-                            chrome.storage.sync.set({
-                                'position': pos
-                            });
-                            _private.setToolbarPosition(pos);
+                            _private.setToolbarPosition(pos = {up:true, left:false}, true);
                         });
 
                         // _private.sendMessage({type: 'get-colors'});
@@ -602,11 +600,69 @@ var ColorPicker = function() {
             });
         },
 
-        EscShortcut: function(e) {
-            if(e.keyCode == 27) {
-                _public.Hide(document);
-                e.stopPropagation();
-                e.preventDefault();
+        foregroundToClipboard: function() {
+            alert('Foreground color "'+_private.colorToClipboard('color')+'" copyed to clipboard');
+        },
+        backgroundToClipboard: function() {
+            alert('Background color "'+_private.colorToClipboard('background-color')+'" copyed to clipboard');
+        },
+
+        setEyeType: function(name) {
+            chrome.storage.sync.set({'eyeType': _private.eyeType = options.eyeType = name});
+            $('#eye-menu li ul li a img').hide();
+            $('#'+_private.eyeType+' img').show();
+        },
+
+        Shortcuts: function(e) {
+            switch (e.keyCode) {
+                case 27:
+                    _public.Hide(document);
+                    e.stopPropagation();
+                    e.preventDefault();
+                    break;
+                case 78 : // N - Normal Vision
+                    _private.normalVision();
+                    _private.setEyeType('NormalVision');
+                    e.stopPropagation();
+                    e.preventDefault();
+                    break;    
+                case 82 : // R - Refresh
+                    _private.screenChanged(true);
+                    e.stopPropagation();
+                    e.preventDefault();
+                    break;    
+                case 84 : // T - Toggle
+                    _private.toggleColors();
+                    e.stopPropagation();
+                    e.preventDefault();
+                    break;  
+                case 83 : // S - toggle Sample
+                    _private.toggleSample();
+                    e.stopPropagation();
+                    e.preventDefault();
+                    break; 
+                case 36 : // Home - Up Left
+                case 103 : 
+                    _private.setToolbarPosition(pos = {up:true, left:true}, true);
+                    e.stopPropagation();
+                    e.preventDefault();
+                    break;    
+                case 33 : // PgUp - Up Right
+                case 105 : 
+                    _private.setToolbarPosition(pos = {up:true, left:false}, true);
+                    e.stopPropagation();
+                    e.preventDefault();
+                    break; 
+                case 70 : // F
+                    _private.foregroundToClipboard();   
+                    e.stopPropagation();
+                    e.preventDefault();
+                    break; 
+                case 66 : // B
+                    _private.backgroundToClipboard();   
+                    e.stopPropagation();
+                    e.preventDefault();
+                    break; 
             };
         },
 
@@ -617,14 +673,14 @@ var ColorPicker = function() {
                $colorPickerSample = $('#colorPickerSample');
                $colorPickerSample
                     .on('mouseenter', function() {
-                        if(options.magnifierGlass != 'none') {
-                            $('#ColorPickerViewer').hide();
+                        if(_private.$ColorPickerViewer) {
+                            _private.$ColorPickerViewer.hide();
                         }
                         _private.removeMouseSupport();
                     })
                     .on('mouseleave', function() {
-                        if(options.magnifierGlass != 'none') {
-                            $('#ColorPickerViewer').show();
+                        if(_private.$ColorPickerViewer) {
+                            _private.$ColorPickerViewer.show();
                         }
                         _private.addMouseSupport();
                     });
@@ -633,7 +689,7 @@ var ColorPicker = function() {
                     $('#PickerSampleclose').click(function(e) {
                         $colorPickerSample.hide();
                         chrome.storage.sync.set({'sample': false});
-                        $('#ShowSample').html("Show Sample");
+                        $('#ShowSample').html("<span class='shortcut'>S</span>Show Sample");
                         e.stopPropagation();
                         e.preventDefault();
                     });
@@ -669,7 +725,7 @@ var ColorPicker = function() {
                     $('#eye-trigger').append('<ul id="eye-submenu" class="dropit-submenu" style="display: none;"></ul>');
                     
                     yesSrc = chrome.extension.getURL("Images/Yes.png");
-                    $('#eye-submenu').append('<li><a id="NormalVision"><img src="'+yesSrc+'"></img>&nbsp;Normal Vision</a></li>');
+                    $('#eye-submenu').append('<li><a id="NormalVision"><img src="'+yesSrc+'"></img><span class="shortcut">N</span>&nbsp;Normal Vision</a></li>');
                     $('#eye-submenu').append('<li><a id="Protanopia"><img src="'+yesSrc+'"></img>&nbsp;Protanopia</a></li>');
                     $('#eye-submenu').append('<li><a id="Protanomaly"><img src="'+yesSrc+'"></img>&nbsp;Protanomaly</a></li>');
                     $('#eye-submenu').append('<li><a id="Deuteranopia"><img src="'+yesSrc+'"></img>&nbsp;Deuteranopia</a></li>');
@@ -690,14 +746,9 @@ var ColorPicker = function() {
                         },
                     });
                     $('#eye-menu li ul li a').click(function() { 
-                        //console.log($(this).attr('id'));
-                        $('#eye-menu li ul li a img').hide();
                         id = $(this).attr('id');
-                        _private.eyeType = id;
-                        $('#'+_private.eyeType + ' img').show();
-                        
-                        chrome.storage.sync.set({'eyeType':_private.eyeType});
-                        
+                        //console.log(id);
+                        _private.setEyeType(id);
                         _private.normalVision();
                         if(id != 'NormalVision') {
                             $('body').addClass(id);
@@ -706,7 +757,7 @@ var ColorPicker = function() {
 
                 });
                 $colorPickerSample.hide();
-                $('#ShowSample').html("Show Sample");
+                $('#ShowSample').html("<span class='shortcut'>S</span>Show Sample");
             }
 
             $colorPickerSample.width($('#colorPickerToolbar').width());
@@ -715,23 +766,30 @@ var ColorPicker = function() {
             if(showAnyway) {
                 $colorPickerSample.show("slow", function() {
                     _private.setSampleColors();
-                    $('#ShowSample').html("Hide Sample");
+                    $('#ShowSample').html("<span class='shortcut'>S</span>Hide Sample");
 
                     _private.normalVision();
                     $('body').addClass(_private.eyeType);
                 });
             } else {
-                if(!$colorPickerSample.is(":visible")) 
-                {
-                    _private.setSampleColors();
-                }
-                $colorPickerSample.animate({width: "toggle"},
-                    function() {
-                        chrome.storage.sync.set({'sample': $colorPickerSample.is(":visible")});
-                        $('#ShowSample').html($colorPickerSample.is(":visible") ? "Hide Sample" : "Show Sample");
-                    }
-                 );
+                _private.toggleSample();
             }
+        },
+
+        toggleSample : function() {
+            $colorPickerSample = $('#colorPickerSample');
+            if(!$colorPickerSample.is(":visible")) 
+            {
+                _private.setSampleColors();
+            }
+            $colorPickerSample.animate({width: "toggle"},
+                function() {
+                    chrome.storage.sync.set({'sample': $colorPickerSample.is(":visible")});
+                    $('#ShowSample').html($colorPickerSample.is(":visible") 
+                        ? "<span class='shortcut'>S</span>Hide Sample" 
+                        : "<span class='shortcut'>S</span>Show Sample");
+                }
+             );        
         },
 
         normalVision: function() {
@@ -764,7 +822,12 @@ var ColorPicker = function() {
             //$('#colorPickerSample h1, #colorPickerSample p, #colorPickerSample a').css('color',$Sample.css('color'));
         },
 
-        setToolbarPosition: function(pos){
+        setToolbarPosition: function(pos, save) {
+            if(save) {
+                chrome.storage.sync.set({
+                    'position': pos
+                });
+            };
             $('#colorPickerToolbar').addClass('up');
             if(pos.left) {
                 $('#colorPickerToolbar').removeClass('right').addClass('left');
@@ -802,9 +865,13 @@ var ColorPicker = function() {
         },
         
         rgbToColor: function(rgbStr) {
-            var ctx = document.createElement('canvas').getContext('2d');
-            ctx.strokeStyle = rgbStr;
-            return ctx.strokeStyle; 
+            rgb = rgbStr.match(/^rgb(?:a?)?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+            return (rgb && rgb.length >= 3) 
+            ? "#" +
+              ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+              ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+              ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) 
+            : rgbStr;
         },
 
         colorToClipboard: function(what) {
@@ -957,7 +1024,7 @@ var ColorPicker = function() {
             try {
                 _private.removeMouseSupport();
                 _private.destroy(contentDocument);
-                $(window).unbind('keyup', _private.EscShortcut);
+                $(window).unbind('keyup', _private.Shortcuts);
             } catch (err) {
                 //console.log(err);
             };
