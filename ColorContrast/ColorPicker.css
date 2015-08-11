@@ -15,7 +15,6 @@
 	padding:0px; 
 	z-index:10000;
     border: 0px solid gray; 
-    --border-radius: 37px; 
     overflow: hidden;
 }
 

@@ -675,13 +675,13 @@ var ColorPicker = function() {
                $colorPickerSample
                     .on('mouseenter', function() {
                         if(_private.$ColorPickerViewer) {
-                            _private.$ColorPickerViewer.hide();
+                            _private.$ColorPickerViewer.attr('display', 'none');
                         }
                         _private.removeMouseSupport();
                     })
                     .on('mouseleave', function() {
                         if(_private.$ColorPickerViewer) {
-                            _private.$ColorPickerViewer.show();
+                            _private.$ColorPickerViewer.attr('display', 'inherit');
                         }
                         _private.addMouseSupport();
                     });
