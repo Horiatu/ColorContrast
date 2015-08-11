@@ -242,6 +242,7 @@ var ColorPicker = function() {
         setColor: function(req, color) {
             $Sample = $('.Sample');
             if(req==='foreground') {
+                $Sample.parent().css('color', color);
                 $Sample.css('color', color);
                 chrome.storage.sync.set({"foreground": color});
             } else {
@@ -256,7 +257,7 @@ var ColorPicker = function() {
         getColors: function() {
             $Sample = $('.Sample');
             return {
-                foreground: _private.rgbToColor($Sample.css('color')), 
+                foreground: _private.rgbToColor($Sample.parent().css('color')), 
                 background: _private.rgbToColor($Sample.parent().css('background-color'))
             };
         },
@@ -865,7 +866,7 @@ var ColorPicker = function() {
         },
         
         rgbToColor: function(rgbStr) {
-            rgb = rgbStr.match(/^rgb(?:a?)?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+            rgb = rgbStr.match(/^rgb(?:a?)\s*\(\s*(\d+)\s*,\s*?(\d+)\s*,\s*(\d+)\s*?(?:\s*,\s*(\d+)\s*)?\)/i);
             return (rgb && rgb.length >= 3) 
             ? "#" +
               ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
@@ -875,7 +876,7 @@ var ColorPicker = function() {
         },
 
         colorToClipboard: function(what) {
-            var color = _private.rgbToColor($('#smallSample').css(what));
+            var color = _private.rgbToColor($('#smallSample').parent().css(what));
             _private.copyToClipboard(color)
             return color;
         },
