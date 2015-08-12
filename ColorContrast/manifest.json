@@ -3,7 +3,7 @@
 
   "name": "WCAG Luminosity Contrast Ratio Analyser",
   "description": "Color Contrast Analyser for WCAG 2.0 compliance",
-  "version": "1.0.1.2",
+  "version": "1.0.1.3",
 
   "browser_action": {
     "default_icon": "Images/icon.png",
@@ -47,6 +47,7 @@
     "Images/pick-color.png",
     "Images/copy-code.png",
     "Images/FixContrast.png",
+    "Images/Effects.png",
     "Images/DisabledEye.png",
     "Images/Cursors/pickColor.cur",
     "ColorPicker.css",

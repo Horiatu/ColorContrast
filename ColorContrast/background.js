@@ -87,7 +87,8 @@ chrome.extension.onConnect.addListener(function(port) {
                   type: req.type,
                   color: Background.Color,
                   bgcolor: Background.BackgroundColor,
-                  reqcolor: Background.RequestColor
+                  reqcolor: Background.RequestColor,
+                  reqColor: req.color
                 });
                 break;
             case 'get-defaults':

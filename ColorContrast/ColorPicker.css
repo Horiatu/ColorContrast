@@ -146,7 +146,6 @@
 
 #colorPickerSample {
 	position: absolute;
-	padding-bottom:15px;
 	bottom:10px;
 	cursor:help;
     border-style:outset; 
@@ -262,6 +261,18 @@
 	filter: url(desaturate.svg#greyscale);
 }
 
+.InvertVision {
+	-webkit-filter: invert(100%);
+	filter: invert(100%);
+	filter: url(#invert);
+}
+
+.ContrastVision {
+	-webkit-filter: contrast(200%);
+	filter: contrast(200%);
+	filter: url(#contrast);
+}
+
 .Protanopia {
 	-webkit-filter: url(#protanopia);
 	   -moz-filter: url(#protanopia);
@@ -332,4 +343,8 @@
 	    -ms-filter: url(#normalFilter);
 	     -o-filter: url(#normalFilter);
 	        filter: url(#normalFilter); /* Firefox 3.5+ */
+}
+.SampleContent {
+	display: inline-block;
+	min-height: 355px;
 }

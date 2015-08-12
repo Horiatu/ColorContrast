@@ -29,7 +29,6 @@ var ColorPicker = function() {
         gridSize: 7,
         reqColor: null,
         eyeType: 'NormalVision',
-        $ColorPickerViewer: null,
 
         rectInRect: function(A, B) {
             return (A.x >= B.x && A.y >= B.y && (A.x + A.width) <= (B.x + B.width) && (A.y + A.height) <= (B.y + B.height))
@@ -106,26 +105,25 @@ var ColorPicker = function() {
                     _private.copyToClipboard(color);
                 };
 
-                //var $ColorPickerViewer = $("#colorPickerViewer");
-                if (_private.showMagnifier && _private.$ColorPickerViewer) {
+                if (_private.showMagnifier && $('#colorPickerViewer')) {
 
                     var tagName = eventTarget.tagName;
 
                     // If the event target is not the color picker, the color picker is not an ancestor of the event target and the event target is not a scrollbar
-                    if (eventTarget != _private.$ColorPickerViewer && !_private.isAncestor(eventTarget, _private.$ColorPickerViewer) && tagName && tagName.toLowerCase() != "scrollbar") {
+                    if (eventTarget != $('#colorPickerViewer') && !_private.isAncestor(eventTarget, $('#colorPickerViewer')) && tagName && tagName.toLowerCase() != "scrollbar") {
                         // place viewer
                         var size = _private.gridSize * 7;
                         var w = window.innerWidth - size - 24;
                         var h = window.innerHeight - size - 24;
                         if (event.clientX < w) {
-                            _private.$ColorPickerViewer.css("left", (event.clientX + 4) + "px");
+                            $('#colorPickerViewer').css("left", (event.clientX + 4) + "px");
                         } else {
-                            _private.$ColorPickerViewer.css("left", (event.clientX - size - 4) + "px");
+                            $('#colorPickerViewer').css("left", (event.clientX - size - 4) + "px");
                         }
                         if (event.clientY < h) {
-                            _private.$ColorPickerViewer.css("top", (event.clientY + 4) + "px");
+                            $('#colorPickerViewer').css("top", (event.clientY + 4) + "px");
                         } else {
-                            _private.$ColorPickerViewer.css("top", (event.clientY - size - 4) + "px");
+                            $('#colorPickerViewer').css("top", (event.clientY - size - 4) + "px");
                         }
 
                     }
@@ -136,7 +134,7 @@ var ColorPicker = function() {
                     _private.colorTxt.innerHTML = color !=='transparent' ? color : '#ffffff';
                 }
 
-                if (_private.showMagnifier && _private.$ColorPickerViewer) {
+                if (_private.showMagnifier && $('#colorPickerViewer')) {
                     var deep = (_private.gridSize - 1) / 2;
                     for (i = -deep; i <= deep; i++) {
                         for (j = -deep; j <= deep; j++) {
@@ -307,7 +305,7 @@ var ColorPicker = function() {
             $ColorPickerOvr.bind("mousemove", _private.MouseMove);
             $(window).bind('scrollstop', _private.onScrollStop);
             $(window).bind('resize', _private.onWindowResize);
-            $(_private.$ColorPickerViewer).css('display', 'inherit');
+            $('#colorPickerViewer').css('display', 'inherit');
         },
 
         removeMouseSupport: function() {
@@ -317,7 +315,7 @@ var ColorPicker = function() {
             $ColorPickerOvr.unbind("mousemove", _private.MouseMove);
             $(window).unbind('scrollstop', _private.onScrollStop);
             $(window).unbind('resize', _private.onWindowResize);
-            $(_private.$ColorPickerViewer).css('display', 'none');
+            $('#colorPickerViewer').css('display', 'none');
         },
 
         injectCss: function(contentDocument) {
@@ -401,29 +399,26 @@ var ColorPicker = function() {
 
                 _private.injectCss(contentDocument);
                 
-                if(!contentDocument.getElementById("ColorPickerLdr")) {
+                if(!contentDocument.getElementById("#ColorPickerOvr")) {
+                    //$("body").wrapInner("<div id='bodyNew'></div>");
                     $("body").append('<div id="ColorPickerLdr"></div>');
-                    $("#ColorPickerLdr").append('<div id="ColorPickerOvr" style="cursor: url(' + chrome.extension.getURL("Images/Cursors/pickColor.cur") + '), crosshair !important;"></div>');
+                    $("#ColorPickerLdr").append('<div id="ColorPickerOvr" style="display:none; cursor: url(' + chrome.extension.getURL("Images/Cursors/pickColor.cur") + '), crosshair !important;"></div>');
                     _private.addFilters('#ColorPickerLdr');
                 }
-                $('#ColorPickerOvr').hide();
-
-                $(window).bind('keyup', _private.Shortcuts);
-
                 _private.removeMouseSupport();
                 _private.addMouseSupport();
 
                 if(options.magnifierGlass != 'none') {
-                    if (!_private.$ColorPickerViewer) {
+                    if (!contentDocument.getElementById('colorPickerViewer')) {
                         _private.gridSize = options.gridSize;
                         _private.eyeType = options.eyeType;
-                        ColorPicker.colorPickerViewer = contentDocument.createElement("Div");
-                        ColorPicker.colorPickerViewer.setAttribute("id", "colorPickerViewer");
+                        colorPickerViewer = contentDocument.createElement("Div");
+                        colorPickerViewer.setAttribute("id", "colorPickerViewer");
+                        colorPickerViewer.setAttribute("style", "display:none;");
 
                         var t = contentDocument.createElement("Table");
                         t.setAttribute("cellspacing", 1);
-                        //t.setAttribute("class", "normalFilter");
-                        ColorPicker.colorPickerViewer.appendChild(t);
+                        colorPickerViewer.appendChild(t);
 
                         _public.dotArray = Array();
                         var deep = (_private.gridSize - 1) / 2;
@@ -444,28 +439,14 @@ var ColorPicker = function() {
                             _public.dotArray.push(row);
                         }
 
-                        //var d = contentDocument.createElement("div");
-                        var glass = contentDocument.createElement("img");
-
-                        glass.setAttribute("alt", "");
-                        glass.setAttribute("width", "100%");
-                        glass.setAttribute("height", "100%");
-                        glass.setAttribute("style", "position:absolute; top:0; left:0;"); 
-
-
-                        //console.log(a['magnifierGlass']);
-                        glass.setAttribute("src", chrome.extension.getURL("Images/" + options.magnifierGlass + ".png"));
-                        //d.appendChild(glass);
-
-                        ColorPicker.colorPickerViewer.appendChild(glass);
-
-                        $('#ColorPickerOvr').append(ColorPicker.colorPickerViewer);
-
-                        // _private.$ColorPickerViewer = $(ColorPicker.colorPickerViewer);
-                        // _private.$ColorPickerViewer.css('border-radius', deep * 8 + 6);
+                        $('#ColorPickerOvr').append(colorPickerViewer);
+                        
+                        $('#colorPickerViewer')
+                            .append(
+                                '<img alt="" width="100%" height="100%" style="position:absolute; top:0; left:0;" '+
+                                'src="'+chrome.extension.getURL('Images/' + options.magnifierGlass + '.png')+'"></img>')
+                            .css('border-radius', '100%');
                     }
-                    _private.$ColorPickerViewer = $(ColorPicker.colorPickerViewer);
-                    _private.$ColorPickerViewer.css('border-radius', '100%');
 
                     _private.showMagnifier = true;
                 };
@@ -569,7 +550,6 @@ var ColorPicker = function() {
                             _private.setToolbarPosition(pos = {up:true, left:false}, true);
                         });
 
-                        // _private.sendMessage({type: 'get-colors'});
                         _private.showToolbar = true;
                     };
                 };
@@ -580,6 +560,7 @@ var ColorPicker = function() {
                             _private.capture(req.data);
                             break;
                         case 'get-colors':
+                            $('.Sample').css('color', req.color).css('background-color', req.bgcolor);
                             $('.Sample').parent().css('color', req.color).css('background-color', req.bgcolor);
                             _private.reqColor = req.reqcolor;
                             _private.contrast(req.color, req.bgcolor).done(function(c) {
@@ -594,8 +575,20 @@ var ColorPicker = function() {
 
                 _private.screenshot().done(function() {
                     $('#ColorPickerOvr').show(function() {
+
+                        _private.YOffset = $(document).scrollTop();
+                        _private.XOffset = $(document).scrollLeft();
+
+                        $ColorPickerLdr = $('#ColorPickerLdr');
+                        $ColorPickerLdr.css('top', _private.YOffset+'px');
+                        $ColorPickerLdr.css('left', _private.XOffset+'px');
+
                         if(_private.showToolbar)
-                            _private.sendMessage({type: 'get-colors'});
+                            _private.sendMessage({type: 'get-colors', reqColor: 'background'});
+                        if(_private.showMagnifier)
+                            $('#colorPickerViewer').css('display', 'inherit');
+
+                        $(window).bind('keyup', _private.Shortcuts);
                     });
                 });
             });
@@ -670,22 +663,23 @@ var ColorPicker = function() {
         ShowContrastSample:function(showAnyway){
             $colorPickerSample = $('#colorPickerSample');
             if (!$colorPickerSample.length) {
-               $('#ColorPickerOvr').prepend("<div id='colorPickerSample'></div>");
+               $('#ColorPickerOvr').prepend("<div id='colorPickerSample'><div class='SampleContent' style='position.Absolute'></div></div>");
+               // $('#ColorPickerOvr').prepend("<div id='colorPickerSample'></div>");
                $colorPickerSample = $('#colorPickerSample');
-               $colorPickerSample
-                    .on('mouseenter', function() {
-                        if(_private.$ColorPickerViewer) {
-                            _private.$ColorPickerViewer.attr('display', 'none');
-                        }
+               $SampleContent = $('.SampleContent');
+               $colorPickerSample.on('mouseenter', function() {
                         _private.removeMouseSupport();
+                        if($('#colorPickerViewer')) {
+                            $('#colorPickerViewer').css('display', 'none');
+                        }
                     })
                     .on('mouseleave', function() {
-                        if(_private.$ColorPickerViewer) {
-                            _private.$ColorPickerViewer.attr('display', 'inherit');
+                        if($('#colorPickerViewer')) {
+                            $('#colorPickerViewer').css('display', 'inherit');
                         }
                         _private.addMouseSupport();
                     });
-               $colorPickerSample.load(chrome.extension.getURL("TextSample.html"), function() {
+               $SampleContent.load(chrome.extension.getURL("TextSample.html"), function() {
                     $colorPickerSample.append("<div id='PickerSampleclose' class='PickerSampleBtn PickerSampleHover shadowed'><img src='"+chrome.extension.getURL("Images/close.png")+"' title='close (image)'></img></div>");
                     $('#PickerSampleclose').click(function(e) {
                         $colorPickerSample.hide();
@@ -694,7 +688,7 @@ var ColorPicker = function() {
                         e.stopPropagation();
                         e.preventDefault();
                     });
-
+               
                     $colorPickerSample.append("<div id='PickerSampleToggle' class='PickerSampleBtn PickerSampleHover shadowed'><img src='"+chrome.extension.getURL("Images/toggle.png")+"' title='Toggle Colors'></img></div>");
                     $colorPickerSample.click(function(e) {
                         e.stopPropagation();
@@ -736,8 +730,10 @@ var ColorPicker = function() {
                     $('#eye-submenu').append('<li><a id="Achromatopsia"><img src="'+yesSrc+'"></img>&nbsp;Achromatopsia</a></li>');
                     $('#eye-submenu').append('<li><a id="Achromatomaly"><img src="'+yesSrc+'"></img>&nbsp;Achromatomaly</a></li>');
                     $('#eye-submenu').append('<li><hr></hr></li>');
-                    $('#eye-submenu').append('<li><a id="BlackAndWhite"><img src="'+yesSrc+'"></img>&nbsp;Black And White</a></li>');
                     $('#eye-submenu').append('<li><a id="BlurVision"><img src="'+yesSrc+'"></img>&nbsp;Blur</a></li>');
+                    $('#eye-submenu').append('<li><a id="ContrastVision"><img src="'+yesSrc+'"></img>&nbsp;Contrast</a></li>');
+                    $('#eye-submenu').append('<li><a id="BlackAndWhite"><img src="'+yesSrc+'"></img>&nbsp;Black And White</a></li>');
+                    $('#eye-submenu').append('<li><a id="InvertVision"><img src="'+yesSrc+'"></img>&nbsp;Invert</a></li>');
 
                     
                     $('#eye-menu').dropit({
@@ -770,7 +766,9 @@ var ColorPicker = function() {
                     $('#ShowSample').html("<span class='shortcut'>S</span>Hide Sample");
 
                     _private.normalVision();
-                    $('body').addClass(_private.eyeType);
+                    // $('#bodyNew, .bodyNew').addClass(_private.eyeType);
+                    if(_private.eyeType != 'NormalVision')
+                        $('body').addClass(_private.eyeType);
                 });
             } else {
                 _private.toggleSample();
@@ -794,8 +792,11 @@ var ColorPicker = function() {
         },
 
         normalVision: function() {
+            // $('#bodyNew, .bodyNew')
             $('body')
+                .removeClass('NormalVision') // !
                 .removeClass('BlackAndWhite').removeClass('BlurVision')
+                .removeClass('InvertVision').removeClass('ContrastVision')
                 .removeClass('Protanopia').removeClass('Protanomaly')
                 .removeClass('Deuteranopia').removeClass('Deuteranomaly')
                 .removeClass('Tritanopia').removeClass('Tritanomaly')
@@ -814,7 +815,8 @@ var ColorPicker = function() {
 
         setSampleColors: function(colors) {
             //$Sample = $('.smallSample').parent();
-            if(colors==undefined) colors = _private.getColors();
+            if(colors == undefined) colors = _private.getColors();
+            // $colorPickerSample = $('.bodyNew');
             $colorPickerSample = $('#colorPickerSample');
 
             $colorPickerSample.css('color',colors.foreground);
@@ -1006,6 +1008,8 @@ var ColorPicker = function() {
             _private.removeMouseSupport();
 
             $("#ColorPickerLdr").remove();
+            $("#svgFilters").remove();
+            $('#colorPickerViewer').remove();
 
             $("#colorPickerCss").remove();
             $("#dropitCss").remove();
@@ -1014,8 +1018,7 @@ var ColorPicker = function() {
     }
 
     var _public = {
-        colorPickerViewer: null,
-        dotArray: null,
+        rdotArray: null,
 
         Show: function(contentDocument) {
             _private.init(contentDocument);
@@ -1023,11 +1026,13 @@ var ColorPicker = function() {
 
         Hide: function(contentDocument) {
             try {
+                _private.normalVision();
                 _private.removeMouseSupport();
                 _private.destroy(contentDocument);
                 $(window).unbind('keyup', _private.Shortcuts);
+                //$('body').html($('#bodyNew').html());
             } catch (err) {
-                //console.log(err);
+                console.log(err);
             };
         },
 
