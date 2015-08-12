@@ -509,7 +509,7 @@ var ColorPicker = function() {
                         $('#menu1-submenu').append('<li><hr/></li>');
                         $('#menu1-submenu').append('<li><a id="ShowSample"><span class="shortcut">S</span>Show Sample</a></li>');
                         //$('#menu1-submenu').append('<li><a id="ApplyFilter">Challenged Vision</a></li>');
-                        //$('#menu1-submenu').append('<li><a id="FContrast">Fix Contrast</a></li>');
+                        $('#menu1-submenu').append('<li><a id="RefreshColorPicker"><span class="shortcut">R</span>Refresh</a></li>');
                         $('#menu1-submenu').append('<li><a id="ExitColorPicker"><span class="shortcut">esc</span>Exit</a></li>');
 
 
@@ -529,6 +529,10 @@ var ColorPicker = function() {
 
                         $('#ToggleColors').click(function(e) {
                             _private.toggleColors();
+                        });
+
+                        $('#RefreshColorPicker').click(function(e) {
+                            _private.screenChanged(true);
                         });
 
                         $('#ExitColorPicker').click(function(e) {
