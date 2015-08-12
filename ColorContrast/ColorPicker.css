@@ -208,13 +208,17 @@
 	left:52px;
 	position: absolute; 
 }
-#PickerSampleEye li {
+#PickerSampleEffects {
+	left:76px;
+	position: absolute; 
+}
+#PickerSampleEye li, #PickerSampleEffects li {
 	list-style-type: none;
 }
-#PickerSampleEye a {
+#PickerSampleEye a, #PickerSampleEffects a {
 	margin:0;
 }
-#eye-submenu {
+#eye-submenu, #effects-submenu {
 	left:0;
 }
 
@@ -241,7 +245,7 @@
 	filter: drop-shadow(2px 2px 1px rgba(127,127,127,0.9));
 }
 
-#eye-menu li ul li a img {
+#eye-menu li ul li a img, #effects-menu li ul li a img {
 	position: absolute;
     margin-left: -15px;
     width: 17px;
@@ -267,11 +271,38 @@
 	filter: url(#invert);
 }
 
-.ContrastVision {
+.HighContrastVision {
 	-webkit-filter: contrast(200%);
 	filter: contrast(200%);
-	filter: url(#contrast);
 }
+
+.LowContrastVision {
+	-webkit-filter: contrast(50%);
+	filter: contrast(50%);
+}
+
+.LighterEffect {
+	-webkit-filter: brightness(200%);
+	filter: brightness(200%);
+}
+
+.DarkerEffect {
+	-webkit-filter: brightness(50%);
+	filter: brightness(50%);
+}
+
+.RotateColorsEffect {
+   -webkit-animation: adjustHue 1s infinite;
+}
+     
+@-webkit-keyframes adjustHue {
+   0% { -webkit-filter: hue-rotate(0deg); }
+   20% { -webkit-filter: hue-rotate(52deg); }
+   40% { -webkit-filter: hue-rotate(104deg); }
+   60% { -webkit-filter: hue-rotate(156deg); }
+   80% { -webkit-filter: hue-rotate(308deg); }   
+   100% { -webkit-filter: hue-rotate(360deg); }
+} 
 
 .Protanopia {
 	-webkit-filter: url(#protanopia);
@@ -346,5 +377,5 @@
 }
 .SampleContent {
 	display: inline-block;
-	min-height: 355px;
+	min-height: 255px;
 }

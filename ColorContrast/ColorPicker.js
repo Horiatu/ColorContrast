@@ -607,7 +607,7 @@ var ColorPicker = function() {
 
         setEyeType: function(name) {
             chrome.storage.sync.set({'eyeType': _private.eyeType = options.eyeType = name});
-            $('#eye-menu li ul li a img').hide();
+            $('#eye-menu li ul li a img, #effects-menu li ul li a img').hide();
             $('#'+_private.eyeType+' img').show();
         },
 
@@ -713,9 +713,9 @@ var ColorPicker = function() {
                         e.preventDefault();
                     });
 
-                    $colorPickerSample.append("<div id='PickerSampleEye' class='PickerSampleBtn shadowed'>"+
-                        //"<img src='"+chrome.extension.getURL("Images/DisabledEye.png")+"' title='Challenged vision'></img>"+
-                        "</div>");
+                    yesSrc = chrome.extension.getURL("Images/Yes.png");
+
+                    $colorPickerSample.append("<div id='PickerSampleEye' class='PickerSampleBtn shadowed'></div>");
 
                     $('#PickerSampleEye').append('<ul id="eye-menu" class="Menu dropit"></ul>');
                     $('#eye-menu').append('<li id="eye-trigger" class="dropit-trigger"><a>'+
@@ -723,7 +723,6 @@ var ColorPicker = function() {
                         '</a></li>');
                     $('#eye-trigger').append('<ul id="eye-submenu" class="dropit-submenu" style="display: none;"></ul>');
                     
-                    yesSrc = chrome.extension.getURL("Images/Yes.png");
                     $('#eye-submenu').append('<li><a id="NormalVision"><img src="'+yesSrc+'"></img><span class="shortcut">N</span>&nbsp;Normal Vision</a></li>');
                     $('#eye-submenu').append('<li><a id="Protanopia"><img src="'+yesSrc+'"></img>&nbsp;Protanopia</a></li>');
                     $('#eye-submenu').append('<li><a id="Protanomaly"><img src="'+yesSrc+'"></img>&nbsp;Protanomaly</a></li>');
@@ -733,11 +732,23 @@ var ColorPicker = function() {
                     $('#eye-submenu').append('<li><a id="Tritanomaly"><img src="'+yesSrc+'"></img>&nbsp;Tritanomaly</a></li>');
                     $('#eye-submenu').append('<li><a id="Achromatopsia"><img src="'+yesSrc+'"></img>&nbsp;Achromatopsia</a></li>');
                     $('#eye-submenu').append('<li><a id="Achromatomaly"><img src="'+yesSrc+'"></img>&nbsp;Achromatomaly</a></li>');
-                    $('#eye-submenu').append('<li><hr></hr></li>');
-                    $('#eye-submenu').append('<li><a id="BlurVision"><img src="'+yesSrc+'"></img>&nbsp;Blur</a></li>');
-                    $('#eye-submenu').append('<li><a id="ContrastVision"><img src="'+yesSrc+'"></img>&nbsp;Contrast</a></li>');
-                    $('#eye-submenu').append('<li><a id="BlackAndWhite"><img src="'+yesSrc+'"></img>&nbsp;Black And White</a></li>');
-                    $('#eye-submenu').append('<li><a id="InvertVision"><img src="'+yesSrc+'"></img>&nbsp;Invert</a></li>');
+                    
+                    $colorPickerSample.append("<div id='PickerSampleEffects' class='PickerSampleBtn shadowed'></div>");
+
+                    $('#PickerSampleEffects').append('<ul id="effects-menu" class="Menu dropit"></ul>');
+                    $('#effects-menu').append('<li id="effects-trigger" class="dropit-trigger"><a>'+
+                        '<img src='+chrome.extension.getURL("Images/Effects.png")+' title="Effects"></img>'+
+                        '</a></li>');
+                    $('#effects-trigger').append('<ul id="effects-submenu" class="dropit-submenu" style="display: none;"></ul>');
+                    
+                    $('#effects-submenu').append('<li><a id="BlurVision"><img src="'+yesSrc+'"></img>&nbsp;Blur</a></li>');
+                    $('#effects-submenu').append('<li><a id="HighContrastVision"><img src="'+yesSrc+'"></img>&nbsp;High Contrast</a></li>');
+                    $('#effects-submenu').append('<li><a id="LowContrastVision"><img src="'+yesSrc+'"></img>&nbsp;Low Contrast</a></li>');
+                    $('#effects-submenu').append('<li><a id="LighterEffect"><img src="'+yesSrc+'"></img>&nbsp;Lighter</a></li>');
+                    $('#effects-submenu').append('<li><a id="DarkerEffect"><img src="'+yesSrc+'"></img>&nbsp;Darker</a></li>');
+                    $('#effects-submenu').append('<li><a id="BlackAndWhite"><img src="'+yesSrc+'"></img>&nbsp;Black And White</a></li>');
+                    $('#effects-submenu').append('<li><a id="InvertVision"><img src="'+yesSrc+'"></img>&nbsp;Invert</a></li>');
+                    $('#effects-submenu').append('<li><a id="RotateColorsEffect"><img src="'+yesSrc+'"></img>&nbsp;Rotate Colors</a></li>');
 
                     
                     $('#eye-menu').dropit({
@@ -746,7 +757,14 @@ var ColorPicker = function() {
                             $('#'+_private.eyeType+' img').show();
                         },
                     });
-                    $('#eye-menu li ul li a').click(function() { 
+                    $('#effects-menu').dropit({
+                        beforeShow: function() {
+                            $('#effects-menu li ul li a img').hide();
+                            $('#'+_private.eyeType+' img').show();
+                        },
+                    });
+
+                    $('#eye-menu li ul li a, #effects-menu li ul li a').click(function() { 
                         id = $(this).attr('id');
                         //console.log(id);
                         _private.setEyeType(id);
@@ -800,7 +818,9 @@ var ColorPicker = function() {
             $('body')
                 .removeClass('NormalVision') // !
                 .removeClass('BlackAndWhite').removeClass('BlurVision')
-                .removeClass('InvertVision').removeClass('ContrastVision')
+                .removeClass('LighterEffect').removeClass('DarkerEffect')
+                .removeClass('InvertVision').removeClass('RotateColorsEffect')
+                .removeClass('HighContrastVision').removeClass('LowContrastVision')
                 .removeClass('Protanopia').removeClass('Protanomaly')
                 .removeClass('Deuteranopia').removeClass('Deuteranomaly')
                 .removeClass('Tritanopia').removeClass('Tritanomaly')
