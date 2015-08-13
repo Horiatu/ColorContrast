@@ -770,7 +770,7 @@ var ColorPicker = function() {
                         _private.setEyeType(id);
                         _private.normalVision();
                         if(id != 'NormalVision') {
-                            $('body').addClass(id);
+                            $('html').addClass(id);
                         }
                     });
 
@@ -790,7 +790,7 @@ var ColorPicker = function() {
                     _private.normalVision();
                     // $('#bodyNew, .bodyNew').addClass(_private.eyeType);
                     if(_private.eyeType != 'NormalVision')
-                        $('body').addClass(_private.eyeType);
+                        $('html').addClass(_private.eyeType);
                 });
             } else {
                 _private.toggleSample();
@@ -815,7 +815,7 @@ var ColorPicker = function() {
 
         normalVision: function() {
             // $('#bodyNew, .bodyNew')
-            $('body')
+            $('html')
                 .removeClass('NormalVision') // !
                 .removeClass('BlackAndWhite').removeClass('BlurVision')
                 .removeClass('LighterEffect').removeClass('DarkerEffect')
@@ -1054,7 +1054,6 @@ var ColorPicker = function() {
                 _private.removeMouseSupport();
                 _private.destroy(contentDocument);
                 $(window).unbind('keyup', _private.Shortcuts);
-                //$('body').html($('#bodyNew').html());
             } catch (err) {
                 console.log(err);
             };
