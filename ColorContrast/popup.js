@@ -338,7 +338,7 @@ $(document).ready(function() {
                                 content: 
                                     "ColorPicker.Hide(document);\n" +
                                     "ColorPicker.Show(document);\n" +
-                                    "ColorPicker.refresh();"
+                                    "//ColorPicker.refresh();"
                             }], $.Deferred()).done(
                                 function() {
                                     // console.log('done');

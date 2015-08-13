@@ -265,10 +265,12 @@
 	filter: url(desaturate.svg#greyscale);
 }
 
-.InvertVision {
+.InvertVision, .InvertVision img,
+.InvertVision .dropit-open,
+.InvertVision #colorPickerViewer table
+{
 	-webkit-filter: invert(100%);
 	filter: invert(100%);
-	filter: url(#invert);
 }
 
 .HighContrastVision {

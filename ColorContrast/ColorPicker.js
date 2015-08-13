@@ -532,7 +532,7 @@ var ColorPicker = function() {
                         });
 
                         $('#RefreshColorPicker').click(function(e) {
-                            _private.screenChanged(true);
+                            _public.refresh();
                         });
 
                         $('#ExitColorPicker').click(function(e) {
@@ -625,7 +625,7 @@ var ColorPicker = function() {
                     e.preventDefault();
                     break;    
                 case 82 : // R - Refresh
-                    _private.screenChanged(true);
+                    _public.refresh();
                     e.stopPropagation();
                     e.preventDefault();
                     break;    
@@ -1061,7 +1061,9 @@ var ColorPicker = function() {
         },
 
         refresh: function() {
-            _private.screenChanged();
+            _private.normalVision();
+            _private.setEyeType('NormalVision');
+            _private.screenChanged(true);
         },
     }
 
