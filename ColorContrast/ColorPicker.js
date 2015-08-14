@@ -758,9 +758,7 @@ var ColorPicker = function() {
                     $('#effects-trigger').append('<ul id="effects-submenu" class="dropit-submenu" style="display: none;"></ul>');
                     
                     $('#effects-submenu').append('<li><a id="BlurVision"><img src="'+yesSrc+'"></img>&nbsp;Blur</a></li>');
-                    $('#effects-submenu').append('<li><a id="ContrastVision" class="effect"><img src="'+yesSrc+'"></img>&nbsp;Contrast<span id="ContrastPercent" class="menuPercent"></span></a></li>');
-                    // $('#effects-submenu').append('<li><a id="HighContrastVision"><img src="'+yesSrc+'"></img>&nbsp;High Contrast</a></li>');
-                    // $('#effects-submenu').append('<li><a id="LowContrastVision"><img src="'+yesSrc+'"></img>&nbsp;Low Contrast</a></li>');
+                    $('#effects-submenu').append('<li><a id="ContrastVision" class="effect"><img src="'+yesSrc+'"></img><span class="shortcuteffect">+/-</span>&nbsp;Contrast<span id="ContrastPercent" class="menuPercent"></span></a></li>');
                     $('#effects-submenu').append('<li><a id="LighterEffect"><img src="'+yesSrc+'"></img>&nbsp;Lighter</a></li>');
                     $('#effects-submenu').append('<li><a id="DarkerEffect"><img src="'+yesSrc+'"></img>&nbsp;Darker</a></li>');
                     $('#effects-submenu').append('<li><a id="BlackAndWhite"><img src="'+yesSrc+'"></img>&nbsp;Black And White</a></li>');
@@ -800,10 +798,16 @@ var ColorPicker = function() {
                         }
                     });
 
-                    $('.effect').mouseenter(function() {
+                    $('.effect').mouseenter(function(e) {
+                        _private.activeEffect = e.currentTarget.id;
                         $(this).bind("contextmenu", _private.effectRightClick);
+                        $(window).bind("keyup", _private.effectKeyUp);
+                        $(this).bind("mousewheel", _private.effectMouseWheel);
                     }).mouseleave(function() {
+                        _private.activeEffect = null;
                         $(this).unbind("contextmenu", _private.effectRightClick);
+                        $(window).unbind("keyup", _private.effectKeyUp);
+                        $(this).unbind("mousewheel", _private.effectMouseWheel);
                     });
                 });
                 $colorPickerSample.hide();
@@ -839,6 +843,58 @@ var ColorPicker = function() {
 
             e.preventDefault();
             e.stopPropagation();
+        },
+
+        activeEffect : null,
+
+        effectKeyUp : function(e) {
+            if(!_private.activeEffect) return;
+            id = _private.activeEffect;
+            switch(e.keyCode) {
+                case 107 : // +
+                case 187 :
+                    _private.setEyeType(id);
+                    _private.normalVision();
+                    $('html').addClass(id);
+                    if(id == "ContrastVision") {
+                        _private.addToContrastEffect(10);
+                    }
+                    e.stopPropagation();
+                    e.preventDefault();
+                    break;
+                case 109 : // -
+                case 189 :
+                    _private.setEyeType(id);
+                    _private.normalVision();
+                    $('html').addClass(id);
+                    if(id == "ContrastVision") {
+                        _private.addToContrastEffect(-10);
+                    }
+                    e.stopPropagation();
+                    e.preventDefault();
+                    break
+            }
+        },
+
+        effectMouseWheel : function(e) {
+            id = e.currentTarget.id;
+            _private.setEyeType(_private.activeEffect);
+            _private.normalVision();
+            $('html').addClass(id);
+            if(e.originalEvent.wheelDelta /120 > 0) {
+                //console.log('scrolling up !');
+                if(id == "ContrastVision") {
+                    _private.addToContrastEffect(10);
+                }
+            }
+            else{
+                //console.log('scrolling down !');
+                if(id == "ContrastVision") {
+                    _private.addToContrastEffect(-10);
+                }
+            }
+            e.stopPropagation();
+            e.preventDefault();
         },
 
         toggleSample : function() {

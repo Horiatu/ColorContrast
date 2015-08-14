@@ -112,6 +112,13 @@
     text-shadow: 2px 2px 1px white;
 }
 
+.dropit .shortcuteffect {
+    position: absolute;
+    right: 4px;
+    background-color: transparent;
+    color: white;
+}
+
 .Menu ul.dropit-submenu a {
     padding-right: 20px;
 }
