@@ -320,24 +320,37 @@ var ColorPicker = function() {
 
         injectCss: function(contentDocument) {
             if(!contentDocument.getElementById("colorPickerCss")) {
-                var colorPickerCss = '<link id="colorPickerCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('ColorPicker.css') + '" />';
-                if ($("head").length == 0) {
-                    $("body").before(colorPickerCss);
-                } else {
-                    $("head").append(colorPickerCss);
-                }
+                _private._injectCss('<link id="colorPickerCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('ColorPicker.css') + '" />');
             }
 
             if(!contentDocument.getElementById("dropitrCss")) {
-                var dropitCss = '<link id="dropitrCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('dropit.css') + '" />';
-                if ($("head").length == 0) {
-                    $("body").before(dropitCss);
-                } else {
-                    $("head").append(dropitCss);
-                }
+                _private._injectCss('<link id="dropitrCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('dropit.css') + '" />');
             }
+        },
 
-            //_private.addFilters('body');
+        _injectCss : function(css) {
+            if ($("head").length == 0) {
+                    $("body").before(css);
+                } else {
+                    $("head").append(css);
+                }
+        },
+
+        addToContrastEffect : function(i) {
+            var s = $(document.getElementById("contrastEffect"));
+            n = 100 + i;
+            if(!s.length) {
+                _private._injectCss('<style id="contrastEffect" class="effectPercent">.ContrastVision {-webkit-filter: contrast('+n+'%);filter: contrast('+n+'%);}</style>');
+            } else {
+                var c = s.html();
+                c = c.replace(/(?:contrast\((\d+)\%\);)/g, function(str, val) { 
+                    n = Number(val);
+                    if(n + i >= 0) n += i;
+                    return 'contrast(' + n + '%);';
+                });
+                s.html(c);
+            }
+            $('#ContrastPercent').html(n != 100 ? (n+'%') : '');
         },
 
         addFilters: function(e) {
@@ -621,6 +634,9 @@ var ColorPicker = function() {
                 case 78 : // N - Normal Vision
                     _private.normalVision();
                     _private.setEyeType('NormalVision');
+                    $(".effectPercent").remove();
+                    $('.menuPercent').html('');
+
                     e.stopPropagation();
                     e.preventDefault();
                     break;    
@@ -742,8 +758,9 @@ var ColorPicker = function() {
                     $('#effects-trigger').append('<ul id="effects-submenu" class="dropit-submenu" style="display: none;"></ul>');
                     
                     $('#effects-submenu').append('<li><a id="BlurVision"><img src="'+yesSrc+'"></img>&nbsp;Blur</a></li>');
-                    $('#effects-submenu').append('<li><a id="HighContrastVision"><img src="'+yesSrc+'"></img>&nbsp;High Contrast</a></li>');
-                    $('#effects-submenu').append('<li><a id="LowContrastVision"><img src="'+yesSrc+'"></img>&nbsp;Low Contrast</a></li>');
+                    $('#effects-submenu').append('<li><a id="ContrastVision" class="effect"><img src="'+yesSrc+'"></img>&nbsp;Contrast<span id="ContrastPercent" class="menuPercent"></span></a></li>');
+                    // $('#effects-submenu').append('<li><a id="HighContrastVision"><img src="'+yesSrc+'"></img>&nbsp;High Contrast</a></li>');
+                    // $('#effects-submenu').append('<li><a id="LowContrastVision"><img src="'+yesSrc+'"></img>&nbsp;Low Contrast</a></li>');
                     $('#effects-submenu').append('<li><a id="LighterEffect"><img src="'+yesSrc+'"></img>&nbsp;Lighter</a></li>');
                     $('#effects-submenu').append('<li><a id="DarkerEffect"><img src="'+yesSrc+'"></img>&nbsp;Darker</a></li>');
                     $('#effects-submenu').append('<li><a id="BlackAndWhite"><img src="'+yesSrc+'"></img>&nbsp;Black And White</a></li>');
@@ -764,16 +781,30 @@ var ColorPicker = function() {
                         },
                     });
 
-                    $('#eye-menu li ul li a, #effects-menu li ul li a').click(function() { 
+                    $('#eye-menu li ul li a, #effects-menu li ul li a').click(function(e) { 
+                        if (e.button == 2) return;
+
                         id = $(this).attr('id');
-                        //console.log(id);
                         _private.setEyeType(id);
                         _private.normalVision();
                         if(id != 'NormalVision') {
                             $('html').addClass(id);
+                            if($(this).hasClass('effect')) {
+                                if (id == 'ContrastVision') {
+                                    _private.addToContrastEffect(10);
+                                }
+                            }
+                        } else {
+                            $("#contrastEffect").remove();
+                            $('.menuPercent').html('');
                         }
                     });
 
+                    $('.effect').mouseenter(function() {
+                        $(this).bind("contextmenu", _private.effectRightClick);
+                    }).mouseleave(function() {
+                        $(this).unbind("contextmenu", _private.effectRightClick);
+                    });
                 });
                 $colorPickerSample.hide();
                 $('#ShowSample').html("<span class='shortcut'>S</span>Show Sample");
@@ -797,6 +828,19 @@ var ColorPicker = function() {
             }
         },
 
+        effectRightClick : function(e) {
+            var id = e.toElement.id;
+            _private.setEyeType(id);
+            _private.normalVision();
+            $('html').addClass(id);
+            if (id == 'ContrastVision') {
+                _private.addToContrastEffect(-10);
+            }
+
+            e.preventDefault();
+            e.stopPropagation();
+        },
+
         toggleSample : function() {
             $colorPickerSample = $('#colorPickerSample');
             if(!$colorPickerSample.is(":visible")) 
@@ -817,6 +861,7 @@ var ColorPicker = function() {
             // $('#bodyNew, .bodyNew')
             $('html')
                 .removeClass('NormalVision') // !
+                .removeClass('ContrastVision')
                 .removeClass('BlackAndWhite').removeClass('BlurVision')
                 .removeClass('LighterEffect').removeClass('DarkerEffect')
                 .removeClass('InvertVision').removeClass('RotateColorsEffect')
@@ -1037,6 +1082,8 @@ var ColorPicker = function() {
 
             $("#colorPickerCss").remove();
             $("#dropitCss").remove();
+
+            $("#contrastEffect").remove();
         },
 
     }

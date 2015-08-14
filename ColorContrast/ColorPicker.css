@@ -276,16 +276,6 @@
 	filter: invert(100%);
 }
 
-.HighContrastVision {
-	-webkit-filter: contrast(200%);
-	filter: contrast(200%);
-}
-
-.LowContrastVision {
-	-webkit-filter: contrast(50%);
-	filter: contrast(50%);
-}
-
 .LighterEffect {
 	-webkit-filter: brightness(200%);
 	filter: brightness(200%);
@@ -384,3 +374,11 @@
 	display: inline-block;
 	min-height: 255px;
 }
+
+.menuPercent {
+    margin-left: 4px;
+    background-color: transparent;
+    color: orangered;
+    text-shadow: 2px 2px 1px black;
+}
+
