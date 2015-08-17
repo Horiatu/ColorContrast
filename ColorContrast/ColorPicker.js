@@ -503,108 +503,132 @@ var ColorPicker = function() {
 
                 if(options.toolbar) {
                     if (!contentDocument.getElementById("colorPickerToolbar")) {
-                        _private.colorPickerToolbar = contentDocument.createElement("Div");
-                        _private.colorPickerToolbar.setAttribute("id", "colorPickerToolbar");
-                        $('#ColorPickerOvr').append(_private.colorPickerToolbar);
-                        _private.setToolbarPosition(options.position, false);
-
-                        table = contentDocument.createElement("Table");
-                        _private.colorPickerToolbar.appendChild(table);
-                        row = contentDocument.createElement("tr");
-                        table.appendChild(row);
-                        _private.colorDiv = contentDocument.createElement("td"); row.appendChild(_private.colorDiv);
-                        _private.colorDiv.setAttribute("id", "colorDiv");
-                        _private.colorDiv.setAttribute("class", "shadowedBlack");
-
-                        td2 = contentDocument.createElement("td"); row.appendChild(td2);
-                        td2.setAttribute("style", "width: 70px;");
-                        _private.colorTxt = contentDocument.createElement("Span");
-                        _private.colorTxt.setAttribute("id", "colorTxt");
-                        td2.appendChild(_private.colorTxt);
-
-                        td3 = contentDocument.createElement("td"); row.appendChild(td3); 
-                        $(td3).append('<Span id="smallSample" class="Sample smallSample" title="Min required:&#13; AA - 4.5:1&#13; AAA - 7.0:1">Small Text</Span>');
                         
-                        $(td3).append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok small checkmark shadowed hide" alt="Pass AAA" title="Pass AAA">');
-                        $(td3).append('<img src='+chrome.extension.getURL("Images/SoSo.png")+' class="SoSo small checkmark shadowed hide" alt="Pass AA" title="Pass AA">');
-                        $(td3).append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail small checkmark shadowed hide" alt="Failed AAA" title="Failed AAA">');
+
+                        $('#ColorPickerOvr').append('<div id="colorPickerToolbar"></div>');
+                        $('#colorPickerToolbar').load(chrome.extension.getURL("/inc/html/ToolBar.html"), function() {
+                            $('img.ok').attr('src', chrome.extension.getURL("Images/Ok.png"));
+                            $('img.SoSo').attr('src', chrome.extension.getURL("Images/SoSo.png"));
+                            $('img.NotOk').attr('src', chrome.extension.getURL("Images/NotOk.png"));
+                            $('#menu1 img').attr('src', chrome.extension.getURL("Images/menu.png"));
+
+                            _private.colorTxt = contentDocument.getElementById("colorTxt");
+                            _private.colorDiv = contentDocument.getElementById("colorDiv");
+
+                            $('#CopyFr').click(function(e) {
+                                _private.foregroundToClipboard();
+                            });
+
+                            $('#CopyBg').click(function(e) {
+                                _private.backgroundToClipboard();
+                            });
+
+                            $('#ShowSample').click(function() {
+                                _private.ShowContrastSample(false);
+                            });
+
+                            $('#ToggleColors').click(function(e) {
+                                _private.toggleColors();
+                            });
+
+                            $('#RefreshColorPicker').click(function(e) {
+                                _public.refresh();
+                            });
+
+                            $('#ExitColorPicker').click(function(e) {
+                                _public.Hide();
+                            });
+
+                            $('#menu1').dropit({
+                                beforeShow: _private.removeMouseSupport,
+                                afterHide: _private.addMouseSupport
+                            });
+
+                            $('#colorPickerToolbar').on('mouseenter', _private.removeMouseSupport).on('mouseleave', _private.addMouseSupport);
+     
+                            $('#UpLeft').click(function(e) {
+                                _private.setToolbarPosition({up:true, left:true}, true);
+                            });
+
+                            $('#UpRight').click(function(e) {
+                                _private.setToolbarPosition(pos = {up:true, left:false}, true);
+                            });
+
+                            _private.showToolbar = true;
+                        });
+
+
+                        // _private.colorPickerToolbar = contentDocument.createElement("Div");
+                        // _private.colorPickerToolbar.setAttribute("id", "colorPickerToolbar");
+
+
+                        // $('#ColorPickerOvr').append(_private.colorPickerToolbar);
+                        // _private.setToolbarPosition(options.position, false);
+
+                        // table = contentDocument.createElement("Table");
+                        // _private.colorPickerToolbar.appendChild(table);
+                        // row = contentDocument.createElement("tr");
+                        // table.appendChild(row);
+                        // _private.colorDiv = contentDocument.createElement("td"); row.appendChild(_private.colorDiv);
+                        // _private.colorDiv.setAttribute("id", "colorDiv");
+                        // _private.colorDiv.setAttribute("class", "shadowedBlack");
+
+                        // td2 = contentDocument.createElement("td"); row.appendChild(td2);
+                        // td2.setAttribute("style", "width: 70px;");
+                        // _private.colorTxt = contentDocument.createElement("Span");
+                        // _private.colorTxt.setAttribute("id", "colorTxt");
+                        // td2.appendChild(_private.colorTxt);
+
+                        // td3 = contentDocument.createElement("td"); row.appendChild(td3); 
+                        // $(td3).append('<Span id="smallSample" class="Sample smallSample" title="Min required:&#13; AA - 4.5:1&#13; AAA - 7.0:1">Small Text</Span>');
                         
-                        td4 = contentDocument.createElement("td"); row.appendChild(td4); 
-                        $(td4).append('<Span id="lasegrSample" class="Sample largeSample" title="Min required:&#13; AA - 3.0:1&#13; AAA - 4.5:1">Large Text</Span>');
+                        // $(td3).append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok small checkmark shadowed hide" alt="Pass AAA" title="Pass AAA">');
+                        // $(td3).append('<img src='+chrome.extension.getURL("Images/SoSo.png")+' class="SoSo small checkmark shadowed hide" alt="Pass AA" title="Pass AA">');
+                        // $(td3).append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail small checkmark shadowed hide" alt="Failed AAA" title="Failed AAA">');
                         
-                        $(td4).append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok large checkmark shadowed hide" alt="Pass AAA" title="Pass AAA">');
-                        $(td4).append('<img src='+chrome.extension.getURL("Images/SoSo.png")+' class="SoSo large checkmark shadowed hide" alt="Pass AA" title="Pass AA">');
-                        $(td4).append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail large checkmark shadowed hide" alt="Failed AA" title="Failed AA">');
+                        // td4 = contentDocument.createElement("td"); row.appendChild(td4); 
+                        // $(td4).append('<Span id="lasegrSample" class="Sample largeSample" title="Min required:&#13; AA - 3.0:1&#13; AAA - 4.5:1">Large Text</Span>');
                         
-                        td5 = contentDocument.createElement("td"); row.appendChild(td5); 
-                        $(td5)
-                        .css("border", "1px solid black")
-                        .css("min-width", "80px")
-                        .css("text-align", "center")
-                        .attr("title", "Contrast")
-                        .append('<Span id="contrast" class="Contrast">4.50:1</Span>');
+                        // $(td4).append('<img src='+chrome.extension.getURL("Images/Ok.png")+' class="ok large checkmark shadowed hide" alt="Pass AAA" title="Pass AAA">');
+                        // $(td4).append('<img src='+chrome.extension.getURL("Images/SoSo.png")+' class="SoSo large checkmark shadowed hide" alt="Pass AA" title="Pass AA">');
+                        // $(td4).append('<img src='+chrome.extension.getURL("Images/NotOk.png")+' class="fail large checkmark shadowed hide" alt="Failed AA" title="Failed AA">');
+                        
+                        // td5 = contentDocument.createElement("td"); row.appendChild(td5); 
+                        // $(td5)
+                        // .css("border", "1px solid black")
+                        // .css("min-width", "80px")
+                        // .css("text-align", "center")
+                        // .attr("title", "Contrast")
+                        // .append('<Span id="contrast" class="Contrast">4.50:1</Span>');
 
-                        td6 = contentDocument.createElement("td"); row.appendChild(td6); 
-                        $(td6).css('padding','0 1px').append('<ul id="menu1" class="Menu dropit"></ul>');
-                        $('#menu1').append('<li id="menu1-trigger" class="dropit-trigger"><a>'+
-                            '<img src='+chrome.extension.getURL("Images/menu.png")+' class="shadowedBlack"></img>'+
-                            '</a></li>');
-                        $('#menu1-trigger').append('<ul id="menu1-submenu" class="dropit-submenu" style="display: none;"></ul>');
-                        $('#menu1-submenu').append('<li><a id="CopyFr"><span class="shortcut">F</span>Copy Foreground</a></li>');
-                        $('#menu1-submenu').append('<li><a id="CopyBg"><span class="shortcut">B</span>Copy Background</a></li>');
-                        $('#menu1-submenu').append('<li><a id="ToggleColors"><span class="shortcut">T</span>Toggle Colors</a></li>');
-                        $('#menu1-submenu').append('<li><hr/></li>');
-                        $('#menu1-submenu').append('<li><a id="UpLeft"><span class="shortcut">home</span>Up-Left</a></li>');
-                        $('#menu1-submenu').append('<li><a id="UpRight"><span class="shortcut">pg-up</span>Up-Right</a></li>');
-                        $('#menu1-submenu').append('<li><hr/></li>');
-                        $('#menu1-submenu').append('<li><a id="ShowSample"><span class="shortcut">S</span>Show Sample</a></li>');
-                        //$('#menu1-submenu').append('<li><a id="ApplyFilter">Challenged Vision</a></li>');
-                        $('#menu1-submenu').append('<li><a id="RefreshColorPicker"><span class="shortcut">R</span>Refresh</a></li>');
-                        $('#menu1-submenu').append('<li><a id="ExitColorPicker"><span class="shortcut">esc</span>Exit</a></li>');
+                        // td6 = contentDocument.createElement("td"); row.appendChild(td6); 
+                        // $(td6).css('padding','0 1px').append('<ul id="menu1" class="Menu dropit"></ul>');
+                        // $('#menu1').append('<li id="menu1-trigger" class="dropit-trigger"><a>'+
+                        //     '<img src='+chrome.extension.getURL("Images/menu.png")+' class="shadowedBlack"></img>'+
+                        //     '</a></li>');
+                        // $('#menu1-trigger').append('<ul id="menu1-submenu" class="dropit-submenu" style="display: none;"></ul>');
+                        // $('#menu1-submenu').append('<li><a id="CopyFr"><span class="shortcut">F</span>Copy Foreground</a></li>');
+                        // $('#menu1-submenu').append('<li><a id="CopyBg"><span class="shortcut">B</span>Copy Background</a></li>');
+                        // $('#menu1-submenu').append('<li><a id="ToggleColors"><span class="shortcut">T</span>Toggle Colors</a></li>');
+                        // $('#menu1-submenu').append('<li><hr/></li>');
+                        // $('#menu1-submenu').append('<li><a id="UpLeft"><span class="shortcut">home</span>Up-Left</a></li>');
+                        // $('#menu1-submenu').append('<li><a id="UpRight"><span class="shortcut">pg-up</span>Up-Right</a></li>');
+                        // $('#menu1-submenu').append('<li><hr/></li>');
+                        // $('#menu1-submenu').append('<li><a id="ShowSample"><span class="shortcut">S</span>Show Sample</a></li>');
+                        // //$('#menu1-submenu').append('<li><a id="ApplyFilter">Challenged Vision</a></li>');
+                        // $('#menu1-submenu').append('<li><a id="RefreshColorPicker"><span class="shortcut">R</span>Refresh</a></li>');
+                        // $('#menu1-submenu').append('<li><a id="ExitColorPicker"><span class="shortcut">esc</span>Exit</a></li>');
 
 
-                        $('#colorPickerToolbar').append('<input id="CopyBox" type="text" style="display: none; position: absolute; overflow-x: hidden; overflow-y: hidden;"></input>');
+                        // $('#colorPickerToolbar').prepend('<input id="CopyBox" type="text" style="display: none; position: absolute; overflow-x: hidden; overflow-y: hidden;"></input>');
 
-                        $('#CopyFr').click(function(e) {
-                            _private.foregroundToClipboard();
-                        });
 
-                        $('#CopyBg').click(function(e) {
-                            _private.backgroundToClipboard();
-                        });
 
-                        $('#ShowSample').click(function() {
-                            _private.ShowContrastSample(false);
-                        });
 
-                        $('#ToggleColors').click(function(e) {
-                            _private.toggleColors();
-                        });
 
-                        $('#RefreshColorPicker').click(function(e) {
-                            _public.refresh();
-                        });
 
-                        $('#ExitColorPicker').click(function(e) {
-                            _public.Hide();
-                        });
 
-                        $('#menu1').dropit({
-                            beforeShow: _private.removeMouseSupport,
-                            afterHide: _private.addMouseSupport
-                        });
 
-                        $('#colorPickerToolbar').on('mouseenter', _private.removeMouseSupport).on('mouseleave', _private.addMouseSupport);
- 
-                        $('#UpLeft').click(function(e) {
-                            _private.setToolbarPosition({up:true, left:true}, true);
-                        });
-
-                        $('#UpRight').click(function(e) {
-                            _private.setToolbarPosition(pos = {up:true, left:false}, true);
-                        });
-
-                        _private.showToolbar = true;
                     };
                 };
 
@@ -753,7 +777,7 @@ var ColorPicker = function() {
                         }
                         _private.addMouseSupport();
                     });
-               $SampleContent.load(chrome.extension.getURL("TextSample.html"), function() {
+               $SampleContent.load(chrome.extension.getURL("/inc/html/TextSample.html"), function() {
                     $colorPickerSample.append("<div id='PickerSampleclose' class='PickerSampleBtn PickerSampleHover shadowed'><img src='"+chrome.extension.getURL("Images/close.png")+"' title='close (image)'></img></div>");
                     $('#PickerSampleclose').click(function(e) {
                         $colorPickerSample.hide();

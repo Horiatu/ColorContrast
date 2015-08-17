@@ -52,6 +52,7 @@
     "Images/Cursors/pickColor.cur",
     "ColorPicker.css",
     "dropit.css",
-    "TextSample.html"
+    "/inc/html/TextSample.html",
+    "/inc/html/ToolBar.html"
   ]
 }

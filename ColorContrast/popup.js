@@ -392,6 +392,10 @@ $(document).ready(function() {
         getContrast(e.currentTarget.id);
     });
 
+    fixContrast = function() {
+        alert(0);
+    }
+
     chrome.storage.sync.get(['clickType'], function(a) {
         if(a['clickType'] == undefined || a['clickType']) {
             $('.pickOne').hide();
@@ -402,6 +406,7 @@ $(document).ready(function() {
             $('.pickOne').show();
             $('.pick').on('click', pickAction);
         }
+        $('#fixContrast').on('click', fixContrast);
     });
     
     $('.code').on('click', copyCode);
