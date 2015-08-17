@@ -25,15 +25,17 @@
       <tr>
         <th><label for="background">Background:</label></th>
         <td><input class="txInput" type="text" size="20" id="background" aria-required="true" required value="#037EAF" /></td>
+
         <td><div class="pickOne btn"><img class="pick" name="background" src="images/pick-color.png" alt="pick color" title="Pick Color"></img></div></td>
+
         <td><div class="btn"><img class="code" id="bgCode" src="images/copy-code.png" alt="copy code" title="copy code"></img></div></td>
         <td rowspan="2">
             <div class="btn"><img id="toggle" src="images/toggle.png" alt="toggle" title="toggle colors"></img></div>
         </td>
-        <td rowspan="2">
+        <!-- <td rowspan="2">
             <div class="pickAll btn"><img class="pick1" name="background" src="images/pick-color.png" alt="pick color" 
             title="Pick Color Click:&#13;background - Left&#13;foreground - Right"></img></div>
-        </td>
+        </td> -->
         <td id="contrast" rowspan="2"><span>4.35:1</span></td>
       </tr>
       <tr>
@@ -63,6 +65,29 @@
       <img src="Images/Ok.png" class="smallAAA" alt="Pass AAA" title="Pass AAA"/>
       <img src="Images/SoSo.png" class="smallAA" alt="Pass AA" title="Pass AA"/>
       <img src="Images/NotOk.png" class="small" alt="Fail" title="Fail"/>
+    </div>
+
+    <div style="margin-top: 8px;">
+      <table width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="50%">
+            <div class="pickAll" >
+              <button class="pick1" name="background" title="Pick Color Click:&#13;background - Left&#13;foreground - Right" style="padding: 2px;">
+                <img src="images/pick-color.png" alt="pick color" style="vertical-align: text-bottom;"></img>
+                &nbsp;<span>Pick Colors</span>&nbsp;
+              </button>
+            </div>
+          </td>
+          <td width="50%" align="right">
+            <div class="fixContrast" >
+              <button id="fixContrast" title="Fix Contrast" style="padding: 2px;">
+                <img src="images/FixContrast.png" alt="fix contrast" style="vertical-align: text-bottom;"></img>
+                &nbsp;<span>Fix Contrast</span>&nbsp;
+              </button>
+            </div>
+          </td>
+        </tr>
+      </table>
     </div>
 
   </body>

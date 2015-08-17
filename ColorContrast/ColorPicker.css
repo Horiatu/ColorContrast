@@ -200,16 +200,16 @@
 }
 
 #PickerSampleFix {
-	left: 28px;
+	left: 76px;
 	--visibility: collapse;
 }
 
 #PickerSampleEye {
-	left:52px;
+	left:28px;
 	position: absolute; 
 }
 #PickerSampleEffects {
-	left:76px;
+	left:52px;
 	position: absolute; 
 }
 #PickerSampleEye li, #PickerSampleEffects li {

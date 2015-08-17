@@ -740,7 +740,8 @@ var ColorPicker = function() {
                // $('#ColorPickerOvr').prepend("<div id='colorPickerSample'></div>");
                $colorPickerSample = $('#colorPickerSample');
                $SampleContent = $('.SampleContent');
-               $colorPickerSample.on('mouseenter', function() {
+               $colorPickerSample
+                    .on('mouseenter', function() {
                         _private.removeMouseSupport();
                         if($('#colorPickerViewer')) {
                             $('#colorPickerViewer').css('display', 'none');
@@ -775,12 +776,12 @@ var ColorPicker = function() {
                         e.preventDefault();
                     });
 
-                    $colorPickerSample.append("<div id='PickerSampleFix' class='PickerSampleBtn PickerSampleHover shadowed'><img src='"+chrome.extension.getURL("Images/FixContrast.png")+"' title='Fix Contrast'></img></div>");
-                    $('#PickerSampleFix').click(function(e) {
+                    // $colorPickerSample.append("<div id='PickerSampleFix' class='PickerSampleBtn PickerSampleHover shadowed'><img src='"+chrome.extension.getURL("Images/FixContrast.png")+"' title='Fix Contrast'></img></div>");
+                    // $('#PickerSampleFix').click(function(e) {
 
-                        e.stopPropagation();
-                        e.preventDefault();
-                    });
+                    //     e.stopPropagation();
+                    //     e.preventDefault();
+                    // });
 
                     yesSrc = chrome.extension.getURL("Images/Yes.png");
 
