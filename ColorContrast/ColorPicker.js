@@ -350,7 +350,26 @@ var ColorPicker = function() {
                 });
                 s.html(c);
             }
-            $('#ContrastPercent').html(n != 100 ? (n+'%') : '');
+            v = n != 100 ? (n+'%') : '';
+            $('#ContrastPercent').html(v).attr('title', v);
+        },
+
+        addToBlurEffect : function(i) {
+            var s = $(document.getElementById("blurEffect"));
+            n = 1 + i;
+            if(!s.length) {
+                _private._injectCss('<style id="blurEffect" class="effectPercent">.BlurVision {-webkit-filter: blur('+n+'px);filter: blur('+n+'px);}</style>');
+            } else {
+                var c = s.html();
+                c = c.replace(/(?:blur\((\d+)px\);)/g, function(str, val) { 
+                    n = Number(val);
+                    if(n + i >= 0 && n + i <= 10) n += i;
+                    return 'blur(' + n + 'px);';
+                });
+                s.html(c);
+            }
+            v = n != 0 ? (n) : '';
+            $('#BlurPx').html(v).attr('title', v);
         },
 
         addFilters: function(e) {
@@ -683,16 +702,28 @@ var ColorPicker = function() {
                     break;
                 case 107 : // +
                 case 187 :
-                    if(_private.eyeType == "ContrastVision") {
-                        _private.addToContrastEffect(10);
+                    switch(_private.eyeType)
+                    {
+                        case "ContrastVision" :
+                            _private.addToContrastEffect(10);
+                            break;
+                        case "BlurVision" :
+                            _private.addToBlurEffect(1);
+                            break;
                     }
                     e.stopPropagation();
                     e.preventDefault();
                     break;
                 case 109 : // -
                 case 189 :
-                    if(_private.eyeType == "ContrastVision") {
-                        _private.addToContrastEffect(-10);
+                    switch(_private.eyeType)
+                    {
+                        case "ContrastVision" :
+                            _private.addToContrastEffect(-10);
+                            break;
+                        case "BlurVision" :
+                            _private.addToBlurEffect(-1);
+                            break;
                     }
                     e.stopPropagation();
                     e.preventDefault();
@@ -777,8 +808,9 @@ var ColorPicker = function() {
                         '</a></li>');
                     $('#effects-trigger').append('<ul id="effects-submenu" class="dropit-submenu" style="display: none;"></ul>');
                     
-                    $('#effects-submenu').append('<li><a id="BlurVision"><img src="'+yesSrc+'"></img>&nbsp;Blur</a></li>');
-                    $('#effects-submenu').append('<li><a id="ContrastVision" class="effect"><img src="'+yesSrc+'"></img><span class="shortcut" title="Use the mouse wheel">+/-</span>&nbsp;Contrast<span id="ContrastPercent" class="menuPercent"></span></a></li>');
+                    plusMinus = '<span class="shortcut" title="Or, use the mouse wheel">+/-</span>';
+                    $('#effects-submenu').append('<li><a id="BlurVision" class="effect"><img src="'+yesSrc+'"></img>'+plusMinus+'&nbsp;Blur<span id="BlurPx" class="menuPercent"></span></a></li>');
+                    $('#effects-submenu').append('<li><a id="ContrastVision" class="effect"><img src="'+yesSrc+'"></img>'+plusMinus+'&nbsp;Contrast<span id="ContrastPercent" class="menuPercent"></span></a></li>');
                     $('#effects-submenu').append('<li><a id="LighterEffect"><img src="'+yesSrc+'"></img>&nbsp;Lighter</a></li>');
                     $('#effects-submenu').append('<li><a id="DarkerEffect"><img src="'+yesSrc+'"></img>&nbsp;Darker</a></li>');
                     $('#effects-submenu').append('<li><a id="BlackAndWhite"><img src="'+yesSrc+'"></img>&nbsp;Black And White</a></li>');
@@ -809,8 +841,13 @@ var ColorPicker = function() {
                         if(id != 'NormalVision') {
                             $('html').addClass(id);
                             if($(this).hasClass('effect')) {
-                                if (id == 'ContrastVision') {
-                                    _private.addToContrastEffect(10);
+                                switch (id) {
+                                    case 'ContrastVision' :
+                                        _private.addToContrastEffect(10);
+                                        break;
+                                    case 'BlurVision' :
+                                        _private.addToBlurEffect(1);
+                                        break;
                                 }
                             }
                         } else {
@@ -860,36 +897,20 @@ var ColorPicker = function() {
         //     e.stopPropagation();
         // },
 
-        effectKeyUp : function(e) {
-            switch(e.keyCode) {
-                case 107 : // +
-                case 187 :
-                    $('html').addClass(id);
-                    if(_private.eyeType == "ContrastVision") {
-                        _private.addToContrastEffect(10);
-                    }
-                    e.stopPropagation();
-                    e.preventDefault();
-                    break;
-                case 109 : // -
-                case 189 :
-                    $('html').addClass(id);
-                    if(_private.eyeType == "ContrastVision") {
-                        _private.addToContrastEffect(-10);
-                    }
-                    e.stopPropagation();
-                    e.preventDefault();
-                    break
-            }
-        },
-
         effectMouseWheel : function(e) {
             id = _private.eyeType;
             delta = e.originalEvent.wheelDelta /120 > 0 ? 1 : -1;
-            if(id == "ContrastVision") {
-                _private.addToContrastEffect(10*delta);
-                e.stopPropagation();
-                e.preventDefault();
+            switch(id) {
+                case "ContrastVision" :
+                    _private.addToContrastEffect(10*delta);
+                    e.stopPropagation();
+                    e.preventDefault();
+                    break;
+                case "BlurVision" :
+                    _private.addToBlurEffect(delta);
+                    e.stopPropagation();
+                    e.preventDefault();
+                    break;
             }
         },
 

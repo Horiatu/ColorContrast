@@ -253,12 +253,12 @@
     margin-top: 3px;
 }
 
-.BlurVision {
+/*.BlurVision {
 	-webkit-filter: blur(1px);
 	filter: url(#blur);
 	filter: blur(1px);
 }
-
+*/
 .BlackAndWhite{
 	-webkit-filter: grayscale(100%);
 	filter: grayscale(100%);
