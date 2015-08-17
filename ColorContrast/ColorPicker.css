@@ -253,12 +253,6 @@
     margin-top: 3px;
 }
 
-/*.BlurVision {
-	-webkit-filter: blur(1px);
-	filter: url(#blur);
-	filter: blur(1px);
-}
-*/
 .BlackAndWhite{
 	-webkit-filter: grayscale(100%);
 	filter: grayscale(100%);
@@ -274,16 +268,6 @@
 	-o-filter: invert(100%);
 	-ms-filter: invert(100%);
 	filter: invert(100%);
-}
-
-.LighterEffect {
-	-webkit-filter: brightness(200%);
-	filter: brightness(200%);
-}
-
-.DarkerEffect {
-	-webkit-filter: brightness(50%);
-	filter: brightness(50%);
 }
 
 .RotateColorsEffect {

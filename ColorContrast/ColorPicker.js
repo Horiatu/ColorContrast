@@ -345,7 +345,7 @@ var ColorPicker = function() {
                 var c = s.html();
                 c = c.replace(/(?:contrast\((\d+)\%\);)/g, function(str, val) { 
                     n = Number(val);
-                    if(n + i >= 0) n += i;
+                    if(n + i >= 10) n += i;
                     return 'contrast(' + n + '%);';
                 });
                 s.html(c);
@@ -363,13 +363,31 @@ var ColorPicker = function() {
                 var c = s.html();
                 c = c.replace(/(?:blur\((\d+)px\);)/g, function(str, val) { 
                     n = Number(val);
-                    if(n + i >= 0 && n + i <= 10) n += i;
+                    if(n + i >= 0 && n + i <= 3) n += i;
                     return 'blur(' + n + 'px);';
                 });
                 s.html(c);
             }
             v = n != 0 ? (n) : '';
             $('#BlurPx').html(v).attr('title', v);
+        },
+
+        addToLighterEffect : function(i) {
+            var s = $(document.getElementById("lighterEffect"));
+            n = 100 + i;
+            if(!s.length) {
+                _private._injectCss('<style id="lighterEffect" class="effectPercent">.LighterVision {-webkit-filter: brightness('+n+'%);filter: brightness('+n+'%);}</style>');
+            } else {
+                var c = s.html();
+                c = c.replace(/(?:brightness\((\d+)\%\);)/g, function(str, val) { 
+                    n = Number(val);
+                    if(n + i >= 20) n += i;
+                    return 'brightness(' + n + '%);';
+                });
+                s.html(c);
+            }
+            v = n != 100 ? (n+'%') : '';
+            $('#LighterPercent').html(v).attr('title', v);
         },
 
         addFilters: function(e) {
@@ -702,29 +720,13 @@ var ColorPicker = function() {
                     break;
                 case 107 : // +
                 case 187 :
-                    switch(_private.eyeType)
-                    {
-                        case "ContrastVision" :
-                            _private.addToContrastEffect(10);
-                            break;
-                        case "BlurVision" :
-                            _private.addToBlurEffect(1);
-                            break;
-                    }
+                    _private.addToEffect(_private.eyeType, 1);
                     e.stopPropagation();
                     e.preventDefault();
                     break;
                 case 109 : // -
                 case 189 :
-                    switch(_private.eyeType)
-                    {
-                        case "ContrastVision" :
-                            _private.addToContrastEffect(-10);
-                            break;
-                        case "BlurVision" :
-                            _private.addToBlurEffect(-1);
-                            break;
-                    }
+                    _private.addToEffect(_private.eyeType, -1);
                     e.stopPropagation();
                     e.preventDefault();
                     break
@@ -811,8 +813,8 @@ var ColorPicker = function() {
                     plusMinus = '<span class="shortcut" title="Or, use the mouse wheel">+/-</span>';
                     $('#effects-submenu').append('<li><a id="BlurVision" class="effect"><img src="'+yesSrc+'"></img>'+plusMinus+'&nbsp;Blur<span id="BlurPx" class="menuPercent"></span></a></li>');
                     $('#effects-submenu').append('<li><a id="ContrastVision" class="effect"><img src="'+yesSrc+'"></img>'+plusMinus+'&nbsp;Contrast<span id="ContrastPercent" class="menuPercent"></span></a></li>');
-                    $('#effects-submenu').append('<li><a id="LighterEffect"><img src="'+yesSrc+'"></img>&nbsp;Lighter</a></li>');
-                    $('#effects-submenu').append('<li><a id="DarkerEffect"><img src="'+yesSrc+'"></img>&nbsp;Darker</a></li>');
+                    $('#effects-submenu').append('<li><a id="LighterVision" class="effect"><img src="'+yesSrc+'"></img>'+plusMinus+'&nbsp;Lighter<span id="LighterPercent" class="menuPercent"></a></li>');
+                    $('#effects-submenu').append('<li><hr/></li>');
                     $('#effects-submenu').append('<li><a id="BlackAndWhite"><img src="'+yesSrc+'"></img>&nbsp;Black And White</a></li>');
                     $('#effects-submenu').append('<li><a id="InvertVision"><img src="'+yesSrc+'"></img>&nbsp;Invert</a></li>');
                     $('#effects-submenu').append('<li><a id="RotateColorsEffect"><img src="'+yesSrc+'"></img>&nbsp;Rotate Colors</a></li>');
@@ -839,22 +841,21 @@ var ColorPicker = function() {
                         _private.normalVision();
                         _private.setEyeType(id);
                         if(id != 'NormalVision') {
-                            $('html').addClass(id);
-                            if($(this).hasClass('effect')) {
-                                switch (id) {
-                                    case 'ContrastVision' :
-                                        _private.addToContrastEffect(10);
-                                        break;
-                                    case 'BlurVision' :
-                                        _private.addToBlurEffect(1);
-                                        break;
-                                }
-                            }
+                            _private.addToEffect(id, 1);
                         } else {
                             $("#contrastEffect").remove();
+                            $("#blurEffect").remove();
+                            $("#lighterEffect").remove();
                             $('.menuPercent').html('');
                         }
                     });
+
+                    $('.effect').mouseenter(function() {
+                        $(this).bind("contextmenu", _private.effectRightClick);
+                    }).mouseleave(function() {
+                        $(this).unbind("contextmenu", _private.effectRightClick);
+                    });
+
 
                 });
                 $colorPickerSample.hide();
@@ -884,34 +885,37 @@ var ColorPicker = function() {
             }
         },
 
-        // effectRightClick : function(e) {
-        //     var id = e.toElement.id;
-        //     _private.setEyeType(id);
-        //     _private.normalVision();
-        //     $('html').addClass(id);
-        //     if (id == 'ContrastVision') {
-        //         _private.addToContrastEffect(-10);
-        //     }
+        effectRightClick : function(e) {
+            var id = e.toElement.id;
+            _private.normalVision();
+            _private.setEyeType(id);
+            _private.addToEffect(id, -1);
 
-        //     e.preventDefault();
-        //     e.stopPropagation();
-        // },
+            e.preventDefault();
+            e.stopPropagation();
+        },
+
+        addToEffect : function(id, delta) {
+            $('html').addClass(id);
+            if($('#'+id).hasClass('effect')) {
+                switch (id) {
+                    case 'ContrastVision' :
+                        _private.addToContrastEffect(10*delta);
+                        break;
+                    case 'BlurVision' :
+                        _private.addToBlurEffect(delta);
+                        break;
+                    case 'LighterVision' :
+                        _private.addToLighterEffect(10*delta);
+                        break;
+                }
+            }
+        },
 
         effectMouseWheel : function(e) {
-            id = _private.eyeType;
-            delta = e.originalEvent.wheelDelta /120 > 0 ? 1 : -1;
-            switch(id) {
-                case "ContrastVision" :
-                    _private.addToContrastEffect(10*delta);
-                    e.stopPropagation();
-                    e.preventDefault();
-                    break;
-                case "BlurVision" :
-                    _private.addToBlurEffect(delta);
-                    e.stopPropagation();
-                    e.preventDefault();
-                    break;
-            }
+            _private.addToEffect(_private.eyeType, e.originalEvent.wheelDelta /120 > 0 ? 1 : -1);
+            e.stopPropagation();
+            e.preventDefault();
         },
 
         toggleSample : function() {
@@ -934,11 +938,8 @@ var ColorPicker = function() {
             // $('#bodyNew, .bodyNew')
             $('html')
                 .removeClass('NormalVision') // !
-                .removeClass('ContrastVision')
-                .removeClass('BlackAndWhite').removeClass('BlurVision')
-                .removeClass('LighterEffect').removeClass('DarkerEffect')
-                .removeClass('InvertVision').removeClass('RotateColorsEffect')
-                .removeClass('HighContrastVision').removeClass('LowContrastVision')
+                .removeClass('ContrastVision').removeClass('LighterVision').removeClass('BlurVision')
+                .removeClass('BlackAndWhite').removeClass('InvertVision').removeClass('RotateColorsEffect')
                 .removeClass('Protanopia').removeClass('Protanomaly')
                 .removeClass('Deuteranopia').removeClass('Deuteranomaly')
                 .removeClass('Tritanopia').removeClass('Tritanomaly')
@@ -1158,6 +1159,8 @@ var ColorPicker = function() {
             $("#dropitCss").remove();
 
             $("#contrastEffect").remove();
+            $("#blurEffect").remove();
+            $("#lighterEffect").remove();
         },
 
     }
