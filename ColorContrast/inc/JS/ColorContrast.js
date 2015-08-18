@@ -34,7 +34,7 @@ var ContrastAnalyser = function() {
         },
         luminance: function(hex) {
             // http://www.w3.org/Graphics/Color/sRGB.html
-            var rgb = _private.rgb(hex);
+            var rgb = _public.rgb(hex);
             rgb.r = rgb.r / 255.0;
             rgb.g = rgb.g / 255.0;
             rgb.b = rgb.b / 255.0;
@@ -43,15 +43,6 @@ var ContrastAnalyser = function() {
             rgb.b = rgb.b <= 0.03928 ? rgb.b / 12.92 : Math.pow((rgb.b + 0.055) / 1.055, 2.4);
             var l = (0.2126 * rgb.r) + (0.7152 * rgb.g) + (0.0722 * rgb.b);
             return l;
-        },
-        rgb: function(hex) {
-            hex = hex.replace('#', '');
-            var rgb = {
-                r: parseInt("0x" + hex.substr(0, 2)),
-                g: parseInt("0x" + hex.substr(2, 2)),
-                b: parseInt("0x" + hex.substr(4, 2))
-            };
-            return rgb;
         },
 
         colourNameToHex: function(colour) {
@@ -220,6 +211,22 @@ var ContrastAnalyser = function() {
     };
     // public functions and properties
     var _public = {
+        rgb: function(hex) {
+            hex = hex.replace('#', '');
+            var rgb = {
+                r: parseInt("0x" + hex.substr(0, 2)),
+                g: parseInt("0x" + hex.substr(2, 2)),
+                b: parseInt("0x" + hex.substr(4, 2))
+            };
+            return rgb;
+        },
+
+        rgbToHex: function(rgb) {
+            return '#'+('00' + rgb.r.toString(16)).substr(-2)
+            +('00' + rgb.g.toString(16)).substr(-2)
+            +('00' + rgb.b.toString(16)).substr(-2);
+        },
+
         colorNameOrHexToColor: function(str) {
             str = str.trim();
             h1 = str.match(/#(?:[0-9a-f]{3}){1,2}$/gi);
@@ -242,8 +249,8 @@ var ContrastAnalyser = function() {
         },
 
         test: function(hex1, hex2) {
-            var rgb1 = _private.rgb(hex1);
-            var rgb2 = _private.rgb(hex2);
+            var rgb1 = _public.rgb(hex1);
+            var rgb2 = _public.rgb(hex2);
             var brightness = _private.brightness(rgb1, rgb2);
             var difference = _private.difference(rgb1, rgb2);
             return (
@@ -252,8 +259,8 @@ var ContrastAnalyser = function() {
         },
 
         testVal: function(hex1, hex2) {
-            var rgb1 = _private.rgb(_public.colorNameOrHexToColor(hex1));
-            var rgb2 = _private.rgb(_public.colorNameOrHexToColor(hex2));
+            var rgb1 = _public.rgb(_public.colorNameOrHexToColor(hex1));
+            var rgb2 = _public.rgb(_public.colorNameOrHexToColor(hex2));
             var brightness = _private.brightness(rgb1, rgb2);
             var difference = _private.difference(rgb1, rgb2);
             var pass = brightness >= _private.min.brightness && difference >= _private.min.difference;

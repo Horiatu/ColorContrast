@@ -220,6 +220,19 @@ $(document).ready(function() {
         return contrastDfr.promise();
     },
 
+    fixContrast = function() {
+        var color1 = colorNameOrHexToColor($("#background").val().trim());
+        var color2 = colorNameOrHexToColor($("#foreground").val().trim());
+        chrome.runtime.sendMessage({
+                type: "fix-contrast",
+                c1: color1,
+                c2: color2
+            },
+            function(result) {
+                console.log(result);
+            });
+    },
+
     getContrast = function(id) {
         var backgroundVal = $("#background").val().trim();
         var foregroundVal = $("#foreground").val().trim();
@@ -319,19 +332,19 @@ $(document).ready(function() {
                             loadScripts(tab.id, [{
                                 allFrames: false,
                                 file: true,
-                                content: "jquery-2.1.4.min.js"
+                                content: "/inc/JS/jquery-2.1.4.min.js"
                             }, {
                                 allFrames: false,
                                 file: true,
-                                content: "dropit.js"
+                                content: "/inc/JS/dropit.js"
                             }, {
                                 allFrames: false,
                                 file: true,
-                                content: "inc/scrollstop.js"
+                                content: "/inc/JS/scrollstop.js"
                             }, {
                                 allFrames: false,
                                 file: true,
-                                content: "ColorPicker.js"
+                                content: "/inc/JS/ColorPicker.js"
                             }, {
                                 allFrames: false,
                                 file: false,
@@ -391,10 +404,6 @@ $(document).ready(function() {
     $(".txInput").on("input", function(e) {
         getContrast(e.currentTarget.id);
     });
-
-    fixContrast = function() {
-        alert(0);
-    }
 
     chrome.storage.sync.get(['clickType'], function(a) {
         if(a['clickType'] == undefined || a['clickType']) {

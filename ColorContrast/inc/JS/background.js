@@ -107,6 +107,18 @@ chrome.tabs.getSelected(null, function(tab) {
             case 'get-contrast':
                 sendResponse({contrast: ContrastAnalyser.contrast(msg.c1, msg.c2)});
                 break;
+            case 'fix-contrast':
+                sendResponse(Background.fixContrast(msg.c1, msg.c2));
+                break;
         }
     });
 });
+
+Background.fixContrast = function(color1, color2) {
+    var contrast0 = ContrastAnalyser.contrast(color1, color2);
+    c1rgb = ContrastAnalyser.rgb(color1);
+    c1rgb.r = c1rgb.r + 1;
+    colorR = ContrastAnalyser.rgbToHex(c1rgb);
+    var contrastR = ContrastAnalyser.contrast(colorR, color2);
+    return {color1: color1, color2:color2, contrast: contrast0, fixR: { color: colorR, contrast: contrastR}};
+};

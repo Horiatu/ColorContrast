@@ -4,23 +4,26 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
     <title>WCAG Luminosity Contrast Ratio Analyser - Options</title>
-    <link type="text/css" rel="stylesheet" href="inc/bootstrap/3.1.1/css/bootstrap.min.css">
-    <link type="text/css" rel="stylesheet" href="inc/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <link type="text/css" rel="stylesheet" href="/inc/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/inc/bootstrap/3.1.1/css/bootstrap-theme.min.css">
 
-    <script src="jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="inc/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="/inc/js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="/inc/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <script src="options.js"></script>
-    <!--script src="inc/flattr/load.js"></script-->
+    <script src="/inc/js/options.js"></script>
 
     <style>
       @font-face {
         font-family: "Poiret One";
         font-weight: 400;
-        src: url('Fonts/Poiret One.woff2') format('woff2');
+        src: url('/Fonts/Poiret One.woff2') format('woff2');
       }
+      .jumbotron {
+        margin-bottom:0;
+      }
+
       .jumbotron h1, .jumbotron .h1 {
         font-family: "Poiret One";
         text-shadow: 2px 2px 2px gray;
@@ -34,16 +37,21 @@
         --border-bottom: 1px solid gray;
       }
 
+      .col-md-6 {
+        padding-left: 30px;
+      }
+
       legend {
         border-bottom: 1px solid gray; 
+        margin-top: 30px; 
       }
 
       .glassBox {
-        background-color: #C7C7C7;
-        padding: 5px 30px;
+        background-color: rgba(199, 199, 199, 0.5);
+        padding: 5px 20px;
       }
       .mapBg {
-        background-image: url("Images/mapbg.png");
+        background-image: url("/Images/mapbg.png");
       }
       .glassBox img {
         width:50px;
@@ -94,26 +102,25 @@
       </div>
 
       <div class="col-sm-6 col-md-6">
-        <div style="padding-left: 60px;">
+          <legend>Magnify Look</legend>
           <fieldset>
-            <legend>Magnify Look</legend>
             <div class="controls magnifyGlass">
               <table>
                 <tr>
                   <td>
                     <div class="checkbox">
                       <div><input type="radio" name="magnifyGlass" value="magnifierGlass" id="magnifierGlass"/></div>
-                      <div class="glassBox"><img src="Images/magnifierGlass.png"/></div>
+                      <div class="glassBox"><img src="/Images/magnifierGlass.png"/></div>
                     </div>
                   </td><td>
                     <div class="checkbox">
                       <div><input type="radio" name="magnifyGlass" value="magnifierGlass2" id="magnifierGlass2"/></div>
-                      <div class="glassBox"><img src="Images/magnifierGlass2.png"/></div>
+                      <div class="glassBox"><img src="/Images/magnifierGlass2.png"/></div>
                     </div>
                   </td><td>
                     <div class="checkbox">
                       <div><input type="radio" name="magnifyGlass" value="magnifierGlass3" id="magnifierGlass3"/></div>
-                      <div class="glassBox"><img src="Images/magnifierGlass3.png"/></div>
+                      <div class="glassBox"><img src="/Images/magnifierGlass3.png"/></div>
                     </div>
                   </td><td>
                     <div class="checkbox">
@@ -154,8 +161,10 @@
                 </tr>
               </table>
             </div>
+          </fieldset> 
 
-            <legend style="margin-top:30px;">Toolbar</legend>
+          <legend>Toolbar</legend>
+          <fieldset>
             <div class="controls">
               <input id="toolbar" type="checkbox"/>
               <label for="toolbar" style="font-weight: 400;">Color-value panel visible</label>
@@ -164,13 +173,10 @@
               <input id="sample" type="checkbox"/>
               <label for="sample" style="font-weight: 400;">Show text sample</label>
             </div>
-          </fieldset>
-
-        </div>
-  
+          </fieldset> 
       </div>
       
-      <div class="col-lg-offset-1 col-sm-6 col-md-6" style="margin-left:0;">
+      <div class="col-sm-6 col-md-6">
         <legend>Directions:</legend>
         <fieldset>
           <div>

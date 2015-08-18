@@ -320,11 +320,11 @@ var ColorPicker = function() {
 
         injectCss: function(contentDocument) {
             if(!contentDocument.getElementById("colorPickerCss")) {
-                _private._injectCss('<link id="colorPickerCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('ColorPicker.css') + '" />');
+                _private._injectCss('<link id="colorPickerCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('/inc/css/ColorPicker.css') + '" />');
             }
 
             if(!contentDocument.getElementById("dropitrCss")) {
-                _private._injectCss('<link id="dropitrCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('dropit.css') + '" />');
+                _private._injectCss('<link id="dropitrCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('/inc/css/dropit.css') + '" />');
             }
         },
 
@@ -507,7 +507,7 @@ var ColorPicker = function() {
                         $('#colorPickerToolbar').load(chrome.extension.getURL("/inc/html/ToolBar.html"), function() {
                             $('img.ok').attr('src', chrome.extension.getURL("Images/Ok.png"));
                             $('img.SoSo').attr('src', chrome.extension.getURL("Images/SoSo.png"));
-                            $('img.NotOk').attr('src', chrome.extension.getURL("Images/NotOk.png"));
+                            $('img.fail').attr('src', chrome.extension.getURL("Images/NotOk.png"));
                             $('#menu1 img').attr('src', chrome.extension.getURL("Images/menu.png"));
 
                             _private.colorTxt = contentDocument.getElementById("colorTxt");
@@ -882,7 +882,7 @@ var ColorPicker = function() {
             if($(e.toElement).attr('disabled')==='disabled') 
                 id = e.toElement.parentElement.id;
             if(!id) return;
-            
+
             _private.normalVision();
             _private.setEyeType(id);
             _private.addToEffect(id, -1);

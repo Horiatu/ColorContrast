@@ -2,12 +2,12 @@
 	font-family: 'Source Code Pro';
 	font-style: normal;
 	font-weight: 400;
-	src: url('fonts/SourceCodePro.woff2') format('woff2');
+	src: url('/fonts/SourceCodePro.woff2') format('woff2');
 }
 @font-face {
 	font-family: "Poiret One";
 	font-weight: 400;
-	src: url('fonts/Poiret One.woff2') format('woff2');
+	src: url('/fonts/Poiret One.woff2') format('woff2');
 }
 
 #colorPickerViewer {

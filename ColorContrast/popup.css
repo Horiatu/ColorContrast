@@ -17,7 +17,7 @@
         font-family: 'Source Code Pro';
         font-style: normal;
         font-weight: 400;
-        src: url('fonts/SourceCodePro.woff2') format('woff2');
+        src: url('/fonts/SourceCodePro.woff2') format('woff2');
       }
 
       body {
