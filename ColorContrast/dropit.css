@@ -51,7 +51,6 @@
     font-family: sans-serif;
     font-weight: bold;
     white-space: nowrap;
-    left: -143px;
 
     filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=2, OffY=2, Color='#444')";
     filter: url(#drop-shadow);

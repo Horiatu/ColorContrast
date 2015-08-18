@@ -2,8 +2,91 @@
     <input id="CopyBox" type="text" style="display: none; position: absolute; overflow-x: hidden; overflow-y: hidden;">
     <table>
         <tr>
-            <td id="colorDiv" class="shadowedBlack" style="background-color:#ffffff;"></td>
-            <td style="width: 70px;"><span id="colorTxt"></span></td>
+            <td style="padding: 0px 1px;">
+                <ul id="menu1" class="Menu dropit">
+                    <li id="menu1-trigger" class="dropit-trigger">
+                        <a><img class="shadowedBlack"></a>
+                        <ul id="menu1-submenu" class="dropit-submenu">
+                            <li><a id="CopyFr"><span class="shortcut">F</span>Copy Foreground</a></li>
+                            <li><a id="CopyBg"><span class="shortcut">B</span>Copy Background</a></li>
+                            <li><a id="ToggleColors"><span class="shortcut">T</span>Toggle Colors</a></li>
+                            <li><hr></li>
+                            <li><a id="mNormalVision"><span class="shortcut">N</span>Normal Vision</a></li>
+                            <li class="dropit-trigger" style="opacity:1">
+                            	<a id="ChalengedVisions"><span class="shortcut">:</span>Chalenged Visions</a>
+								<ul id="eye-menu" class="dropit" style="left: 160px; position: absolute; top: 0; display:none; opacity:1;">
+								    <li id="meye-trigger" class="dropit-trigger" style="opacity:1">
+								        <ul id="meye-submenu">
+								            <li>
+								                <a id="Protanopia"><img alt="" class="yes"/>&nbsp;Protanopia</a>
+								            </li>
+								            <li>
+								                <a id="Protanomaly"><img alt="" class="yes"/>&nbsp;Protanomaly</a>
+								            </li>
+								            <li>
+								                <a id="Deuteranopia"><img alt="" class="yes"/>&nbsp;Deuteranopia</a>
+								            </li>
+								            <li>
+								                <a id="Deuteranomaly"><img alt="" class="yes"/>&nbsp;Deuteranomaly</a>
+								            </li>
+								            <li>
+								                <a id="Tritanopia"><img alt="" class="yes"/>&nbsp;Tritanopia</a>
+								            </li>
+								            <li>
+								                <a id="Tritanomaly"><img alt="" class="yes"/>&nbsp;Tritanomaly</a>
+								            </li>
+								            <li>
+								                <a id="Achromatopsia"><img alt="" class="yes"/>&nbsp;Achromatopsia</a>
+								            </li>
+								            <li>
+								                <a id="Achromatomaly"><img alt="" class="yes"/>&nbsp;Achromatomaly</a>
+								            </li>
+								        </ul>
+								    </li>
+								</ul>
+                            </li>
+                            <li class="dropit-trigger" style="opacity:1">
+                            	<a id="Effects"><span class="shortcut">:</span>Effects</a>
+
+								<ul id="effects-menu" class="dropit" style="left: 160px; position: absolute; top: 0; opacity:1;">
+								    <li id="effects-trigger" class="dropit-trigger" style="opacity:1">
+								        <ul id="meffects-submenu" class="dropit-submenu">
+								            <li>
+								                <a id="BlurVision" class="effect"><img alt="" class="yes"/><span class="shortcut">+/-</span>&nbsp;Blur<span id="BlurPx" class="menuPercent" title="1">1</span></a>
+								            </li>
+								            <li>
+								                <a id="ContrastVision" class="effect"><img alt="" class="yes"/><span class="shortcut">+/-</span>&nbsp;Contrast<span id="ContrastPercent" class="menuPercent" title=""></span></a>
+								            </li>
+								            <li>
+								                <a id="LighterVision" class="effect"><img alt="" class="yes"/><span class="shortcut">+/-</span>&nbsp;Lighter<span id="LighterPercent" class="menuPercent" ></span></a>
+								            </li>
+								            <li>
+								                <hr>
+								            </li>
+								            <li>
+								                <a id="BlackAndWhite"><img alt="" class="yes"/>&nbsp;Black And White</a>
+								            </li>
+								            <li>
+								                <a id="InvertVision"><img alt="" class="yes"/>&nbsp;Invert</a>
+								            </li>
+								            <li>
+								                <a id="RotateColorsEffect"><img alt="" class="yes"/>&nbsp;Rotate Colors</a>
+								            </li>
+								        </ul>
+								    </li>
+								</ul>
+                            </li>
+                            <li><hr></li>
+                            <li><a id="UpLeft"><span class="shortcut">home</span>Up-Left</a></li>
+                            <li><a id="UpRight"><span class="shortcut">pg-up</span>Up-Right</a></li>
+                            <li><hr></li>
+                            <li><a id="ShowSample"><span class="shortcut">S</span>Show Sample</a></li>
+                            <li><a id="RefreshColorPicker"><span class="shortcut">R</span>Refresh</a></li>
+                            <li><a id="ExitColorPicker"><span class="shortcut">esc</span>Exit</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </td>
             <td style="cursor: help;">
                 <span id="smallSample" class="Sample smallSample" title="Min required:&#13; AA - 4.5:1&#13; AAA - 7.0:1" >Small Text</span>
                 <img class="ok small checkmark shadowed hide" alt="Pass AAA" title="Pass AAA">
@@ -17,25 +100,8 @@
                 <img class="fail large checkmark shadowed hide" alt="Failed AA" title="Failed AA">
             </td>
             <td title="Contrast" style="border: 1px solid black; min-width: 80px; text-align: center;"><span id="contrast" class="Contrast"></span></td>
-            <td style="padding: 0px 1px;">
-                <ul id="menu1" class="Menu dropit">
-                    <li id="menu1-trigger" class="dropit-trigger">
-                        <a><img class="shadowedBlack"></a>
-                        <ul id="menu1-submenu" class="dropit-submenu" style="display: none;">
-                            <li><a id="CopyFr"><span class="shortcut">F</span>Copy Foreground</a></li>
-                            <li><a id="CopyBg"><span class="shortcut">B</span>Copy Background</a></li>
-                            <li><a id="ToggleColors"><span class="shortcut">T</span>Toggle Colors</a></li>
-                            <li><hr></li>
-                            <li><a id="UpLeft"><span class="shortcut">home</span>Up-Left</a></li>
-                            <li><a id="UpRight"><span class="shortcut">pg-up</span>Up-Right</a></li>
-                            <li><hr></li>
-                            <li><a id="ShowSample"><span class="shortcut">S</span>Show Sample</a></li>
-                            <li><a id="RefreshColorPicker"><span class="shortcut">R</span>Refresh</a></li>
-                            <li><a id="ExitColorPicker"><span class="shortcut">esc</span>Exit</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </td>
+            <td style="width: 70px;"><span id="colorTxt"></span></td>
+			<td id="colorDiv" class="shadowedBlack" style="background-color:#ffffff;"></td>
         </tr>
     </table>
-<!-- </div> -->
+<!-- </div>

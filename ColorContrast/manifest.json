@@ -53,8 +53,6 @@
     "ColorPicker.css",
     "dropit.css",
     "/inc/html/TextSample.html",
-    "/inc/html/ToolBar.html",
-    "/inc/html/eye-menu.html",
-    "/inc/html/effects-menu.html"
+    "/inc/html/ToolBar.html"
   ]
 }

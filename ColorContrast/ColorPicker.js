@@ -537,10 +537,64 @@ var ColorPicker = function() {
                                 _public.Hide();
                             });
 
-                            $('#menu1').dropit({
-                                beforeShow: _private.removeMouseSupport,
-                                afterHide: _private.addMouseSupport
+                            $('#mNormalVision').click(function(e) {
+                                _private.normalVision();
+                                _private.setEyeType('NormalVision');
+                                $(".effectPercent").remove();
+                                $('.menuPercent').html('');
                             });
+
+                            $('#menu1').dropit({
+                                // beforeShow: _private.removeMouseSupport,
+                                // afterHide: _private.addMouseSupport,
+                                beforeShow: function() {
+                                    $('#eye-menu li ul li a img').hide();
+                                    $('#effects-menu li ul li a img').hide();
+                                    $('#'+_private.eyeType+' img').show();                                   
+                                },
+                                afterShow: function() {
+                                    $('#eye-menu').hide();
+                                    $('#effects-menu').hide();
+                                }
+                            });
+
+                            yesSrc = chrome.extension.getURL("Images/Yes.png");
+
+                            $('#eye-menu li a img').attr('src', chrome.extension.getURL('Images/DisabledEye.png'));
+                            $('#eye-menu .yes').attr('src', yesSrc).hide();
+
+                            $('#eye-menu li ul li a').click(_private.menuLeftClick);
+
+                            $('#effects-menu li a img').attr('src', chrome.extension.getURL('Images/Effects.png'));
+                            $('#effects-menu .yes').attr('src', yesSrc).hide();
+                            $('.effect').attr('title', 'Or, use the mouse wheel');
+
+                            $('.effect span').hide();
+
+                            $('.effect').mouseenter(function() {
+                                $(this).bind("contextmenu", _private.effectRightClick);
+                            }).mouseleave(function() {
+                                $(this).unbind("contextmenu", _private.effectRightClick);
+                            });
+
+                            $('#effects-menu li ul li a').click(_private.menuLeftClick);
+
+                            $('#ChalengedVisions').click(function(e) {
+                                $('#eye-menu').toggle();
+                                $('#effects-menu').hide();
+                                e.preventDefault();
+                                e.stopPropagation();
+                            })
+
+                            $('#Effects').click(function(e) {
+                                $('#effects-menu').toggle();
+                                $('#eye-menu').hide();
+                                e.preventDefault();
+                                e.stopPropagation();
+                            })
+
+                            _private.setVisionEffect();
+
 
                             $('#colorPickerToolbar').on('mouseenter', _private.removeMouseSupport).on('mouseleave', _private.addMouseSupport);
      
@@ -553,6 +607,8 @@ var ColorPicker = function() {
                             });
 
                             _private.setToolbarPosition(options.position, false);
+
+
 
                             _private.showToolbar = true;
                         });
@@ -671,13 +727,15 @@ var ColorPicker = function() {
                     break;
                 case 107 : // +
                 case 187 :
-                    _private.addToEffect(_private.eyeType, 1);
+                    if($('#meffects-submenu').is(':visible'))
+                        _private.addToEffect(_private.eyeType, 1);
                     e.stopPropagation();
                     e.preventDefault();
                     break;
                 case 109 : // -
                 case 189 :
-                    _private.addToEffect(_private.eyeType, -1);
+                    if($('#meffects-submenu').is(':visible'))
+                        _private.addToEffect(_private.eyeType, -1);
                     e.stopPropagation();
                     e.preventDefault();
                     break
@@ -688,7 +746,7 @@ var ColorPicker = function() {
             $colorPickerSample = $('#colorPickerSample');
             if (!$colorPickerSample.length) {
                $('#ColorPickerOvr').prepend("<div id='colorPickerSample'><div class='SampleContent' style='position.Absolute'></div></div>");
-               // $('#ColorPickerOvr').prepend("<div id='colorPickerSample'></div>");
+               
                $colorPickerSample = $('#colorPickerSample');
                $SampleContent = $('.SampleContent');
                $colorPickerSample
@@ -727,53 +785,46 @@ var ColorPicker = function() {
                         e.preventDefault();
                     });
 
-                    // $colorPickerSample.append("<div id='PickerSampleFix' class='PickerSampleBtn PickerSampleHover shadowed'><img src='"+chrome.extension.getURL("Images/FixContrast.png")+"' title='Fix Contrast'></img></div>");
-                    // $('#PickerSampleFix').click(function(e) {
+                    // yesSrc = chrome.extension.getURL("Images/Yes.png");
 
-                    //     e.stopPropagation();
-                    //     e.preventDefault();
+                    // $colorPickerSample.append("<div id='PickerSampleEye' class='PickerSampleBtn shadowed'></div>");
+                    // $('#PickerSampleEye').load(chrome.extension.getURL('/inc/html/eye-menu.html'), function() {
+                    //     $('#eye-menu li a img').attr('src', chrome.extension.getURL('Images/DisabledEye.png'));
+                    //     $('#eye-menu .yes').attr('src', yesSrc).hide();
+
+                    //     $('#eye-menu').dropit({
+                    //         beforeShow: function() {
+                    //             $('#eye-menu li ul li a img').hide();
+                    //             $('#'+_private.eyeType+' img').show();
+                    //         },
+                    //     });
+
+                    //     $('#eye-menu li ul li a').click(_private.menuLeftClick);
                     // });
-
-                    yesSrc = chrome.extension.getURL("Images/Yes.png");
-
-                    $colorPickerSample.append("<div id='PickerSampleEye' class='PickerSampleBtn shadowed'></div>");
-                    $('#PickerSampleEye').load(chrome.extension.getURL('/inc/html/eye-menu.html'), function() {
-                        $('#eye-menu li a img').attr('src', chrome.extension.getURL('Images/DisabledEye.png'));
-                        $('#eye-menu .yes').attr('src', yesSrc).hide();
-
-                        $('#eye-menu').dropit({
-                            beforeShow: function() {
-                                $('#eye-menu li ul li a img').hide();
-                                $('#'+_private.eyeType+' img').show();
-                            },
-                        });
-
-                        $('#eye-menu li ul li a').click(_private.menuLeftClick);
-                    });
                     
-                    $colorPickerSample.append("<div id='PickerSampleEffects' class='PickerSampleBtn shadowed'></div>");
-                    $('#PickerSampleEffects').load(chrome.extension.getURL('/inc/html/effects-menu.html'), function() {
-                        $('#effects-menu li a img').attr('src', chrome.extension.getURL('Images/Effects.png'));
-                        $('#effects-menu .yes').attr('src', yesSrc).hide();
-                        $('.effect').attr('title', 'Or, use the mouse wheel');
+                    // $colorPickerSample.append("<div id='PickerSampleEffects' class='PickerSampleBtn shadowed'></div>");
+                    // $('#PickerSampleEffects').load(chrome.extension.getURL('/inc/html/effects-menu.html'), function() {
+                    //     $('#effects-menu li a img').attr('src', chrome.extension.getURL('Images/Effects.png'));
+                    //     $('#effects-menu .yes').attr('src', yesSrc).hide();
+                    //     $('.effect').attr('title', 'Or, use the mouse wheel');
 
-                        $('.effect span').hide();
+                    //     $('.effect span').hide();
 
-                        $('.effect').mouseenter(function() {
-                            $(this).bind("contextmenu", _private.effectRightClick);
-                        }).mouseleave(function() {
-                            $(this).unbind("contextmenu", _private.effectRightClick);
-                        });
+                    //     $('.effect').mouseenter(function() {
+                    //         $(this).bind("contextmenu", _private.effectRightClick);
+                    //     }).mouseleave(function() {
+                    //         $(this).unbind("contextmenu", _private.effectRightClick);
+                    //     });
 
-                        $('#effects-menu').dropit({
-                            beforeShow: function() {
-                                $('#effects-menu li ul li a img').hide();
-                                $('#'+_private.eyeType+' img').show();
-                            },
-                        });
+                    //     $('#effects-menu').dropit({
+                    //         beforeShow: function() {
+                    //             $('#effects-menu li ul li a img').hide();
+                    //             $('#'+_private.eyeType+' img').show();
+                    //         },
+                    //     });
                         
-                        $('#effects-menu li ul li a').click(_private.menuLeftClick);
-                    });
+                    //     $('#effects-menu li ul li a').click(_private.menuLeftClick);
+                    // });
                 });
                 $colorPickerSample.hide();
                 $('#ShowSample').html("<span class='shortcut'>S</span>Show Sample");
@@ -787,19 +838,23 @@ var ColorPicker = function() {
                     _private.setSampleColors();
                     $('#ShowSample').html("<span class='shortcut'>S</span>Hide Sample");
 
-                    _private.normalVision();
-                    name = _private.eyeType;
-                    if(name != 'NormalVision') {
-                        $('html').addClass(name);
-
-                        if($('#'+name).hasClass('effect'))
-                            $('#'+name+' span').show();
-                    }
-
+                    _private.setVisionEffect();
                 });
             } else {
                 _private.toggleSample();
             }
+        },
+
+        setVisionEffect : function() {
+            _private.normalVision();
+            name = _private.eyeType;
+            if(name != 'NormalVision') {
+                $('html').addClass(name);
+
+                if($('#'+name).hasClass('effect'))
+                    $('#'+name+' span').show();
+            }
+
         },
 
         menuLeftClick : function(e) {
@@ -816,6 +871,9 @@ var ColorPicker = function() {
                 $("#lighterEffect").remove();
                 $('.menuPercent').html('');
             }
+
+            e.preventDefault();
+            e.stopPropagation();
         },
 
         effectRightClick : function(e) {
@@ -846,9 +904,11 @@ var ColorPicker = function() {
         },
 
         effectMouseWheel : function(e) {
-            _private.addToEffect(_private.eyeType, e.originalEvent.wheelDelta /120 > 0 ? 1 : -1);
-            e.stopPropagation();
-            e.preventDefault();
+            if($('#meffects-submenu').is(':visible')) {
+                _private.addToEffect(_private.eyeType, e.originalEvent.wheelDelta /120 > 0 ? 1 : -1);
+                e.stopPropagation();
+                e.preventDefault();
+            }
         },
 
         toggleSample : function() {
