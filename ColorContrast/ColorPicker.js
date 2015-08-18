@@ -356,7 +356,7 @@ var ColorPicker = function() {
 
         addToBlurEffect : function(i) {
             var s = $(document.getElementById("blurEffect"));
-            n = 1 + i;
+            n = i;
             if(!s.length) {
                 _private._injectCss('<style id="blurEffect" class="effectPercent">.BlurVision {-webkit-filter: blur('+n+'px);filter: blur('+n+'px);}</style>');
             } else {
@@ -503,8 +503,6 @@ var ColorPicker = function() {
 
                 if(options.toolbar) {
                     if (!contentDocument.getElementById("colorPickerToolbar")) {
-                        
-
                         $('#ColorPickerOvr').append('<div id="colorPickerToolbar"></div>');
                         $('#colorPickerToolbar').load(chrome.extension.getURL("/inc/html/ToolBar.html"), function() {
                             $('img.ok').attr('src', chrome.extension.getURL("Images/Ok.png"));
@@ -739,78 +737,43 @@ var ColorPicker = function() {
                     yesSrc = chrome.extension.getURL("Images/Yes.png");
 
                     $colorPickerSample.append("<div id='PickerSampleEye' class='PickerSampleBtn shadowed'></div>");
+                    $('#PickerSampleEye').load(chrome.extension.getURL('/inc/html/eye-menu.html'), function() {
+                        $('#eye-menu li a img').attr('src', chrome.extension.getURL('Images/DisabledEye.png'));
+                        $('#eye-menu .yes').attr('src', yesSrc).hide();
 
-                    $('#PickerSampleEye').append('<ul id="eye-menu" class="Menu dropit"></ul>');
-                    $('#eye-menu').append('<li id="eye-trigger" class="dropit-trigger"><a>'+
-                        '<img src='+chrome.extension.getURL("Images/DisabledEye.png")+' title="Challenged vision"></img>'+
-                        '</a></li>');
-                    $('#eye-trigger').append('<ul id="eye-submenu" class="dropit-submenu" style="display: none;"></ul>');
-                    
-                    $('#eye-submenu').append('<li><a id="NormalVision"><img src="'+yesSrc+'"></img><span class="shortcut">N</span>&nbsp;Normal Vision</a></li>');
-                    $('#eye-submenu').append('<li><a id="Protanopia"><img src="'+yesSrc+'"></img>&nbsp;Protanopia</a></li>');
-                    $('#eye-submenu').append('<li><a id="Protanomaly"><img src="'+yesSrc+'"></img>&nbsp;Protanomaly</a></li>');
-                    $('#eye-submenu').append('<li><a id="Deuteranopia"><img src="'+yesSrc+'"></img>&nbsp;Deuteranopia</a></li>');
-                    $('#eye-submenu').append('<li><a id="Deuteranomaly"><img src="'+yesSrc+'"></img>&nbsp;Deuteranomaly</a></li>');
-                    $('#eye-submenu').append('<li><a id="Tritanopia"><img src="'+yesSrc+'"></img>&nbsp;Tritanopia</a></li>');
-                    $('#eye-submenu').append('<li><a id="Tritanomaly"><img src="'+yesSrc+'"></img>&nbsp;Tritanomaly</a></li>');
-                    $('#eye-submenu').append('<li><a id="Achromatopsia"><img src="'+yesSrc+'"></img>&nbsp;Achromatopsia</a></li>');
-                    $('#eye-submenu').append('<li><a id="Achromatomaly"><img src="'+yesSrc+'"></img>&nbsp;Achromatomaly</a></li>');
+                        $('#eye-menu').dropit({
+                            beforeShow: function() {
+                                $('#eye-menu li ul li a img').hide();
+                                $('#'+_private.eyeType+' img').show();
+                            },
+                        });
+
+                        $('#eye-menu li ul li a').click(_private.menuLeftClick);
+                    });
                     
                     $colorPickerSample.append("<div id='PickerSampleEffects' class='PickerSampleBtn shadowed'></div>");
+                    $('#PickerSampleEffects').load(chrome.extension.getURL('/inc/html/effects-menu.html'), function() {
+                        $('#effects-menu li a img').attr('src', chrome.extension.getURL('Images/Effects.png'));
+                        $('#effects-menu .yes').attr('src', yesSrc).hide();
+                        $('.effect').attr('title', 'Or, use the mouse wheel');
 
-                    $('#PickerSampleEffects').append('<ul id="effects-menu" class="Menu dropit"></ul>');
-                    $('#effects-menu').append('<li id="effects-trigger" class="dropit-trigger"><a>'+
-                        '<img src='+chrome.extension.getURL("Images/Effects.png")+' title="Effects"></img>'+
-                        '</a></li>');
-                    $('#effects-trigger').append('<ul id="effects-submenu" class="dropit-submenu" style="display: none;"></ul>');
-                    
-                    plusMinus = '<span class="shortcut" title="Or, use the mouse wheel">+/-</span>';
-                    $('#effects-submenu').append('<li><a id="BlurVision" class="effect"><img src="'+yesSrc+'"></img>'+plusMinus+'&nbsp;Blur<span id="BlurPx" class="menuPercent"></span></a></li>');
-                    $('#effects-submenu').append('<li><a id="ContrastVision" class="effect"><img src="'+yesSrc+'"></img>'+plusMinus+'&nbsp;Contrast<span id="ContrastPercent" class="menuPercent"></span></a></li>');
-                    $('#effects-submenu').append('<li><a id="LighterVision" class="effect"><img src="'+yesSrc+'"></img>'+plusMinus+'&nbsp;Lighter<span id="LighterPercent" class="menuPercent"></a></li>');
-                    $('#effects-submenu').append('<li><hr/></li>');
-                    $('#effects-submenu').append('<li><a id="BlackAndWhite"><img src="'+yesSrc+'"></img>&nbsp;Black And White</a></li>');
-                    $('#effects-submenu').append('<li><a id="InvertVision"><img src="'+yesSrc+'"></img>&nbsp;Invert</a></li>');
-                    $('#effects-submenu').append('<li><a id="RotateColorsEffect"><img src="'+yesSrc+'"></img>&nbsp;Rotate Colors</a></li>');
+                        $('.effect span').hide();
 
-                    $('.effect span').hide();
+                        $('.effect').mouseenter(function() {
+                            $(this).bind("contextmenu", _private.effectRightClick);
+                        }).mouseleave(function() {
+                            $(this).unbind("contextmenu", _private.effectRightClick);
+                        });
 
-                    $('#eye-menu').dropit({
-                        beforeShow: function() {
-                            $('#eye-menu li ul li a img').hide();
-                            $('#'+_private.eyeType+' img').show();
-                        },
+                        $('#effects-menu').dropit({
+                            beforeShow: function() {
+                                $('#effects-menu li ul li a img').hide();
+                                $('#'+_private.eyeType+' img').show();
+                            },
+                        });
+                        
+                        $('#effects-menu li ul li a').click(_private.menuLeftClick);
                     });
-                    $('#effects-menu').dropit({
-                        beforeShow: function() {
-                            $('#effects-menu li ul li a img').hide();
-                            $('#'+_private.eyeType+' img').show();
-                        },
-                    });
-
-                    $('#eye-menu li ul li a, #effects-menu li ul li a').click(function(e) { 
-                        if (e.button == 2) return;
-
-                        id = $(this).attr('id');
-                        _private.normalVision();
-                        _private.setEyeType(id);
-                        if(id != 'NormalVision') {
-                            _private.addToEffect(id, 1);
-                        } else {
-                            $("#contrastEffect").remove();
-                            $("#blurEffect").remove();
-                            $("#lighterEffect").remove();
-                            $('.menuPercent').html('');
-                        }
-                    });
-
-                    $('.effect').mouseenter(function() {
-                        $(this).bind("contextmenu", _private.effectRightClick);
-                    }).mouseleave(function() {
-                        $(this).unbind("contextmenu", _private.effectRightClick);
-                    });
-
-
                 });
                 $colorPickerSample.hide();
                 $('#ShowSample').html("<span class='shortcut'>S</span>Show Sample");
@@ -836,6 +799,22 @@ var ColorPicker = function() {
                 });
             } else {
                 _private.toggleSample();
+            }
+        },
+
+        menuLeftClick : function(e) {
+            if (e.button == 2) return;
+
+            id = e.toElement.id;
+            _private.normalVision();
+            _private.setEyeType(id);
+            if(id != 'NormalVision') {
+                _private.addToEffect(id, 1);
+            } else {
+                $("#contrastEffect").remove();
+                $("#blurEffect").remove();
+                $("#lighterEffect").remove();
+                $('.menuPercent').html('');
             }
         },
 
