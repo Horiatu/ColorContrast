@@ -108,7 +108,7 @@
     right: 4px;
     background-color: transparent;
     color: #248fc1;
-    text-shadow: 2px 2px 1px white;
+    text-shadow: 0px 0px 2px aliceblue;
 }
 
 .dropit .shortcuteffect {
@@ -120,4 +120,9 @@
 
 .Menu ul.dropit-submenu a {
     padding-right: 20px;
+}
+
+.dropit .toLeft {
+    position: absolute;
+    right: 3px; top:4px;
 }

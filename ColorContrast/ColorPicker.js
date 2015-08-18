@@ -545,8 +545,6 @@ var ColorPicker = function() {
                             });
 
                             $('#menu1').dropit({
-                                // beforeShow: _private.removeMouseSupport,
-                                // afterHide: _private.addMouseSupport,
                                 beforeShow: function() {
                                     $('#eye-menu li ul li a img').hide();
                                     $('#effects-menu li ul li a img').hide();
@@ -561,6 +559,7 @@ var ColorPicker = function() {
                             yesSrc = chrome.extension.getURL("Images/Yes.png");
 
                             $('#eye-menu li a img').attr('src', chrome.extension.getURL('Images/DisabledEye.png'));
+                            $('img.toLeft').attr('src', chrome.extension.getURL('Images/ToLeft.png'));
                             $('#eye-menu .yes').attr('src', yesSrc).hide();
 
                             $('#eye-menu li ul li a').click(_private.menuLeftClick);
@@ -858,8 +857,9 @@ var ColorPicker = function() {
 
         menuLeftClick : function(e) {
             if (e.button == 2) return;
-
             id = e.toElement.id;
+            if($(e.toElement).attr('disabled')==='disabled') 
+                id = e.toElement.parentElement.id;
             if(!id) return;
 
             _private.normalVision();
@@ -879,10 +879,14 @@ var ColorPicker = function() {
 
         effectRightClick : function(e) {
             var id = e.toElement.id;
+            if($(e.toElement).attr('disabled')==='disabled') 
+                id = e.toElement.parentElement.id;
+            if(!id) return;
+            
             _private.normalVision();
             _private.setEyeType(id);
             _private.addToEffect(id, -1);
-
+            
             e.preventDefault();
             e.stopPropagation();
         },
