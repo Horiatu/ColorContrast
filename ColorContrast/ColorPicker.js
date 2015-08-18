@@ -461,7 +461,7 @@ var ColorPicker = function() {
                 if(options.magnifierGlass != 'none') {
                     if (!contentDocument.getElementById('colorPickerViewer')) {
                         _private.gridSize = options.gridSize;
-                        _private.eyeType = options.eyeType;
+                        _private.eyeType = (options.eyeType == "" || !options.eyeType) ? "NormalVision" : options.eyeType;
                         colorPickerViewer = contentDocument.createElement("Div");
                         colorPickerViewer.setAttribute("id", "colorPickerViewer");
                         colorPickerViewer.setAttribute("style", "display:none;");
@@ -570,6 +570,7 @@ var ColorPicker = function() {
                             $('.effect').attr('title', 'Or, use the mouse wheel');
 
                             $('.effect span').hide();
+                            $('.shortcut, .menuPercent, .yes').attr('disabled', true);
 
                             $('.effect').mouseenter(function() {
                                 $(this).bind("contextmenu", _private.effectRightClick);
@@ -607,8 +608,6 @@ var ColorPicker = function() {
                             });
 
                             _private.setToolbarPosition(options.position, false);
-
-
 
                             _private.showToolbar = true;
                         });
@@ -861,6 +860,8 @@ var ColorPicker = function() {
             if (e.button == 2) return;
 
             id = e.toElement.id;
+            if(!id) return;
+
             _private.normalVision();
             _private.setEyeType(id);
             if(id != 'NormalVision') {
