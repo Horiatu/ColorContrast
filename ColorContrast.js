@@ -207,8 +207,8 @@ var ContrastAnalyser = function() {
             }
             return colour;
         },
-
     };
+
     // public functions and properties
     var _public = {
         rgb: function(hex) {

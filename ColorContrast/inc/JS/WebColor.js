@@ -1,30 +1,38 @@
-function WebColor(hexColor) {
+function WebColor(color) {
 	this.r = 0;
 	this.g = 0;
 	this.b = 0;
+	this.isColor = false;
 
-	if(hexColor && hexColor != undefined)
-		this.rgb(hexColor);
-
-	this.addToR = function(r) {
-		var v = this.r+r;
-		if(v<255 && v>0)
-			this.r = v;
-	    return this;
-	}
-	this.addToG = function(g) {
-		var v = this.g+g;
-		if(v<255 && v>0)
-			this.g = v;
-    	return this;
-	}
-	this.addToB = function(b) {
-		var v = this.b+b;
-		if(v<255 && v>0)
-			this.b = v;
-	    return this;
+	if(color && color != undefined) {
+		hex = this.colorNameOrHexToColor(color);
+		if(hex) {
+			this.rgb(hex);
+			this.isColor = true;
+		}
 	}
 }
+
+WebColor.prototype.addToR = function(r) {
+	var v = this.r+r;
+	if(v<255 && v>0)
+		this.r = v;
+    return this;
+};
+
+WebColor.prototype.addToG = function(g) {
+	var v = this.g+g;
+	if(v<255 && v>0)
+		this.g = v;
+	return this;
+};
+
+WebColor.prototype.addToB = function(b) {
+	var v = this.b+b;
+	if(v<255 && v>0)
+		this.b = v;
+    return this;
+};
 
 WebColor.prototype.rgb = function(hex) {
     hex = hex.replace('#', '');
@@ -35,9 +43,10 @@ WebColor.prototype.rgb = function(hex) {
 };
 
 WebColor.prototype.toHex = function() {
-    return '#'+('00' + this.r.toString(16)).substr(-2)
-    +('00' + this.g.toString(16)).substr(-2)
-    +('00' + this.b.toString(16)).substr(-2);
+    return '#'
+	    +('00' + this.r.toString(16)).substr(-2)
+	    +('00' + this.g.toString(16)).substr(-2)
+	    +('00' + this.b.toString(16)).substr(-2);
 };
 
 WebColor.prototype.colourNameToHex = function(colour) {
@@ -203,3 +212,23 @@ WebColor.prototype.colorNameOrHexToColor = function(str) {
         return this.colourNameToHex(str);
     }
 };
+
+WebColor.prototype.luminance = function() {
+    // http://www.w3.org/Graphics/Color/sRGB.html
+    var R = this.r / 255.0;
+    var G = this.g / 255.0;
+    var B = this.b / 255.0;
+    R = R <= 0.03928 ? R / 12.92 : Math.pow((R + 0.055) / 1.055, 2.4);
+    G = G <= 0.03928 ? G / 12.92 : Math.pow((G + 0.055) / 1.055, 2.4);
+    B = B <= 0.03928 ? B / 12.92 : Math.pow((B + 0.055) / 1.055, 2.4);
+    var l = (0.2126 * R) + (0.7152 * G) + (0.0722 * B);
+    return l;
+};
+
+WebColor.prototype.contrastTo = function(webColor) {
+    var l1 = this.luminance() + 0.05;
+    var l2 = webColor.luminance() + 0.05;
+    var l = l1 > l2 ? l1 / l2 : l2 / l1;
+    return l;
+};
+
