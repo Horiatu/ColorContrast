@@ -542,6 +542,8 @@ var ColorPicker = function() {
                                 _private.setEyeType('NormalVision');
                                 $(".effectPercent").remove();
                                 $('.menuPercent').html('');
+                                e.stopPropagation();
+                                e.preventDefault();
                             });
 
                             $('#menu1').dropit({

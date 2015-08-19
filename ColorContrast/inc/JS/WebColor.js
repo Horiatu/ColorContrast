@@ -244,76 +244,43 @@ WebColor.prototype.clone = function() {
 };
 
 WebColor.prototype.fixContrastTo = function(webColor, target) {
-	initialContrast = this.contrastTo(webColor);
-	if(initialContrast >= target) {
-		this.fixes = [];
+	this.fixes = [];
+	initialDelta = target - this.contrastTo(webColor);
+	if(initialDelta <= 0) {
 		return;
 	}
-	initialDelta = target - initialContrast;
 
-	d = 1;
-	playColorR = this.clone().addToR(d);
-	if(!this.equals(playColorR)) {
-		contrastR = playColorR.contrastTo(webColor);
-		deltaR = target - contrastR;
-		d = deltaR < initialDelta ? 1 : -1;
-		h = playColorR.toHex();
-		while(deltaR > 0) {
-			h1 = playColorR.addToR(d).toHex();
+	this._fixContrast(webColor, initialDelta, "R");
+	this._fixContrast(webColor, initialDelta, "G");
+	this._fixContrast(webColor, initialDelta, "B");
+}
+
+WebColor.prototype._fixContrast = function(webColor, initialDelta, component) {
+	playColor = this.clone();
+	switch(component) {
+		case "R" : playColor.addToR(1); break;
+		case "G" : playColor.addToG(1); break;
+		case "B" : playColor.addToB(1); break;
+	}
+	if(!this.equals(playColor)) {
+		contrast = playColor.contrastTo(webColor);
+		delta = target - contrast;
+		d = delta < initialDelta ? 1 : -1;
+		h = playColor.toHex();
+		while(delta > 0) {
+			switch(component) {
+				case "R" : playColor.addToR(d); break;
+				case "G" : playColor.addToG(d); break;
+				case "B" : playColor.addToB(d); break;
+			}
+			h1 = playColor.toHex();
 			if(h == h1) {
-				break;
+				return;
 			}
 			h = h1;
-			contrastR = playColorR.contrastTo(webColor);
-			deltaR = target - contrastR;
+			contrast = playColor.contrastTo(webColor);
+			delta = target - contrast;
 		}
-		if(deltaR <= 0)
-		{
-			this.fixes.push({hex:h, contrast:contrastR});
-		}
-	}	
-
-	d = 1;
-	playColorG = this.clone().addToG(d);
-	if(!this.equals(playColorG)) {
-		contrastG = playColorG.contrastTo(webColor);
-		deltaG = target - contrastG;
-		d = deltaG < initialDelta ? 1 : -1;
-		h = playColorG.toHex();
-		while(deltaG > 0) {
-			h1 = playColorG.addToG(d).toHex();
-			if(h == h1) {
-				break;
-			}
-			h = h1;
-			contrastG = playColorG.contrastTo(webColor);
-			deltaG = target - contrastG;
-		}
-		if(deltaG <= 0)
-		{
-			this.fixes.push({hex:h, contrast:contrastG});
-		}
-	}	
-
-	d = 1;
-	playColorB = this.clone().addToB(d);
-	if(!this.equals(playColorB)) {
-		contrastB = playColorB.contrastTo(webColor);
-		deltaB = target - contrastB;
-		d = deltaB < initialDelta ? 1 : -1;
-		h = playColorB.toHex();
-		while(deltaB > 0) {
-			h1 = playColorB.addToB(d).toHex();
-			if(h == h1) {
-				break;
-			}
-			h = h1;
-			contrastB = playColorB.contrastTo(webColor);
-			deltaB = target - contrastB;
-		}
-		if(deltaB <= 0)
-		{
-			this.fixes.push({hex:h, contrast:contrastB});
-		}
+		this.fixes.push({hex:h, contrast:contrast});
 	}	
 }
