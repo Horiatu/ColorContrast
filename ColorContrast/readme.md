@@ -9,3 +9,5 @@ The tool bar evaluates and displays the contrast and the success criteria.
 The toolbar menu offers choices for 10 challenged visions and some effects.
 
 ​A sample Text window lets you better see the look of your choices of color.
+
+It offers up to 3 choices for foreground colors with AAA compliant contrast.

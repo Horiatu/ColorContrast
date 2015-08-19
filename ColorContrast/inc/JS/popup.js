@@ -49,27 +49,19 @@ $(document).ready(function() {
         frColor=new WebColor($("#foreground").val().trim());
         if(bgColor.isColor && frColor.isColor) {
             target = 7.0;
-            if(frColor.contrastTo(bgColor) >= target) {
-                alert('Already good.');
-            }
-            else {
+            if(frColor.contrastTo(bgColor) < target) {
                 frColor.fixContrastTo(bgColor, target);
                 if(frColor.fixes.length > 0) {
+                    isTop = "margin-top: 0; ";
                     frColor.fixes.forEach(function(frColor) {
                         $fixSamples.append(
-                            '<div class="example" style="background-color: '+bgColor.toHex()+'; font-size: 14px; font-weight: bold;">'+
+                            '<div class="example" style="'+isTop+'background-color: '+bgColor.toHex()+'; font-size: 14px; font-weight: bold;">'+
                             '   <span style="color:'+frColor.hex+';">Suggestion: '+frColor.hex+' (contrast: '+frColor.contrast.toFixed(2)+':1)</span>'+
                             '   <img src="'+chrome.extension.getURL('/Images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btnOK"></img>'+
                             '</div>');
+                        isTop = "";
                     });
                     $('#fixSamples img').click(acceptSample);
-                    $fixSamples.show();
-                }
-                else {
-                    $fixSamples.append(
-                        '<div class="fixError">'+
-                        '   <span>No suitable choices</span>'+
-                        '</div>');
                     $fixSamples.show();
                 }
             }
@@ -87,6 +79,7 @@ $(document).ready(function() {
     },
 
     getContrast = function(id) {
+        fixSamplesClear();
         var backgroundVal = $("#background").val().trim();
         var foregroundVal = $("#foreground").val().trim();
         var c1 = new WebColor(backgroundVal);
@@ -125,7 +118,7 @@ $(document).ready(function() {
                 $(".large").hide();
                 $(".small").hide();
 
-                $('#fixContrast').hide();
+                //$('#fixContrast').hide();
             }
             else if (cc >= 4.5) {
                 $("#contrast span").css("text-shadow", "2px 2px 2px orange");
@@ -138,7 +131,8 @@ $(document).ready(function() {
                 $(".large").hide();
                 $(".small").hide();
 
-                $('#fixContrast').show();
+                //$('#fixContrast').show();
+                fixContrast();
             } else if (cc >= 3.0) {
                 $("#contrast span").css("text-shadow", "2px 2px 2px orangered");
                 $(".largeAAA").hide();
@@ -150,7 +144,8 @@ $(document).ready(function() {
                 $(".large").hide();
                 $(".small").show();
 
-                $('#fixContrast').show();
+                //$('#fixContrast').show();
+                fixContrast();
             } else {
                 $("#contrast span").css("text-shadow", "2px 2px 2px red");
                 $(".largeAAA").hide();
@@ -162,7 +157,8 @@ $(document).ready(function() {
                 $(".large").show();
                 $(".small").show();
 
-                $('#fixContrast').show();
+                //$('#fixContrast').show();
+                fixContrast();
             };
         } else {
             if (id) {
@@ -172,7 +168,6 @@ $(document).ready(function() {
             }
             $("#contrast span").css("text-shadow", "2px 2px 2px transparent");
         };
-        fixSamplesClear();
     };
 
     pickAction = function(t) {

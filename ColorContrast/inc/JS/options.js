@@ -122,19 +122,15 @@ function showGrid(val) {
 }
 
 function showDirections(show) {
-    if (show) {
-        $('#directionList').html(
-            '<li>Click Color-Picker button.</li>' +
-            '<li>Explore the page for the desired color.</li>' +
-            '<li>Left or right-click the point - you may repeat this step.</li>' +
-            '<li>Open again the extension to finish the selection.</li>');
-    } else {
-        $('#directionList').html(
-            '<li>Click Color-Picker button for either Background or Foreground.</li>' +
-            '<li>Explore the page for the desired color.</li>' +
-            '<li>Click the point - you may repeat this step.</li>' +
-            '<li>Open again the extension to finish the selection.</li>');
-    }
+    $('#directionList').html(
+        '<li>'+(show?'Click <kbd>Picker Color</kbd> button.':'Click an <kbd>Color-Picker</kbd> button for either Background or Foreground.')+'</li>' +
+        '<li>Explore the page for the desired color.</li>' +
+        '<li>Left or right-click the point - you may repeat this step.</li>' +
+        '<li>Use the <img src="/Images/menu.png"></img> menu button on the toolbar for more options.</li>'+
+        '<li>(You may show a text sample, or you may select some challenged vision and effects.)</li>'+
+        '<li>Click again the extension button <img src="/Images/Logos/16.png"></img> to finish the selection.</li>'+
+        '<li>When there are choices for foreground with AAA contrast, click an <kbd>OK</kbd> button to accept it.<br/>'+
+        '(You may toggle colors to get choices for the background color.)</li>');
 
     chrome.storage.sync.set({
         'clickType': $('#clickType').is(':checked')
