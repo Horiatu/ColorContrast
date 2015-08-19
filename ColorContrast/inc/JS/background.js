@@ -107,17 +107,7 @@ chrome.tabs.getSelected(null, function(tab) {
             case 'get-contrast':
                 sendResponse({contrast: (new WebColor(msg.c1)).contrastTo(new WebColor(msg.c2))}); 
                 break;
-            case 'fix-contrast':
-                sendResponse(Background.fixContrast(msg.c1, msg.c2));
-                break;
         }
     });
 });
 
-Background.fixContrast = function(color1, color2) {
-    c1 = new WebColor(color1);
-    var contrast0 = c1.contrastTo(new WebColor(color2));
-    c1.addToR(1);
-    var contrastR = c1.contrastTo(new WebColor(color2));
-    return {color1: color1, color2:color2, contrast: contrast0, fixR: { color: c1.toHex(c1), contrast: contrastR}};
-};

@@ -54,8 +54,8 @@
       <img src="/Images/NotOk.png" class="large" style="padding-top:10px" alt="Fail" title="Fail"/>
     </div>
 
-    <div class="example" style="font-size: 14px;" title="Minimum required:&#13; AA - 3.0:1&#13; AAA - 4.5:1">
-      <span><b>Large text sample - 14 px bold.</b></span>
+    <div class="example" style="font-size: 14px; font-weight: bold;" title="Minimum required:&#13; AA - 3.0:1&#13; AAA - 4.5:1">
+      <span>Large text sample - 14 px bold.</span>
       <img src="/Images/Ok.png" class="largeAAA" style="padding-top:7px" alt="Pass AAA" title="Pass AAA"/>
       <img src="/Images/SoSo.png" class="largeAA" style="padding-top:7px" alt="Pass AA" title="Pass AA"/>
       <img src="/Images/NotOk.png" class="large" style="padding-top:7px" alt="Fail" title="Fail"/>
@@ -71,7 +71,7 @@
     <div style="margin-top: 8px;">
       <table width="100%" cellspacing="0" cellpadding="0">
         <tr>
-          <td width="50%">
+          <td width="30%">
             <div class="pickAll" >
               <button class="pick1" name="background" title="Pick Color Click:&#13;background - Left&#13;foreground - Right" style="padding: 2px;">
                 <img src="/Images/pick-color.png" alt="pick color" style="vertical-align: text-bottom;"></img>
@@ -79,7 +79,7 @@
               </button>
             </div>
           </td>
-          <td width="50%" align="right">
+          <td width="70%" align="right">
             <div class="fixContrast" >
               <button id="fixContrast" title="Fix Contrast" style="padding: 2px;">
                 <img src="/Images/FixContrast.png" alt="fix contrast" style="vertical-align: text-bottom;"></img>
@@ -88,9 +88,13 @@
             </div>
           </td>
         </tr>
+        <tr>
+          <td/>
+          <td id="fixSamples" style="display: none;">
+          </td>
+        </tr>
       </table>
     </div>
-
   </body>
 </html>
 

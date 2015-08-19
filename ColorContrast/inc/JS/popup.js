@@ -42,16 +42,48 @@ $(document).ready(function() {
     },
 
     fixContrast = function() {
-        // var color1 = colorNameOrHexToColor($("#background").val().trim());
-        // var color2 = colorNameOrHexToColor($("#foreground").val().trim());
-        // chrome.runtime.sendMessage({
-        //         type: "fix-contrast",
-        //         c1: color1,
-        //         c2: color2
-        //     },
-        //     function(result) {
-        //         console.log(result);
-        //     });
+        $fixSamples = $('#fixSamples');
+        fixSamplesClear();
+
+        bgColor=new WebColor($("#background").val().trim());
+        frColor=new WebColor($("#foreground").val().trim());
+        if(bgColor.isColor && frColor.isColor) {
+            target = 7.0;
+            if(frColor.contrastTo(bgColor) >= target) {
+                alert('Already good.');
+            }
+            else {
+                frColor.fixContrastTo(bgColor, target);
+                if(frColor.fixes.length > 0) {
+                    frColor.fixes.forEach(function(frColor) {
+                        $fixSamples.append(
+                            '<div class="example" style="background-color: '+bgColor.toHex()+'; font-size: 14px; font-weight: bold;">'+
+                            '   <span style="color:'+frColor.hex+';">Suggestion: '+frColor.hex+' (contrast: '+frColor.contrast.toFixed(2)+':1)</span>'+
+                            '   <img src="'+chrome.extension.getURL('/Images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btnOK"></img>'+
+                            '</div>');
+                    });
+                    $('#fixSamples img').click(acceptSample);
+                    $fixSamples.show();
+                }
+                else {
+                    $fixSamples.append(
+                        '<div class="fixError">'+
+                        '   <span>No suitable choices</span>'+
+                        '</div>');
+                    $fixSamples.show();
+                }
+            }
+        }
+    },
+
+    fixSamplesClear = function() {
+        $('#fixSamples').hide();
+        $('#fixSamples').html('');
+    },
+
+    acceptSample = function(e) {
+        $("#foreground").val($(e.toElement).attr('data-color'));
+        getContrast();
     },
 
     getContrast = function(id) {
@@ -82,7 +114,7 @@ $(document).ready(function() {
 
             $("#contrast span").html(parseFloat(cc).toFixed(2) + ":1");
 
-            if (cc > 7.0) {
+            if (cc >= 7.0) {
                 $("#contrast span").css("text-shadow", "2px 2px 2px darkgreen");
                 $(".largeAAA").show();
                 $(".smallAAA").show();
@@ -92,8 +124,10 @@ $(document).ready(function() {
 
                 $(".large").hide();
                 $(".small").hide();
+
+                $('#fixContrast').hide();
             }
-            else if (cc > 4.5) {
+            else if (cc >= 4.5) {
                 $("#contrast span").css("text-shadow", "2px 2px 2px orange");
                 $(".largeAAA").show();
                 $(".smallAAA").hide();
@@ -103,7 +137,9 @@ $(document).ready(function() {
 
                 $(".large").hide();
                 $(".small").hide();
-            } else if (cc > 3.0) {
+
+                $('#fixContrast').show();
+            } else if (cc >= 3.0) {
                 $("#contrast span").css("text-shadow", "2px 2px 2px orangered");
                 $(".largeAAA").hide();
                 $(".smallAAA").hide();
@@ -113,6 +149,8 @@ $(document).ready(function() {
 
                 $(".large").hide();
                 $(".small").show();
+
+                $('#fixContrast').show();
             } else {
                 $("#contrast span").css("text-shadow", "2px 2px 2px red");
                 $(".largeAAA").hide();
@@ -123,6 +161,8 @@ $(document).ready(function() {
 
                 $(".large").show();
                 $(".small").show();
+
+                $('#fixContrast').show();
             };
         } else {
             if (id) {
@@ -132,6 +172,7 @@ $(document).ready(function() {
             }
             $("#contrast span").css("text-shadow", "2px 2px 2px transparent");
         };
+        fixSamplesClear();
     };
 
     pickAction = function(t) {
@@ -211,11 +252,15 @@ $(document).ready(function() {
         //console.log(t.currentTarget.id);
         var o = $(t.currentTarget).closest('tr').find("input");
         var initial = o.val();
-        o.val(colorNameOrHexToColor(initial));
-        o.focus();
-        o.select();
-        document.execCommand("Copy", false, null);
-        o.val(initial);
+        wc = new WebColor(initial);
+        if(wc.isColor)
+        {
+            o.val(wc.toHex());
+            o.focus();
+            o.select();
+            document.execCommand("Copy", false, null);
+            o.val(initial);
+        }
     };
 
     $(".txInput").on("input", function(e) {
