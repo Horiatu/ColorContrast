@@ -203,7 +203,7 @@ var ColorPicker = function() {
             return false;
         },
 
-        Click: function(event) {
+        PageClick: function(event) {
             if (event.button != 2) {
                 _private.getColor(event, "selected", _private.reqColor).done(function() {
                     if(_private.showToolbar) {
@@ -292,16 +292,32 @@ var ColorPicker = function() {
 
         },
 
+        //isMouseDown: false,
+
+        MouseDown: function(event) {
+            //_private.isMouseDown = true;
+        },
+
+        MouseUp: function(event) {
+            //_private.isMouseDown = false;
+        },
+
         MouseMove: function(event) {
+            // if(_private.isMouseDown) {
+
+            // } else {
                 _private.getColor(event, "hover", null);
-                event.stopPropagation();
-                event.preventDefault();
+            //}
+            event.stopPropagation();
+            event.preventDefault();
         },
 
         addMouseSupport: function() {
             $ColorPickerOvr = $('#ColorPickerOvr');
-            $ColorPickerOvr.bind("click", _private.Click);
+            $ColorPickerOvr.bind("click", _private.PageClick);
             $ColorPickerOvr.bind("contextmenu",_private.RightClick);
+            $ColorPickerOvr.bind("mousedown", _private.MouseDown);
+            $ColorPickerOvr.bind("mouseup", _private.MouseUp);
             $ColorPickerOvr.bind("mousemove", _private.MouseMove);
             $(window).bind('scrollstop', _private.onScrollStop);
             $(window).bind('resize', _private.onWindowResize);
@@ -310,8 +326,10 @@ var ColorPicker = function() {
 
         removeMouseSupport: function() {
             $ColorPickerOvr = $('#ColorPickerOvr');
-            $ColorPickerOvr.unbind("click", _private.Click);
+            $ColorPickerOvr.unbind("click", _private.PageClick);
             $ColorPickerOvr.unbind("contextmenu",_private.RightClick);
+            $ColorPickerOvr.unbind("mousedown", _private.MouseDown);
+            $ColorPickerOvr.unbind("mouseup", _private.MouseUp);
             $ColorPickerOvr.unbind("mousemove", _private.MouseMove);
             $(window).unbind('scrollstop', _private.onScrollStop);
             $(window).unbind('resize', _private.onWindowResize);
@@ -785,46 +803,6 @@ var ColorPicker = function() {
                         e.preventDefault();
                     });
 
-                    // yesSrc = chrome.extension.getURL("Images/Yes.png");
-
-                    // $colorPickerSample.append("<div id='PickerSampleEye' class='PickerSampleBtn shadowed'></div>");
-                    // $('#PickerSampleEye').load(chrome.extension.getURL('/inc/html/eye-menu.html'), function() {
-                    //     $('#eye-menu li a img').attr('src', chrome.extension.getURL('Images/DisabledEye.png'));
-                    //     $('#eye-menu .yes').attr('src', yesSrc).hide();
-
-                    //     $('#eye-menu').dropit({
-                    //         beforeShow: function() {
-                    //             $('#eye-menu li ul li a img').hide();
-                    //             $('#'+_private.eyeType+' img').show();
-                    //         },
-                    //     });
-
-                    //     $('#eye-menu li ul li a').click(_private.menuLeftClick);
-                    // });
-                    
-                    // $colorPickerSample.append("<div id='PickerSampleEffects' class='PickerSampleBtn shadowed'></div>");
-                    // $('#PickerSampleEffects').load(chrome.extension.getURL('/inc/html/effects-menu.html'), function() {
-                    //     $('#effects-menu li a img').attr('src', chrome.extension.getURL('Images/Effects.png'));
-                    //     $('#effects-menu .yes').attr('src', yesSrc).hide();
-                    //     $('.effect').attr('title', 'Or, use the mouse wheel');
-
-                    //     $('.effect span').hide();
-
-                    //     $('.effect').mouseenter(function() {
-                    //         $(this).bind("contextmenu", _private.effectRightClick);
-                    //     }).mouseleave(function() {
-                    //         $(this).unbind("contextmenu", _private.effectRightClick);
-                    //     });
-
-                    //     $('#effects-menu').dropit({
-                    //         beforeShow: function() {
-                    //             $('#effects-menu li ul li a img').hide();
-                    //             $('#'+_private.eyeType+' img').show();
-                    //         },
-                    //     });
-                        
-                    //     $('#effects-menu li ul li a').click(_private.menuLeftClick);
-                    // });
                 });
                 $colorPickerSample.hide();
                 $('#ShowSample').html("<span class='shortcut'>S</span>Show Sample");

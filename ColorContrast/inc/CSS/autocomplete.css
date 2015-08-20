@@ -1,0 +1,29 @@
+::selection { background: #a4dcec; }
+::-webkit-selection { background: #a4dcec; }
+
+::-webkit-input-placeholder { /* WebKit browsers */
+  color: #ccc;
+  font-style: italic;
+}
+
+input, textarea { 
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  outline: none; 
+}
+
+.autocomplete-suggestions { border: 1px solid #999; background: #fff; cursor: default; overflow: auto; }
+.autocomplete-suggestion { 
+  white-space: nowrap; 
+  overflow: hidden; 
+  font-family: 'Source Code Pro';
+  font-weight: bold;
+  padding: 2px;
+  font-size: 12px;
+}
+.autocomplete-selected { background: #d0deff;}
+.autocomplete-suggestions strong { font-weight: normal; color: #248fc1; }

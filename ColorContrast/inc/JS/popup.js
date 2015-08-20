@@ -258,21 +258,35 @@ $(document).ready(function() {
         }
     };
 
-    $(".txInput").on("input", function(e) {
+    openTestPage = function(e) {
+        window.open(chrome.extension.getURL('/inc/html/test.html'),'_blank');
+        // chrome.tabs.create({'url': chrome.extension.getURL('/inc/html/test.html')}, function(tab) {
+        //     // Tab opened.
+        // });
+    };
+
+    $(".txInput")
+    .on("input", function(e) {
         getContrast(e.currentTarget.id);
+    })
+    .autocomplete({
+      lookup: WebColor.ColorNames,
+      onSelect: function (suggestion) {
+        getContrast();
+      }
     });
 
     chrome.storage.sync.get(['clickType'], function(a) {
         if(a['clickType'] == undefined || a['clickType']) {
             $('.pickOne').hide();
-            $('.pickAll').show();
+            $('.pickAll button').show();
             $('.pick1').on('click', pickAction);
         } else {
-            $('.pickAll').hide();
+            $('.pickAll button').hide();
             $('.pickOne').show();
             $('.pick').on('click', pickAction);
         }
-        $('#fixContrast').on('click', fixContrast);
+        $('#testPage').click(openTestPage);
     });
     
     $('.code').on('click', copyCode);
