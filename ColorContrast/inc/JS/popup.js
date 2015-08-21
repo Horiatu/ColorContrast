@@ -81,11 +81,12 @@ $(document).ready(function() {
     addColorTitle = function(id) {
         if(!id) return;
         $box = $("#"+id);
-        $box.attr('title', '');
+        $title = $("#"+id+'Value');
+        $title.html('');
         if($box.val()[0] === '#') {
-            $box.attr('title', WebColor.hexToColorName($box.val()));
+            $title.html(WebColor.hexToColorName($box.val()));
         } else {
-            $box.attr('title', WebColor.colorNameToHex($box.val()));
+            $title.html(WebColor.colorNameToHex($box.val()));
         }
     },
 
@@ -221,7 +222,8 @@ $(document).ready(function() {
                             }], $.Deferred()).done(
                                 function() {
                                     // console.log('done');
-                                    closePopup();
+                                    window.close();
+                                    //chrome.tabs.update(tab.id, { selected: true });
                                 });
                         }
                     }
@@ -252,9 +254,9 @@ $(document).ready(function() {
         return dfr.promise();
     }
 
-    closePopup = function() {
-        window.close();
-    };
+    // closePopup = function() {
+    //     window.close();
+    // };
 
     copyCode = function(t) {
         //console.log(t.currentTarget.id);

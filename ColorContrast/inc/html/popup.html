@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <title>WCAG Color Contrast Analyzer Extension's Popup</title>
     <link href="/inc/css/popup.css" rel="stylesheet">
     <link href="/inc/css/autocomplete.css" rel="stylesheet">
@@ -15,8 +16,9 @@
     <script type="text/javascript" src="/inc/js/WebColor.js"></script>
     <script type="text/javascript" src="/inc/js/popup.js"></script>
     <script type="text/javascript" src="/inc/js/jquery.autocomplete.js"></script>
-  </head>
-  <body>
+</head>
+
+<body>
     <h1 id="specify">
     <table><tr>
     <td><img src="/images/logos/32.png" /></td>
@@ -25,71 +27,92 @@
     </h1>
 
     <table id="colors">
-      <tr>
+        <tr>
+            <td rowspan="2">
+                <label for="background">Background:</label>
+            </td>
+            <td>
+                <input class="txInput" type="text" size="20" id="background" aria-required="true" required value="#037EAF" />
+            </td>
 
-        <th><label for="background">Background:</label></th>
-        <td>
-        <input class="txInput" type="text" size="20" id="background" aria-required="true" required value="#037EAF"/>
-        </td>
+            <td>
+                <div class="pickOne btn"><img class="pick" name="background" src="/images/pick-color.png" alt="pick color" title="Pick Color"></img>
+                </div>
+            </td>
 
-        <td><div class="pickOne btn"><img class="pick" name="background" src="/images/pick-color.png" alt="pick color" title="Pick Color"></img></div></td>
-
-        <td><div class="btn"><img class="code" id="bgCode" src="/images/copy-code.png" alt="copy code" title="copy code"></img></div></td>
-        <td rowspan="2">
-            <div class="btn"><img id="toggle" src="/images/toggle.png" alt="toggle" title="toggle colors"></img></div>
-        </td>
-        <!-- <td rowspan="2">
-            <div class="pickAll btn"><img class="pick1" name="background" src="/images/pick-color.png" alt="pick color" 
-            title="Pick Color Click:&#13;background - Left&#13;foreground - Right"></img></div>
-        </td> -->
-        <td id="contrast" rowspan="2"><span>4.35:1</span></td>
-      </tr>
-      <tr>
-        <th><label for="foreground">Foreground:</label></th>
-        <td><input class="txInput" type="text" size="20" id="foreground" aria-required="true" required value="#0ff" autocomplete="on"/></td>
-        <td><div class="pickOne btn"><img class="pick" name="foreground" src="/images/pick-color.png" alt="pick color" title="Pick Color"></img><div></td>
-        <td><div class="btn"><img class="code" id="frCode" src="/images/copy-code.png" alt="copy code" title="copy code"></img></div></td>
-      </tr>
+            <td>
+                <div class="btn"><img class="code" id="bgCode" src="/images/copy-code.png" alt="copy code" title="copy code"></img>
+                </div>
+            </td>
+            <td rowspan="4">
+                <div class="btn"><img id="toggle" src="/images/toggle.png" alt="toggle" title="toggle colors"></img>
+                </div>
+            </td>
+            
+            <td id="contrast" rowspan="3"><span>4.35:1</span></td>
+        </tr>
+        <tr>
+          <td><div id="backgroundValue" class="colorValue"></div></td>
+        </tr>
+        <tr>
+            <td rowspan="2">
+                <label for="foreground">Foreground:</label>
+            </td>
+            <td>
+                <input class="txInput" type="text" size="20" id="foreground" aria-required="true" required value="#0ff" autocomplete="on" />
+            </td>
+            <td>
+                <div class="pickOne btn"><img class="pick" name="foreground" src="/images/pick-color.png" alt="pick color" title="Pick Color"></img>
+                    <div>
+            </td>
+            <td>
+                <div class="btn"><img class="code" id="frCode" src="/images/copy-code.png" alt="copy code" title="copy code"></img>
+                </div>
+            </td>
+        </tr>
+        <tr>
+          <td><div id="foregroundValue" class="colorValue"></div></td>
+        </tr>
     </table>
-    
+
     <div class="example" style="font-size: 18px;" title="Minimum required:&#13; AA - 3.0:1&#13; AAA - 4.5:1">
-      <span>Large text sample - 18 px normal.</span>
-      <img src="/Images/Ok.png" class="largeAAA" style="padding-top:9px" alt="Pass AAA" title="Pass AAA"/>
-      <img src="/Images/SoSo.png" class="largeAA" style="padding-top:9px" alt="Pass AA" title="Pass AA"/>
-      <img src="/Images/NotOk.png" class="large" style="padding-top:9px" alt="Fail" title="Fail"/>
+        <span>Large text sample - 18 px normal.</span>
+        <img src="/Images/Ok.png" class="largeAAA" style="padding-top:9px" alt="Pass AAA" title="Pass AAA" />
+        <img src="/Images/SoSo.png" class="largeAA" style="padding-top:9px" alt="Pass AA" title="Pass AA" />
+        <img src="/Images/NotOk.png" class="large" style="padding-top:9px" alt="Fail" title="Fail" />
     </div>
 
     <div class="example" style="font-size: 14px; font-weight: bold;" title="Minimum required:&#13; AA - 3.0:1&#13; AAA - 4.5:1">
-      <span>Large text sample - 14 px bold.</span>
-      <img src="/Images/Ok.png" class="largeAAA" style="padding-top:6px" alt="Pass AAA" title="Pass AAA"/>
-      <img src="/Images/SoSo.png" class="largeAA" style="padding-top:6px" alt="Pass AA" title="Pass AA"/>
-      <img src="/Images/NotOk.png" class="large" style="padding-top:6px" alt="Fail" title="Fail"/>
+        <span>Large text sample - 14 px bold.</span>
+        <img src="/Images/Ok.png" class="largeAAA" style="padding-top:6px" alt="Pass AAA" title="Pass AAA" />
+        <img src="/Images/SoSo.png" class="largeAA" style="padding-top:6px" alt="Pass AA" title="Pass AA" />
+        <img src="/Images/NotOk.png" class="large" style="padding-top:6px" alt="Fail" title="Fail" />
     </div>
 
     <div class="example" style="font-size: 12px;" title="Minimum required:&#13; AA - 4.5:1&#13; AAA - 7.0:1">
-      <span>Regular text sample - 12 px normal.</span>
-      <img src="/Images/Ok.png" class="smallAAA" alt="Pass AAA" title="Pass AAA"/>
-      <img src="/Images/SoSo.png" class="smallAA" alt="Pass AA" title="Pass AA"/>
-      <img src="/Images/NotOk.png" class="small" alt="Fail" title="Fail"/>
+        <span>Regular text sample - 12 px normal.</span>
+        <img src="/Images/Ok.png" class="smallAAA" alt="Pass AAA" title="Pass AAA" />
+        <img src="/Images/SoSo.png" class="smallAA" alt="Pass AA" title="Pass AA" />
+        <img src="/Images/NotOk.png" class="small" alt="Fail" title="Fail" />
     </div>
 
     <div style="margin-top: 8px;">
-      <table width="100%" cellspacing="0" cellpadding="0">
-        <tr>
-          <td width="25%" style="vertical-align: top;">
-            <div class="pickAll" >
-              <button class="pick1" name="background" title="Pick Color Click:&#13;background - Left&#13;foreground - Right">
-                <img src="/Images/pick-color.png" alt="pick color"></img>
-                <span>Pick Colors</span>
-              </button>
-              <a href="#" id="testPage" style="display:none;">Open Test Page</a>
-            </div>
-          </td>
-          <td width="75%" id="fixSamples" style="display: none;">
-          </td>
-        </tr>
-      </table>
+        <table width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="25%" style="vertical-align: top;">
+                    <div class="pickAll">
+                        <button class="pick1" name="background" title="Pick Color Click:&#13;background - Left&#13;foreground - Right">
+                            <img src="/Images/pick-color.png" alt="pick color"></img>
+                            <span>Pick Colors</span>
+                        </button>
+                        <a href="#" id="testPage" style="display:none;">Open Test Page</a>
+                    </div>
+                </td>
+                <td width="75%" id="fixSamples" style="display: none;">
+                </td>
+            </tr>
+        </table>
     </div>
-  </body>
-</html>
+</body>
 
+</html>

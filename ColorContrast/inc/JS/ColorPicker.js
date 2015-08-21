@@ -411,7 +411,7 @@ var ColorPicker = function() {
         addFilters: function(e) {
             if(!document.getElementById("svgFilters")) {
                 var s = 
-                    "<svg id='svgFilters' xmlns='http://www.w3.org/2000/svg'>\n"+
+                    "<svg id='svgFilters' xmlns='http://www.w3.org/2000/svg' style='display:none'>\n"+
                     "    <filter id='protanopia'>\n"+
                     "        <feColorMatrix type='matrix' values='0.56667 0.43333 0.00000 0 0 0.55833 0.44167 0.00000 0 0 0.00000 0.24167 0.75833 0 0 0 0 0 1 0'/>\n"+
                     "    </filter>\n"+
