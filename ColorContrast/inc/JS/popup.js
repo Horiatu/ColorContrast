@@ -78,6 +78,17 @@ $(document).ready(function() {
         getContrast();
     },
 
+    addColorTitle = function(id) {
+        if(!id) return;
+        $box = $("#"+id);
+        $box.attr('title', '');
+        if($box.val()[0] === '#') {
+            $box.attr('title', WebColor.hexToColorName($box.val()));
+        } else {
+            $box.attr('title', WebColor.colorNameToHex($box.val()));
+        }
+    },
+
     getContrast = function(id) {
         fixSamplesClear();
         var backgroundVal = $("#background").val().trim();
@@ -93,11 +104,13 @@ $(document).ready(function() {
                 'background': backgroundVal
             }, function() {
                 //console.log("background "+backgroundVal+' saved');
+                addColorTitle('background');
             });
             chrome.storage.sync.set({
                 'foreground': foregroundVal
             }, function() {
                 //console.log("foreground "+foregroundVal+' saved');
+                addColorTitle('foreground');
             });
 
             $(".example").css("background-color", backgroundTxt);

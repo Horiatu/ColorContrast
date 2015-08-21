@@ -6,7 +6,7 @@ function WebColor(color) {
 	this.fixes = [];
 
 	if(color && color != undefined) {
-		hex = this.colorNameOrHexToColor(color);
+		hex = WebColor.colorNameOrHexToColor(color);
 		if(hex) {
 			this.rgb(hex);
 			this.isColor = true;
@@ -35,11 +35,16 @@ WebColor.prototype.addToB = function(b) {
     return this;
 };
 
+WebColor.toRgb = function(hex) {
+	hex = hex.replace('#', '');
+	return {r:parseInt("0x" + hex.substr(0, 2)), g:parseInt("0x" + hex.substr(2, 2)), b:parseInt("0x" + hex.substr(4, 2))}
+};
+
 WebColor.prototype.rgb = function(hex) {
-    hex = hex.replace('#', '');
-    this.r = parseInt("0x" + hex.substr(0, 2));
-    this.g = parseInt("0x" + hex.substr(2, 2));
-    this.b = parseInt("0x" + hex.substr(4, 2));
+	c = WebColor.toRgb(hex);
+    this.r = c.r; 
+    this.g = c.g; 
+    this.b = c.b; 
     return this;
 };
 
@@ -193,18 +198,42 @@ WebColor.ColorNames = [
     {value: "yellowgreen", data: "#9acd32"}
 ];
 
-WebColor.prototype.colourNameToHex = function(colour) {
-	var clr = colour.toLowerCase();
+WebColor.hexToColorName = function(hex) {
+	hex = hex.toLowerCase()
+	rgb = WebColor.toRgb(hex);
+	dist = 3*255*255+1;
+	close = 'no name';
+
+	var select = $.grep(WebColor.ColorNames, function(h, i){
+		if(h.data == hex) 
+			return true;
+
+		_rgb = WebColor.toRgb(h.data);
+		r = _rgb.r - rgb.r;
+		g = _rgb.g - rgb.g;
+		b = _rgb.b - rgb.b;
+		d = r * r + g * g + b * b; 
+		if(dist > d) {
+			dist = d;
+			close = h.value;
+		}
+		return false;
+	});
+	return (select.length == 1) ? select[0].value : ('close to '+close);
+};
+
+WebColor.colorNameToHex = function(colour) {
+	colour = colour.toLowerCase();
 	var select = $.grep(WebColor.ColorNames, function(c, i){
-		return c.value === clr;
+		return c.value === colour;
 	});
 	if(select.length == 1) {
 		return select[0].data;
 	}
-	else return false;
+	else return null;
 };
 
-WebColor.prototype.colorNameOrHexToColor = function(str) {
+WebColor.colorNameOrHexToColor = function(str) {
     str = str.trim();
     h1 = str.match(/#(?:[0-9a-f]{3}){1,2}$/gi);
     if (h1 && h1.length == 1) {
@@ -214,7 +243,7 @@ WebColor.prototype.colorNameOrHexToColor = function(str) {
         }
         return str;
     } else {
-        return this.colourNameToHex(str);
+        return WebColor.colorNameToHex(str);
     }
 };
 

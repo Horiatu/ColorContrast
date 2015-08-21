@@ -16,7 +16,14 @@ input, textarea {
   outline: none; 
 }
 
-.autocomplete-suggestions { border: 1px solid #999; background: #fff; cursor: default; overflow: auto; }
+.autocomplete-suggestions { 
+  border: 1px solid #999; 
+  background: #fff; 
+  cursor: pointer; 
+  overflow: auto; 
+  max-height: 180px !important;
+}
+
 .autocomplete-suggestion { 
   white-space: nowrap; 
   overflow: hidden; 
@@ -26,4 +33,4 @@ input, textarea {
   font-size: 12px;
 }
 .autocomplete-selected { background: #d0deff;}
-.autocomplete-suggestions strong { font-weight: normal; color: #248fc1; }
+.autocomplete-suggestions strong { color: #248fc1; }
