@@ -652,6 +652,8 @@ var ColorPicker = function() {
                     }
                 });
 
+                //chrome.extension.tabs.update({ active: true });
+
                 _private.screenshot().done(function() {
                     $('#ColorPickerOvr').show(function() {
 

@@ -202,7 +202,7 @@ WebColor.hexToColorName = function(hex) {
 	hex = hex.toLowerCase()
 	rgb = WebColor.toRgb(hex);
 	dist = 3*255*255+1;
-	close = 'no name';
+	var closeTo = 'no name';
 
 	var select = $.grep(WebColor.ColorNames, function(h, i){
 		if(h.data == hex) 
@@ -215,11 +215,11 @@ WebColor.hexToColorName = function(hex) {
 		d = r * r + g * g + b * b; 
 		if(dist > d) {
 			dist = d;
-			close = h.value;
+			closeTo = h.value;
 		}
 		return false;
 	});
-	return (select.length == 1) ? select[0].value : ('close to '+close);
+	return (select.length == 1) ? select[0].value : ('close to '+closeTo);
 };
 
 WebColor.colorNameToHex = function(colour) {

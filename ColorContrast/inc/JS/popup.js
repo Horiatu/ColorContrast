@@ -221,9 +221,9 @@ $(document).ready(function() {
                                     "//ColorPicker.refresh();"
                             }], $.Deferred()).done(
                                 function() {
-                                    // console.log('done');
-                                    window.close();
-                                    //chrome.tabs.update(tab.id, { selected: true });
+                                    try {
+                                        window.close();
+                                    } catch (e) {alert(e.message);}
                                 });
                         }
                     }
@@ -275,9 +275,6 @@ $(document).ready(function() {
 
     openTestPage = function(e) {
         window.open(chrome.extension.getURL('/inc/html/test.html'),'_blank');
-        // chrome.tabs.create({'url': chrome.extension.getURL('/inc/html/test.html')}, function(tab) {
-        //     // Tab opened.
-        // });
     };
 
     $(".txInput")
