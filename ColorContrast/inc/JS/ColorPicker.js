@@ -566,7 +566,10 @@ var ColorPicker = function() {
                                 beforeShow: function() {
                                     $('#eye-menu li ul li a img').hide();
                                     $('#effects-menu li ul li a img').hide();
-                                    $('#'+_private.eyeType+' img').show();                                   
+                                    $('#mNormalVision img').hide();
+                                    $('#'+_private.eyeType+' img').show(); 
+                                    if(_private.eyeType == 'NormalVision')    
+                                        $('#mNormalVision img').show();                               
                                 },
                                 afterShow: function() {
                                     $('#eye-menu').hide();
@@ -1167,9 +1170,9 @@ var ColorPicker = function() {
         },
 
         refresh: function() {
+            _private.screenChanged(true);
             _private.normalVision();
             _private.setEyeType('NormalVision');
-            _private.screenChanged(true);
         },
     }
 
