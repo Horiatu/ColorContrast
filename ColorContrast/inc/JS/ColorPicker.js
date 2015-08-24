@@ -289,19 +289,56 @@ var ColorPicker = function() {
 
         },
 
-        //isMouseDown: false,
+        isMouseDown: false,
+        downPoint: null,
+        zone: null,
+        zoneRect: null,
 
         MouseDown: function(event) {
-            //_private.isMouseDown = true;
+            _private.isMouseDown = true;
         },
 
         MouseUp: function(event) {
-            //_private.isMouseDown = false;
+            _private.isMouseDown = false;
+            _private.downPoint = null;
+            $('#zone').remove();
+            _private.zone = null;
         },
 
         MouseMove: function(event) {
-            // if(_private.isMouseDown) {
+            if(_private.isMouseDown) {
+                if(!_private.downPoint) {
+                    _private.downPoint = {x:event.pageX, y:event.pageY};
+                    // console.log(_private.downPoint);
+                    // console.log(event);
+                    _private.zoneRect = {x:_private.downPoint.x, y:_private.downPoint.y, l:0, t:0};
+                    _private.zone = $('#ColorPickerOvr').append('<canvas id="zone" style="position:absolute; border:1px solid red;"></canvas>');
+                    $('#zone')
+                        .css('left', _private.zoneRect.x+'px')
+                        .css('top', _private.zoneRect.y+'px')
+                        .css('width', 0).css('height', 0);
+                } else {
+                    
+                    _private.zoneRect.l = _private.downPoint.x;
+                    var w = event.pageX - _private.downPoint.x;
+                    if(w < 0) {
+                        w = -w; 
+                        _private.zoneRect.l = _private.zoneRect.l - w;
+                        $('#zone').css('left', _private.zoneRect.l + 'px')
+                    }
 
+                    _private.zoneRect.t = _private.downPoint.y;
+                    var h = event.pageY - _private.downPoint.y;
+                    if(h < 0) {
+                        h = -h; 
+                        _private.zoneRect.t = _private.zoneRect.t - h;
+                       $('#zone').css('top', _private.zoneRect.t + 'px')
+                    }
+                    $('#zone').css('width', w+'px').css('height', h+'px');
+
+                    //_private.getAvgColor(/*_private.zoneRect*/);
+                }
+            }
             // } else {
                 _private.getColor(event, "hover", null);
             //}
