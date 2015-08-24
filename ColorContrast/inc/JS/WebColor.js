@@ -4,6 +4,7 @@ function WebColor(color) {
 	this.b = 0;
 	this.isColor = false;
 	this.fixes = [];
+    this.target = 7;
 
 	if(color && color != undefined) {
 		hex = WebColor.colorNameOrHexToColor(color);
@@ -37,11 +38,15 @@ WebColor.prototype.addToB = function(b) {
 
 WebColor.toRgb = function(hex) {
 	hex = hex.replace('#', '');
-	return {r:parseInt("0x" + hex.substr(0, 2)), g:parseInt("0x" + hex.substr(2, 2)), b:parseInt("0x" + hex.substr(4, 2))}
+	return {
+        r:parseInt("0x" + hex.substr(0, 2)), 
+        g:parseInt("0x" + hex.substr(2, 2)), 
+        b:parseInt("0x" + hex.substr(4, 2))
+    }
 };
 
 WebColor.prototype.rgb = function(hex) {
-	c = WebColor.toRgb(hex);
+	var c = WebColor.toRgb(hex);
     this.r = c.r; 
     this.g = c.g; 
     this.b = c.b; 
@@ -200,20 +205,20 @@ WebColor.ColorNames = [
 
 WebColor.hexToColorName = function(hex) {
 	hex = hex.toLowerCase()
-	rgb = WebColor.toRgb(hex);
-	dist = 3*255*255+1;
-	var closeTo = 'no name';
+	var rgb = WebColor.toRgb(hex);
+	var dist = 3 * 255 + 1;
+	var closeTo = '';
 
 	var select = $.grep(WebColor.ColorNames, function(h, i){
 		if(h.data == hex) 
 			return true;
 
-		_rgb = WebColor.toRgb(h.data);
-		r = _rgb.r - rgb.r;
-		g = _rgb.g - rgb.g;
-		b = _rgb.b - rgb.b;
-		d = r * r + g * g + b * b; 
-		if(dist > d) {
+		var _rgb = WebColor.toRgb(h.data);
+		var r = _rgb.r - rgb.r;
+		var g = _rgb.g - rgb.g;
+		var b = _rgb.b - rgb.b;
+        var d = Math.abs(r) + Math.abs(g) + Math.abs(b); 
+        if(dist > d) {
 			dist = d;
 			closeTo = h.value;
 		}
@@ -235,9 +240,9 @@ WebColor.colorNameToHex = function(colour) {
 
 WebColor.colorNameOrHexToColor = function(str) {
     str = str.trim();
-    h1 = str.match(/#(?:[0-9a-f]{3}){1,2}$/gi);
+    var h1 = str.match(/#(?:[0-9a-f]{3}){1,2}$/gi);
     if (h1 && h1.length == 1) {
-        h = h1[0];
+        var h = h1[0];
         if (h.length == 4) {
             return h[0] + h[1] + h[1] + h[2] + h[2] + h[3] + h[3];
         }
@@ -271,15 +276,15 @@ WebColor.prototype.equals = function(webColor) {
 };
 
 WebColor.prototype.clone = function() {
-	clone = new WebColor();
+	var clone = new WebColor();
 	clone.r = this.r; clone.g = this.g; clone.b = this.b;
 	return clone;
 };
 
-WebColor.prototype.fixContrastTo = function(webColor, target) {
+WebColor.prototype.fixContrastTo = function(webColor) {
 	this.fixes = [];
 	if(this.equals(webColor)) return;
-	initialDelta = target - this.contrastTo(webColor);
+	var initialDelta = this.target - this.contrastTo(webColor);
 	if(initialDelta <= 0) {
 		return;
 	}
@@ -290,8 +295,8 @@ WebColor.prototype.fixContrastTo = function(webColor, target) {
 }
 
 WebColor.prototype._fixContrast = function(webColor, initialDelta, component) {
-	playColor = this.clone();
-	d = 1;
+	var playColor = this.clone();
+	var d = 1;
 	switch(component) {
 		case "R" : playColor.addToR(d); break;
 		case "G" : playColor.addToG(d); break;
@@ -309,24 +314,24 @@ WebColor.prototype._fixContrast = function(webColor, initialDelta, component) {
 		if(this.equals(playColor)) return;
 	}
 
-	contrast = playColor.contrastTo(webColor);
-	delta = target - contrast;
+	var contrast = playColor.contrastTo(webColor);
+	var delta = this.target - contrast;
 	if(delta >= initialDelta) d = -d;
 
-	h = playColor.toHex();
+	var h = playColor.toHex();
 	do {
 		switch(component) {
 			case "R" : playColor.addToR(d); break;
 			case "G" : playColor.addToG(d); break;
 			case "B" : playColor.addToB(d); break;
 		}
-		h1 = playColor.toHex();
+		var h1 = playColor.toHex();
 		if(h == h1) {
 			return;
 		}
 		h = h1;
 		contrast = playColor.contrastTo(webColor);
-		delta = target - contrast;
+		delta = this.target - contrast;
 	} while (delta>0);
 	this.fixes.push({hex:h, contrast:contrast});
 }

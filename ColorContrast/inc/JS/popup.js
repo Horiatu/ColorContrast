@@ -45,12 +45,12 @@ $(document).ready(function() {
         $fixSamples = $('#fixSamples');
         fixSamplesClear();
 
-        bgColor=new WebColor($("#background").val().trim());
-        frColor=new WebColor($("#foreground").val().trim());
+        var bgColor=new WebColor($("#background").val().trim());
+        var frColor=new WebColor($("#foreground").val().trim());
         if(bgColor.isColor && frColor.isColor) {
-            target = 7.0;
+            var target = 7.0;
             if(frColor.contrastTo(bgColor) < target) {
-                frColor.fixContrastTo(bgColor, target);
+                frColor.fixContrastTo(bgColor);
                 if(frColor.fixes.length > 0) {
                     isTop = "margin-top: 0; ";
                     frColor.fixes.forEach(function(frColor) {
@@ -80,8 +80,8 @@ $(document).ready(function() {
 
     addColorTitle = function(id) {
         if(!id) return;
-        $box = $("#"+id);
-        $title = $("#"+id+'Value');
+        var $box = $("#"+id);
+        var $title = $("#"+id+'Value');
         $title.html('');
         if($box.val()[0] === '#') {
             $title.html(WebColor.hexToColorName($box.val()));
@@ -254,15 +254,11 @@ $(document).ready(function() {
         return dfr.promise();
     }
 
-    // closePopup = function() {
-    //     window.close();
-    // };
-
     copyCode = function(t) {
         //console.log(t.currentTarget.id);
         var o = $(t.currentTarget).closest('tr').find("input");
         var initial = o.val();
-        wc = new WebColor(initial);
+        var wc = new WebColor(initial);
         if(wc.isColor)
         {
             o.val(wc.toHex());

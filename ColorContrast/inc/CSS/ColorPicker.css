@@ -234,8 +234,7 @@
 .shadowed {
 	filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=2, OffY=2, Color='#444')";
 	filter: url(#drop-shadow);
-	-webkit-filter: drop-shadow(2px 2px 1px rgba(255,255,255,0.9));
-	filter: drop-shadow(2px 2px 1px rgba(255,255,255,0.9));
+	-webkit-filter: drop-shadow(2px 2px 4px white)
 }
 
 .shadowedBlack {
@@ -245,7 +244,7 @@
 	filter: drop-shadow(2px 2px 1px rgba(127,127,127,0.9));
 }
 
-#eye-menu li ul li a img, #effects-menu li ul li a img {
+#eye-menu li ul li a img, #effects-menu li ul li a img, #mNormalVision img {
 	position: absolute;
     margin-left: -15px;
     width: 17px;

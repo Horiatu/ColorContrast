@@ -58,6 +58,7 @@ h1 span {
 .example img {
   float:right;
   padding:5px;
+  -webkit-filter: drop-shadow(4px 4px 8px white);
 }
 #colors {
   width:100%;

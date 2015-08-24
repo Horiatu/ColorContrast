@@ -151,13 +151,8 @@ var ColorPicker = function() {
             return getColorDfr.promise();
         },
 
-        toHex: function(c, n) {
-            if (c === undefined) return '00';
-            var hex = c.toString(16);
-            while (hex.length < n) {
-                hex = '0' + hex;
-            }
-            return hex;
+        toHex: function(c) {
+            return (c === undefined) ? '00' : ('00'+c.toString(16)).substr(-2);
         },
 
         getPixel: function(e, x, y) {
@@ -179,7 +174,7 @@ var ColorPicker = function() {
                     //alpha: _private.canvasData[canvasIndex+3]
                 };
 
-                var color = '#' + _private.toHex(rgb.r, 2) + _private.toHex(rgb.g, 2) + _private.toHex(rgb.b, 2);
+                var color = '#' + _private.toHex(rgb.r) + _private.toHex(rgb.g) + _private.toHex(rgb.b);
                 return color;
             }
         },
@@ -208,9 +203,9 @@ var ColorPicker = function() {
                 _private.getColor(event, "selected", _private.reqColor).done(function() {
                     if(_private.showToolbar) {
                         if(_private.reqColor) {
-                            color = _private.colorTxt.innerHTML;
+                            var color = _private.colorTxt.innerHTML;
 
-                            colors = _private.setColor(_private.reqColor, color);
+                            var colors = _private.setColor(_private.reqColor, color);
 
                             _private.contrast(colors.foreground, colors.background).done(_private.showContrast);
                             _private.setSampleColors(colors);
@@ -226,7 +221,9 @@ var ColorPicker = function() {
         RightClick: function(event) {
             _private.getColor(event, "selected", 'foreground').done(function() {
                 if(_private.showToolbar) {
-                    colors = _private.setColor('foreground', color);
+                    var color = _private.colorTxt.innerHTML;
+
+                    var colors = _private.setColor('foreground', color);
 
                     _private.contrast(colors.foreground, colors.background).done(_private.showContrast);
                     _private.setSampleColors(colors);
@@ -356,7 +353,7 @@ var ColorPicker = function() {
 
         addToContrastEffect : function(i) {
             var s = $(document.getElementById("contrastEffect"));
-            n = 100 + i;
+            var n = 100 + i;
             if(!s.length) {
                 _private._injectCss('<style id="contrastEffect" class="effectPercent">.ContrastVision {-webkit-filter: contrast('+n+'%);filter: contrast('+n+'%);}</style>');
             } else {
@@ -374,7 +371,7 @@ var ColorPicker = function() {
 
         addToBlurEffect : function(i) {
             var s = $(document.getElementById("blurEffect"));
-            n = i;
+            var n = i;
             if(!s.length) {
                 _private._injectCss('<style id="blurEffect" class="effectPercent">.BlurVision {-webkit-filter: blur('+n+'px);filter: blur('+n+'px);}</style>');
             } else {
@@ -392,7 +389,7 @@ var ColorPicker = function() {
 
         addToLighterEffect : function(i) {
             var s = $(document.getElementById("lighterEffect"));
-            n = 100 + i;
+            var n = 100 + i;
             if(!s.length) {
                 _private._injectCss('<style id="lighterEffect" class="effectPercent">.LighterVision {-webkit-filter: brightness('+n+'%);filter: brightness('+n+'%);}</style>');
             } else {
@@ -450,7 +447,7 @@ var ColorPicker = function() {
             _private.YOffset = $(document).scrollTop();
             _private.XOffset = $(document).scrollLeft();
 
-            optionsDfr = $.Deferred();
+            var optionsDfr = $.Deferred();
             chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
                 switch (req.type) {
                     case 'defaults':
@@ -523,10 +520,11 @@ var ColorPicker = function() {
                     if (!contentDocument.getElementById("colorPickerToolbar")) {
                         $('#ColorPickerOvr').append('<div id="colorPickerToolbar"></div>');
                         $('#colorPickerToolbar').load(chrome.extension.getURL("/inc/html/ToolBar.html"), function() {
-                            $('img.ok').attr('src', chrome.extension.getURL("Images/Ok.png"));
-                            $('img.SoSo').attr('src', chrome.extension.getURL("Images/SoSo.png"));
-                            $('img.fail').attr('src', chrome.extension.getURL("Images/NotOk.png"));
-                            $('#menu1 img').attr('src', chrome.extension.getURL("Images/menu.png"));
+                            $('img.ok').attr('src', chrome.extension.getURL("/Images/Ok.png"));
+                            $('img.SoSo').attr('src', chrome.extension.getURL("/Images/SoSo.png"));
+                            $('img.fail').attr('src', chrome.extension.getURL("/Images/NotOk.png"));
+                            $('#menu1 img').attr('src', chrome.extension.getURL("/Images/menu.png"));
+                            $('#menu1 img.yes').attr('src', chrome.extension.getURL("/Images/yes.png"));
 
                             _private.colorTxt = contentDocument.getElementById("colorTxt");
                             _private.colorDiv = contentDocument.getElementById("colorDiv");
@@ -576,7 +574,7 @@ var ColorPicker = function() {
                                 }
                             });
 
-                            yesSrc = chrome.extension.getURL("Images/Yes.png");
+                            var yesSrc = chrome.extension.getURL("Images/Yes.png");
 
                             $('#eye-menu li a img').attr('src', chrome.extension.getURL('Images/DisabledEye.png'));
                             $('img.toLeft').attr('src', chrome.extension.getURL('Images/ToLeft.png'));
@@ -687,6 +685,11 @@ var ColorPicker = function() {
             chrome.storage.sync.set({'eyeType': _private.eyeType = options.eyeType = name});
             $('#eye-menu li ul li a img, #effects-menu li ul li a img').hide();
             $('#'+_private.eyeType+' img').show();
+            
+            if(_private.eyeType === 'NormalVision')
+                $('#mNormalVision img').show();
+            else 
+                $('#mNormalVision img').hide();
 
             if($('#'+name).hasClass('effect'))
                 $('#'+name+' span').show();
@@ -787,7 +790,7 @@ var ColorPicker = function() {
                     $('#PickerSampleclose').click(function(e) {
                         $colorPickerSample.hide();
                         chrome.storage.sync.set({'sample': false});
-                        $('#ShowSample').html("<span class='shortcut'>S</span>Show Sample");
+                        $('#ShowSample').html("<span class='shortcut'>S</span>&nbsp;Show Sample");
                         e.stopPropagation();
                         e.preventDefault();
                     });
@@ -816,7 +819,7 @@ var ColorPicker = function() {
             if(showAnyway) {
                 $colorPickerSample.show("slow", function() {
                     _private.setSampleColors();
-                    $('#ShowSample').html("<span class='shortcut'>S</span>Hide Sample");
+                    $('#ShowSample').html("<span class='shortcut'>S</span>&nbsp;Hide Sample");
 
                     _private.setVisionEffect();
                 });
@@ -827,7 +830,7 @@ var ColorPicker = function() {
 
         setVisionEffect : function() {
             _private.normalVision();
-            name = _private.eyeType;
+            var name = _private.eyeType;
             if(name != 'NormalVision') {
                 $('html').addClass(name);
 
@@ -839,7 +842,7 @@ var ColorPicker = function() {
 
         menuLeftClick : function(e) {
             if (e.button == 2) return;
-            id = e.toElement.id;
+            var id = e.toElement.id;
             if($(e.toElement).attr('disabled')==='disabled') 
                 id = e.toElement.parentElement.id;
             if(!id) return;
@@ -908,8 +911,8 @@ var ColorPicker = function() {
                 function() {
                     chrome.storage.sync.set({'sample': $colorPickerSample.is(":visible")});
                     $('#ShowSample').html($colorPickerSample.is(":visible") 
-                        ? "<span class='shortcut'>S</span>Hide Sample" 
-                        : "<span class='shortcut'>S</span>Show Sample");
+                        ? "<span class='shortcut'>S</span>&nbsp;Hide Sample" 
+                        : "<span class='shortcut'>S</span>&nbsp;Show Sample");
                 }
              );        
         },
@@ -929,7 +932,7 @@ var ColorPicker = function() {
         },
 
         toggleColors: function() {
-            colors = _private.getColors();
+            var colors = _private.getColors();
             _private.setColor('foreground', colors.background);
             colors = _private.setColor('background', colors.foreground);
 
@@ -992,7 +995,7 @@ var ColorPicker = function() {
         },
         
         rgbToColor: function(rgbStr) {
-            rgb = rgbStr.match(/^rgb(?:a?)\s*\(\s*(\d+)\s*,\s*?(\d+)\s*,\s*(\d+)\s*?(?:\s*,\s*(\d+)\s*)?\)/i);
+            var rgb = rgbStr.match(/^rgb(?:a?)\s*\(\s*(\d+)\s*,\s*?(\d+)\s*,\s*(\d+)\s*?(?:\s*,\s*(\d+)\s*)?\)/i);
             return (rgb && rgb.length >= 3) 
             ? "#" +
               ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
