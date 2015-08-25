@@ -88,10 +88,52 @@ var ColorPicker = function() {
             chrome.extension.connect().postMessage(message);
         },
 
+        getAvgColor: function(reqColor) {
+            if (!_private.canvasData || _private.downZone.width == 0 || _private.downZone.height == 0)
+                return '#000000';
+
+            var r=0;
+            var g=0;
+            var b=0;
+            var n = 0;
+            for(var x=_private.downZone.x+1; x<=_private.downZone.x+_private.downZone.width; x++)
+            {
+                for(var y=_private.downZone.y+1; y<=_private.downZone.y+_private.downZone.height; y++)
+                {
+                    var canvasIndex = (x + y * _private.canvas.width) * 4;
+
+                    r += _private.canvasData[canvasIndex];
+                    g += _private.canvasData[canvasIndex + 1];
+                    b += _private.canvasData[canvasIndex + 2];
+
+                    n++;
+                }
+            }
+
+            r=(r/n).toFixed(0);
+            g=(g/n).toFixed(0);
+            b=(b/n).toFixed(0);
+
+            var color = '#' + _private.toHex(r) + _private.toHex(g) + _private.toHex(b);
+            //console.log(color+'   '+r+' '+_private.toHex(r)+'  '+g+' '+_private.toHex(g)+'  '+b+' '+_private.toHex(b));
+
+            // _private.sendMessage({
+            //     type: 'set-color',
+            //     color: color,
+            //     reqColor: reqColor
+            // });
+            // _private.copyToClipboard(color);
+
+            _private.setSquareColor(color);
+
+            return color;
+        },
+
         getColor: function(event, type, reqColor) {
             var getColorDfr = $.Deferred();
 
             var eventTarget = event.target;
+            var tagName = eventTarget.tagName;
 
             if (eventTarget) {
 
@@ -106,8 +148,6 @@ var ColorPicker = function() {
                 };
 
                 if (_private.showMagnifier && $('#colorPickerViewer')) {
-
-                    var tagName = eventTarget.tagName;
 
                     // If the event target is not the color picker, the color picker is not an ancestor of the event target and the event target is not a scrollbar
                     if (eventTarget != $('#colorPickerViewer') && !_private.isAncestor(eventTarget, $('#colorPickerViewer')) && tagName && tagName.toLowerCase() != "scrollbar") {
@@ -129,10 +169,7 @@ var ColorPicker = function() {
                     }
                 };
 
-                if (_private.showToolbar && _private.colorDiv && _private.colorTxt) {
-                    _private.colorDiv.setAttribute("style", "background-color:" + color + ";");
-                    _private.colorTxt.innerHTML = color !=='transparent' ? color : '#ffffff';
-                }
+                _private.setSquareColor(color);
 
                 if (_private.showMagnifier && $('#colorPickerViewer')) {
                     var deep = (_private.gridSize - 1) / 2;
@@ -151,8 +188,15 @@ var ColorPicker = function() {
             return getColorDfr.promise();
         },
 
+        setSquareColor: function(color) {
+            if (_private.showToolbar && _private.colorDiv && _private.colorTxt) {
+                _private.colorDiv.setAttribute("style", "background-color:" + color + ";");
+                _private.colorTxt.innerHTML = color !=='transparent' ? color : '#ffffff';
+            }
+        },
+
         toHex: function(c) {
-            return (c === undefined) ? '00' : ('00'+c.toString(16)).substr(-2);
+            return (c === undefined) ? '00' : ('00'+parseInt(c).toString(16)).substr(-2);
         },
 
         getPixel: function(e, x, y) {
@@ -165,7 +209,6 @@ var ColorPicker = function() {
                 return 'indigo';
             } else {
                 var canvasIndex = (X + Y * _private.canvas.width) * 4;
-                //console.log(e.pageX + ' ' + e.pageY + ' ' + _private.canvas.width);
 
                 var rgb = {
                     r: _private.canvasData[canvasIndex],
@@ -290,58 +333,64 @@ var ColorPicker = function() {
         },
 
         isMouseDown: false,
+        downZone: null,
         downPoint: null,
-        zone: null,
-        zoneRect: null,
 
         MouseDown: function(event) {
             _private.isMouseDown = true;
+            //$('#colorPickerViewer').hide();
         },
 
         MouseUp: function(event) {
             _private.isMouseDown = false;
-            _private.downPoint = null;
             $('#zone').remove();
-            _private.zone = null;
+            _private.downPoint = null;
+            _private.downZone = null;
+            //$('#colorPickerViewer').show();
         },
 
         MouseMove: function(event) {
             if(_private.isMouseDown) {
-                if(!_private.downPoint) {
+                if(!_private.downZone) {
                     _private.downPoint = {x:event.pageX, y:event.pageY};
-                    // console.log(_private.downPoint);
-                    // console.log(event);
-                    _private.zoneRect = {x:_private.downPoint.x, y:_private.downPoint.y, l:0, t:0};
-                    _private.zone = $('#ColorPickerOvr').append('<canvas id="zone" style="position:absolute; border:1px solid red;"></canvas>');
+                    _private.downZone = {x:event.pageX, y:event.pageY, width:0, height:0};
+                    $('#ColorPickerOvr').append('<canvas id="zone" style="position:absolute; border:1px solid red;"></canvas>');
                     $('#zone')
-                        .css('left', _private.zoneRect.x+'px')
-                        .css('top', _private.zoneRect.y+'px')
+                        .css('left', _private.downPoint.x - _private.XOffset+'px')
+                        .css('top', _private.downPoint.y - _private.YOffset+'px')
                         .css('width', 0).css('height', 0);
                 } else {
                     
-                    _private.zoneRect.l = _private.downPoint.x;
-                    var w = event.pageX - _private.downPoint.x;
-                    if(w < 0) {
-                        w = -w; 
-                        _private.zoneRect.l = _private.zoneRect.l - w;
-                        $('#zone').css('left', _private.zoneRect.l + 'px')
+                    _private.downZone.x = _private.downPoint.x;
+                    _private.downZone.width = event.pageX - _private.downZone.x;
+                    if(_private.downZone.width < 0) {
+                        _private.downZone.width = -_private.downZone.width; 
+                        _private.downZone.x = _private.downPoint.x - _private.downZone.width;
+                        $('#zone').css('left', (_private.downZone.x - _private.XOffset) + 'px')
                     }
 
-                    _private.zoneRect.t = _private.downPoint.y;
-                    var h = event.pageY - _private.downPoint.y;
-                    if(h < 0) {
-                        h = -h; 
-                        _private.zoneRect.t = _private.zoneRect.t - h;
-                       $('#zone').css('top', _private.zoneRect.t + 'px')
+                    _private.downZone.y = _private.downPoint.y;
+                    _private.downZone.height = event.pageY - _private.downZone.y;
+                    if(_private.downZone.height < 0) {
+                        _private.downZone.height = -_private.downZone.height; 
+                        _private.downZone.y = _private.downPoint.y - _private.downZone.height;
+                       $('#zone').css('top', (_private.downZone.y - _private.YOffset) + 'px')
                     }
-                    $('#zone').css('width', w+'px').css('height', h+'px');
+                    $('#zone').css('width', _private.downZone.width+'px').css('height', _private.downZone.height+'px');
 
-                    //_private.getAvgColor(/*_private.zoneRect*/);
+                    var color = 
+                    _private.getAvgColor('background');
+
+                    var c=document.getElementById("zone");
+                    var ctx=c.getContext("2d");
+                    ctx.rect(1, 1, _private.canvas.width, _private.canvas.height);
+                    ctx.fillStyle = color;
+                    ctx.fill();
                 }
-            }
-            // } else {
+            } 
+            else {
                 _private.getColor(event, "hover", null);
-            //}
+            }
             event.stopPropagation();
             event.preventDefault();
         },
