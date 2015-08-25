@@ -89,22 +89,28 @@ var ColorPicker = function() {
         },
 
         getAvgColor: function(event, type, reqColor) {
-            if (!_private.canvasData || !_private.downZone || _private.downZone.width == 0 || _private.downZone.height == 0)
-                return '#000000';
+            var getColorDfr = $.Deferred();
+            if (!_private.canvasData) {
+                getColorDfr.reject();
+                return getColorDfr.promise();
+            }
 
-            var r=0;
-            var g=0;
-            var b=0;
+            if(!_private.downZone || _private.downZone.width == 0 || _private.downZone.height == 0)
+                return _private.getColor(event, type, reqColor);
+
+            var r = 0;
+            var g = 0;
+            var b = 0;
             var n = 0;
             for(var x=_private.downZone.x+1; x<=_private.downZone.x+_private.downZone.width; x++)
             {
                 for(var y=_private.downZone.y+1; y<=_private.downZone.y+_private.downZone.height; y++)
                 {
-                    var canvasIndex = (x + y * _private.canvas.width) * 4;
+                    var i = (x + y * _private.canvas.width) * 4;
 
-                    r += _private.canvasData[canvasIndex];
-                    g += _private.canvasData[canvasIndex + 1];
-                    b += _private.canvasData[canvasIndex + 2];
+                    r += _private.canvasData[i++];
+                    g += _private.canvasData[i++];
+                    b += _private.canvasData[i];
 
                     n++;
                 }
@@ -122,24 +128,21 @@ var ColorPicker = function() {
             ctx.fillStyle = color;
             ctx.fill();
 
-
-
-            // _private.sendMessage({
-            //     type: 'set-color',
-            //     color: color,
-            //     reqColor: reqColor
-            // });
-            // _private.copyToClipboard(color);
+            if (type == "selected") {
+                // ???
+                _private.sendMessage({
+                    type: 'set-color',
+                    color: color,
+                    reqColor: reqColor
+                });
+                _private.copyToClipboard(color);
+            }
 
             _private.setSquareColor(color);
-            _private.fillColorPickerViewer(event);
-
-            return color;
+            return _private.fillColorPickerViewer(event, getColorDfr);
         },
 
         getColor: function(event, type, reqColor) {
-            var getColorDfr = $.Deferred();
-
             color = _private.getPixel(event, 0, 0);
             if (type == "selected") {
                 // ???
@@ -154,49 +157,50 @@ var ColorPicker = function() {
 
             _private.setSquareColor(color);
 
+            return _private.fillColorPickerViewer(event);
+        },
+
+        fillColorPickerViewer: function(event, getColorDfr) {
+            if(!getColorDfr)
+            {
+                getColorDfr = $.Deferred();
+            }
+
             var eventTarget = event.target;
             if (eventTarget) {
+                var tagName = eventTarget.tagName;
+                if (_private.showMagnifier && $('#colorPickerViewer')) {
 
-                _private.fillColorPickerViewer(event);
+                    // If the event target is not the color picker, the color picker is not an ancestor of the event target and the event target is not a scrollbar
+                    if (eventTarget != $('#colorPickerViewer') && !_private.isAncestor(eventTarget, $('#colorPickerViewer')) && tagName && tagName.toLowerCase() != "scrollbar") {
+                        // place viewer
+                        var size = _private.gridSize * 7;
+                        var w = window.innerWidth - size - 24;
+                        var h = window.innerHeight - size - 24;
+                        if (event.clientX < w) {
+                            $('#colorPickerViewer').css("left", (event.clientX + 4) + "px");
+                        } else {
+                            $('#colorPickerViewer').css("left", (event.clientX - size - 4) + "px");
+                        }
+                        if (event.clientY < h) {
+                            $('#colorPickerViewer').css("top", (event.clientY + 4) + "px");
+                        } else {
+                            $('#colorPickerViewer').css("top", (event.clientY - size - 4) + "px");
+                        }
+                    }
 
+                    var deep = (_private.gridSize - 1) / 2;
+                    for (i = -deep; i <= deep; i++) {
+                        for (j = -deep; j <= deep; j++) {
+                            _public.dotArray[i + deep][j + deep].setAttribute("style", "background-color:" + _private.getPixel(event, j, i) + ";");
+                        }
+                    }
+                }
                 getColorDfr.resolve();
             } else {
                 getColorDfr.reject();
             }
-
             return getColorDfr.promise();
-        },
-
-        fillColorPickerViewer: function(event) {
-            var eventTarget = event.target;
-            var tagName = eventTarget.tagName;
-            if (_private.showMagnifier && $('#colorPickerViewer')) {
-
-                // If the event target is not the color picker, the color picker is not an ancestor of the event target and the event target is not a scrollbar
-                if (eventTarget != $('#colorPickerViewer') && !_private.isAncestor(eventTarget, $('#colorPickerViewer')) && tagName && tagName.toLowerCase() != "scrollbar") {
-                    // place viewer
-                    var size = _private.gridSize * 7;
-                    var w = window.innerWidth - size - 24;
-                    var h = window.innerHeight - size - 24;
-                    if (event.clientX < w) {
-                        $('#colorPickerViewer').css("left", (event.clientX + 4) + "px");
-                    } else {
-                        $('#colorPickerViewer').css("left", (event.clientX - size - 4) + "px");
-                    }
-                    if (event.clientY < h) {
-                        $('#colorPickerViewer').css("top", (event.clientY + 4) + "px");
-                    } else {
-                        $('#colorPickerViewer').css("top", (event.clientY - size - 4) + "px");
-                    }
-                }
-
-                var deep = (_private.gridSize - 1) / 2;
-                for (i = -deep; i <= deep; i++) {
-                    for (j = -deep; j <= deep; j++) {
-                        _public.dotArray[i + deep][j + deep].setAttribute("style", "background-color:" + _private.getPixel(event, j, i) + ";");
-                    }
-                }
-            }
         },
 
         setSquareColor: function(color) {
@@ -219,16 +223,14 @@ var ColorPicker = function() {
             if (X < 0 || Y < 0 || X >= _private.width || Y >= _private.height) {
                 return 'indigo';
             } else {
-                var canvasIndex = (X + Y * _private.canvas.width) * 4;
+                var i = (X + Y * _private.canvas.width) * 4;
 
-                var rgb = {
-                    r: _private.canvasData[canvasIndex],
-                    g: _private.canvasData[canvasIndex + 1],
-                    b: _private.canvasData[canvasIndex + 2],
-                    //alpha: _private.canvasData[canvasIndex+3]
-                };
+                var r = _private.canvasData[i++];
+                var g = _private.canvasData[i++];
+                var b = _private.canvasData[i];
+                //var alpha = _private.canvasData[i+1];
 
-                var color = '#' + _private.toHex(rgb.r) + _private.toHex(rgb.g) + _private.toHex(rgb.b);
+                var color = '#' + _private.toHex(r) + _private.toHex(g) + _private.toHex(b);
                 return color;
             }
         },
@@ -253,6 +255,9 @@ var ColorPicker = function() {
         },
 
         PageClick: function(event) {
+            event.stopPropagation();
+            event.preventDefault();
+            return;
             if (event.button != 2) {
                 _private.getColor(event, "selected", _private.reqColor).done(function() {
                     if(_private.showToolbar) {
@@ -273,6 +278,9 @@ var ColorPicker = function() {
         },
 
         RightClick: function(event) {
+            event.stopPropagation();
+            event.preventDefault();
+            return;
             _private.getColor(event, "selected", 'foreground').done(function() {
                 if(_private.showToolbar) {
                     var color = _private.colorTxt.innerHTML;
@@ -349,12 +357,22 @@ var ColorPicker = function() {
 
         MouseDown: function(event) {
             _private.isMouseDown = true;
-            if(event.button == 2)
-                _private.reqColor = 'foreground';
         },
 
         MouseUp: function(event) {
-            _private.getAvgColor(event, 'select', _private.reqColor);
+            var reqColor = (event.button != 2) ? _private.reqColor : 'foreground';
+            _private.getAvgColor(event, 'select', reqColor).done(function() {
+                if(_private.showToolbar) {
+                    if(_private.reqColor) {
+                        var color = _private.colorTxt.innerHTML;
+
+                        var colors = _private.setColor(reqColor, color);
+
+                        _private.contrast(colors.foreground, colors.background).done(_private.showContrast);
+                        _private.setSampleColors(colors);
+                    }
+                }
+            });
             _private.isMouseDown = false;
             $('#zone').remove();
             _private.downPoint = null;
