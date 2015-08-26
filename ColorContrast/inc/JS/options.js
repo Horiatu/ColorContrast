@@ -28,18 +28,18 @@ $(document).ready(function() {
         $value = $(value);
         $value.attr('src', chrome.extension.getURL($value.attr('src'))).attr('alt', '');
     })
-    addCssClass('.mapBg', 'background-image: url("'+chrome.extension.getURL("/Images/mapbg.png")+'");', 'styles');
-    addCssClass('@font-face', 'font-family: "Poiret One";\n\t\tfont-weight: 400;\n\t\tsrc: url("'+chrome.extension.getURL("/Fonts/Poiret One.woff2")+'") format("woff2");', 'fonts');
+    // addCssClass('.mapBg', 'background-image: url("'+chrome.extension.getURL("/Images/mapbg.png")+'");', 'styles');
+    // addCssClass('@font-face', 'font-family: "Poiret One";\n\t\tfont-weight: 400;\n\t\tsrc: url("'+chrome.extension.getURL("/Fonts/Poiret One.woff2")+'") format("woff2");', 'fonts');
 });
 
-function addCssClass(className, classValue, styleId) {
-    if(!styleId) styleId='css-modifier-container';
-    if ($('#'+styleId).length == 0) {
-        $('head').prepend('<style id="'+styleId+'"></style>');
-    }
+// function addCssClass(className, classValue, styleId) {
+//     if(!styleId) styleId='css-modifier-container';
+//     if ($('#'+styleId).length == 0) {
+//         $('head').prepend('<style id="'+styleId+'"></style>');
+//     }
 
-    $('#'+styleId).append('\t'+className + "{\n\t\t" + classValue + "\n\t}\n");
-};
+//     $('#'+styleId).append('\t'+className + "{\n\t\t" + classValue + "\n\t}\n");
+// };
 
 function getOptions(optionsDfr) {
     chrome.extension.connect().postMessage({type: 'get-defaults'});

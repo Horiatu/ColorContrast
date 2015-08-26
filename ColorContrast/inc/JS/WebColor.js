@@ -224,7 +224,7 @@ WebColor.hexToColorName = function(hex) {
 		}
 		return false;
 	});
-	return (select.length == 1) ? select[0].value : ('close to '+closeTo);
+	return (select.length >= 1) ? select[0].value : ('close to '+closeTo);
 };
 
 WebColor.colorNameToHex = function(colour) {

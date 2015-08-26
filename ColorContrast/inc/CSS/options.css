@@ -1,0 +1,78 @@
+@font-face {
+  font-family: "Poiret One";
+  font-weight: 400;
+  src: url('/Fonts/Poiret One.woff2') format('woff2');
+}
+.jumbotron {
+  margin-bottom:0;
+}
+.jumbotron {
+  margin-bottom:0;
+}
+
+.jumbotron h1, .jumbotron .h1 {
+  font-family: "Poiret One";
+  text-shadow: 2px 2px 2px gray;
+  font-size: 40px;
+}
+
+.jumbotron h2, .jumbotron .h2, legend {
+  font-family: "Poiret One";
+  --color: gray;
+  font-weight: 600;
+  --border-bottom: 1px solid gray;
+}
+
+.col-md-6 {
+  padding-left: 30px;
+}
+
+legend {
+  border-bottom: 1px solid gray; 
+  margin-top: 30px; 
+}
+
+.glassBox {
+  background-color: rgba(199, 199, 199, 0.5);
+  padding: 5px 20px;
+}
+.mapBg {
+  background-image: url("/Images/mapbg.png");
+}
+.glassBox img {
+  width:50px;
+  height:50px;
+}
+.radio, .checkbox {
+  padding-left: 0px;
+  padding-right: 20px;
+}
+#gridSettings td {
+  vertical-align: top;
+  padding-right: 10px;
+}
+#grid table {
+   background:white;
+}
+#grid{
+  position:absolute;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-bottom: 10px;
+  background-color: rgba(255,255,255,0.75);
+}
+#grid table tr td {
+  border: 1px solid rgba(128, 128, 128, 0.5);
+  width: 7px;
+  height: 7px;
+  padding-right: 00px;
+  }
+input[type=radio], input[type=checkbox] {
+  width: 18px;
+  height: 18px;
+  margin: 2px; 
+  vertical-align: top;
+}
+kbd{
+  background-color: #777;
+}
