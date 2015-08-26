@@ -212,12 +212,17 @@ var ColorPicker = function() {
                     else {
                         var p = _private.downPoint;
                         var m = {x:event.pageX, y:event.pageY};
+
                         var w = _private.downZone.width; 
                         var h = _private.downZone.height; 
+
+                        if(w==0) w++;
+                        if(h==0) h++;
+
                         var x = (m.x > p.x) ? 1-w : 0;
                         var y = (m.y > p.y) ? 1-h : 0;
-                        if(w == 0) w = 1;
-                        if(h == 0) h = 1;
+
+                        //$('#debugTxt').css('left', (deep/2)*7+'px').html('w='+_private.downZone.width+' h='+_private.downZone.height);
                         $marker
                             .css('width', w*7+'px')
                             .css('height', h*7+'px')
@@ -620,6 +625,8 @@ var ColorPicker = function() {
                             .append(
                                 '<canvas id="colorPickerViewerMarker" style="position:absolute; border:1px solid red;"></canvas>')
                             .css('border-radius', '100%');
+
+                            //.append('<span id="debugTxt" style="position:absolute; top: 20px;"/>');
                     }
 
                     _private.showMagnifier = true;
