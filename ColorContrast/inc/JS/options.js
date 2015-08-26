@@ -24,7 +24,22 @@ $(document).ready(function() {
     $('#autoCopy').change(function() {
         showAutoCopy($(this).is(':checked'))
     });
+    $.each($('img'), function(index, value) {
+        $value = $(value);
+        $value.attr('src', chrome.extension.getURL($value.attr('src'))).attr('alt', '');
+    })
+    addCssClass('.mapBg', 'background-image: url("'+chrome.extension.getURL("/Images/mapbg.png")+'");', 'styles');
+    addCssClass('@font-face', 'font-family: "Poiret One";\n\t\tfont-weight: 400;\n\t\tsrc: url("'+chrome.extension.getURL("/Fonts/Poiret One.woff2")+'") format("woff2");', 'fonts');
 });
+
+function addCssClass(className, classValue, styleId) {
+    if(!styleId) styleId='css-modifier-container';
+    if ($('#'+styleId).length == 0) {
+        $('head').prepend('<style id="'+styleId+'"></style>');
+    }
+
+    $('#'+styleId).append('\t'+className + "{\n\t\t" + classValue + "\n\t}\n");
+};
 
 function getOptions(optionsDfr) {
     chrome.extension.connect().postMessage({type: 'get-defaults'});
@@ -78,7 +93,9 @@ function showGlass(val) {
 
 function showMapBg(show) {
     if (show) {
-        $('.glassBox').addClass('mapBg');
+        $('.glassBox')
+        .addClass('mapBg')
+        //.css('background-image', 'url("'+chrome.extension.getURL("/Images/mapbg.png")+'")');
     } else {
         $('.glassBox').removeClass('mapBg');
     }
@@ -126,9 +143,9 @@ function showDirections(show) {
         '<li>'+(show?'Click <kbd>Picker Color</kbd> button.':'Click an <kbd>Color-Picker</kbd> button for either Background or Foreground.')+'</li>' +
         '<li>Explore the page for the desired color.</li>' +
         '<li>Left or right-click the point - you may repeat this step.</li>' +
-        '<li>Use the <img src="/Images/menu.png"></img> menu button on the toolbar for more options.</li>'+
+        '<li>Use the <img src="'+chrome.extension.getURL('/Images/menu.png')+'"></img> menu button on the toolbar for more options.</li>'+
         '<li>(You may show a text sample, or you may select some challenged vision and effects.)</li>'+
-        '<li>Click again the extension button <img src="/Images/Logos/16.png"></img> to finish the selection.</li>'+
+        '<li>Click again the extension button <img src="'+chrome.extension.getURL('/Images/Logos/16.png')+'"></img> to finish the selection.</li>'+
         '<li>When there are choices for foreground with AAA contrast, click an <kbd>OK</kbd> button to accept it.<br/>'+
         '(You may toggle colors to get choices for the background color.)</li>');
 
