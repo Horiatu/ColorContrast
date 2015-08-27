@@ -2,7 +2,7 @@ function WebColor(color) {
 	this.r = 0;
 	this.g = 0;
 	this.b = 0;
-	this.isColor = false;
+	this.isColor = true;
 	this.fixes = [];
     this.target = 7;
 
@@ -16,7 +16,8 @@ function WebColor(color) {
     		if(hex) {
     			this.rgb(hex);
     			this.isColor = true;
-    		}
+    		} else
+                this.isColor = false;
         }
 	}
 }
@@ -308,8 +309,8 @@ WebColor.prototype.fixContrastTo = function(webColor) {
 	this._fixContrast(webColor, initialDelta, "G");
 	this._fixContrast(webColor, initialDelta, "B");
 
-    //if(!this.fixes || this.fixes.length == 0)
-        this.fixContrastBruteForce(webColor);
+    // if(!this.fixes || this.fixes.length == 0)
+    //     this.fixContrastBruteForce(webColor);
 }
 
 WebColor.prototype._fixContrast = function(webColor, initialDelta, component) {
@@ -351,45 +352,42 @@ WebColor.prototype._fixContrast = function(webColor, initialDelta, component) {
 		contrast = playColor.contrastTo(webColor);
 		delta = this.target - contrast;
 	} while (delta>0);
-	this.fixes.push({hex:h, contrast:contrast});
+	this.fixes.push({hex:h, bgHex:webColor.toHex(), contrast:contrast, bruteForce: false});
 }
 
 WebColor.prototype.fixContrastBruteForce = function(webColor) {
     var initialDelta = this.target - this.contrastTo(webColor);
     
-    var playColorR = this.clone();
+    var playColorR = new WebColor(this);
     var dR = 1;
     playColorR.addToR(dR); 
     if(this.equals(playColorR)) {
-        playColorR = this.clone();
         dR = -dR;
         playColorR.addToR(dR);
         if(this.equals(playColorR)) dR=0;
     }
     if(dR != 0 && this.target - playColorR.contrastTo(webColor) >= initialDelta) dR = -dR;
 
-    var playColorG = this.clone();
+    var playColorG = new WebColor(this);
     var dG = 1;
     playColorG.addToG(dG); 
     if(this.equals(playColorG)) {
-        playColorG = this.clone();
         dG = -dG;
         playColorG.addToG(dG);
         if(this.equals(playColorG)) dG=0;
     }
     if(dG != 0 && this.target - playColorG.contrastTo(webColor) >= initialDelta) dG = -dG;
 
-    var playColorB = this.clone();
+    var playColorB = new WebColor(this);
     var dB = 1;
     playColorB.addToB(dB); 
     if(this.equals(playColorB)) {
-        playColorB = this.clone();
         dB = -dB;
         playColorB.addToB(dB);
         if(this.equals(playColorB)) dB=0;
     }
     if(dB != 0 && this.target - playColorB.contrastTo(webColor) >= initialDelta) dB = -dB;
-    //console.log(dR+' '+dG+' '+dB);
+    console.log(dR+' '+dG+' '+dB);
 
     hp = this.toHex();
     for(var r = this.r+dR; r>=0 && r<=255; r+=dR) {
@@ -404,8 +402,8 @@ WebColor.prototype.fixContrastBruteForce = function(webColor) {
                 contrast = playColor.contrastTo(webColor);
                 delta = this.target - contrast;
                 if(delta <= 0) {
-                    this.fixes.push({hex:webColor.toHex(), contrast:0});
-                    this.fixes.push({hex:h, contrast:contrast});
+                    //this.fixes.push({hex:webColor.toHex(), bgHex:webColor.toHex(), contrast:0});
+                    this.fixes.push({hex:h, bgHex:webColor.toHex(), contrast:contrast, bruteForce:true});
                     return;
                 }
             }

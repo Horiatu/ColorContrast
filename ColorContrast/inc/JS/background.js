@@ -97,6 +97,18 @@ chrome.extension.onConnect.addListener(function(port) {
                     //console.log(defaults);
                 });
                 break;
+            case 'fix-contrast':
+                fr = new WebColor(req.c1);
+                bg = new WebColor(req.c2);
+                bg.fixContrastTo(fr);
+                port.postMessage({
+                  type: req.type,fixes: (bg.fixes)}); 
+                bg.fixes = [];
+                bg.fixContrastBruteForce(fr);
+                port.postMessage({
+                  type: req.type,
+                  fixes: (bg.fixes)}); 
+                break;
         }
     });
 });

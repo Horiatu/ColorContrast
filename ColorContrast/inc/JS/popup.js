@@ -47,30 +47,32 @@ $(document).ready(function() {
 
         var bgColor=new WebColor($("#background").val().trim());
         var frColor=new WebColor($("#foreground").val().trim());
-        if(bgColor.isColor && frColor.isColor) {
-            var target = 7.0;
-            if(frColor.contrastTo(bgColor) < target) {
-                frColor.fixContrastTo(bgColor);
-                if(frColor.fixes.length > 0) {
-                    isTop = "margin-top: 0; ";
-                    frColor.fixes.forEach(function(frColor) {
-                        if(frColor.contrast>0) {
-                            $fixSamples.append(
-                                '<div class="example" style="'+isTop+'background-color: '+bgColor.toHex()+'; font-size: 14px; font-weight: bold;">'+
-                                '   <span style="color:'+frColor.hex+';">Suggestion: '+frColor.hex+' (contrast: '+frColor.contrast.toFixed(2)+':1)</span>'+
-                                '   <img src="'+chrome.extension.getURL('/Images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btnOK"></img>'+
-                                '</div>');
-                            isTop = "";
-                        }
-                        else if(isTop=="") {
-                            $fixSamples.append(
-                                '<div class="example" style="background-color: '+bgColor.toHex()+'; height:2px;"></div>');
-                        }
-                    });
-                    $('#fixSamples img').click(acceptSample);
-                    $fixSamples.show();
-                }
-            }
+
+        if(bgColor.isColor && frColor.isColor && !bgColor.equals(frColor) && frColor.contrastTo(bgColor) < bgColor.target) {
+            fixContrastMsg(bgColor, frColor); // !!!
+
+            // //if(frColor.contrastTo(bgColor) < bgColor.target) {
+            //     frColor.fixContrastTo(bgColor);
+            //     if(frColor.fixes.length > 0) {
+            //         isTop = "margin-top: 0; ";
+            //         frColor.fixes.forEach(function(frColor) {
+            //             if(frColor.contrast>0) {
+            //                 $fixSamples.append(
+            //                     '<div class="example" style="'+isTop+'background-color: '+bgColor.toHex()+'; font-size: 14px; font-weight: bold;">'+
+            //                     '   <span style="color:'+frColor.hex+';">Suggestion: '+frColor.hex+' (contrast: '+frColor.contrast.toFixed(2)+':1)</span>'+
+            //                     '   <img src="'+chrome.extension.getURL('/Images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btnOK"></img>'+
+            //                     '</div>');
+            //                 isTop = "";
+            //             }
+            //             else if(isTop=="") {
+            //                 $fixSamples.append(
+            //                     '<div class="example" style="background-color: '+bgColor.toHex()+'; height:2px;"></div>');
+            //             }
+            //         });
+            //         $('#fixSamples img').click(acceptSample);
+            //         $fixSamples.show();
+            //     }
+            // //}
         }
     },
 
@@ -278,6 +280,49 @@ $(document).ready(function() {
     openTestPage = function(e) {
         window.open(chrome.extension.getURL('/inc/html/test.html'),'_blank');
     };
+
+    fixContrastMsg = function(color1, color2) {
+        var contrastDfr = $.Deferred();
+        sendMessage({
+                type: "fix-contrast",
+                c1: color1,
+                c2: color2
+            });
+        return contrastDfr.promise();
+    };
+
+    sendMessage = function(message) {
+        $sendMessageDfr = $.Deferred();
+        setTimeout(function(){ 
+            port.postMessage(message); 
+        }, 100);
+        return $sendMessageDfr.promise();
+    };
+
+    $sendMessageDfr = null;
+    var port = chrome.extension.connect({name: "Sample Communication"});
+    port.onMessage.addListener(function(req) {
+        switch (req.type) {
+            case 'fix-contrast':
+                $sendMessageDfr.resolve();
+                console.log(req);
+                if(req.fixes.length > 0) {
+                req.fixes.forEach(function(frColor) {
+                    $fixSamples.append(
+                        '<div class="example" style="background-color: '+frColor.bgHex+'; '+
+                        (frColor.bruteForce ? ('border: 2px solid '+frColor.hex+'; ') : '')+
+                        'font-size: 14px; font-weight: bold;">'+
+                        '   <span style="color:'+frColor.hex+';">Suggestion: '+frColor.hex+' (contrast: '+frColor.contrast.toFixed(2)+':1)</span>'+
+                        '   <img src="'+chrome.extension.getURL('/Images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btnOK"></img>'+
+                        '</div>');
+                });
+                $('#fixSamples img').click(acceptSample);
+                $fixSamples.show();
+
+                break;
+            }
+        }
+    });
 
     $('#closeBtn').attr('src',chrome.extension.getURL('/Images/close.png')).click(function(e) { window.close(); });
     $(".txInput")
