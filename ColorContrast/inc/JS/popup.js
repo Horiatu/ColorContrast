@@ -49,30 +49,7 @@ $(document).ready(function() {
         var frColor=new WebColor($("#foreground").val().trim());
 
         if(bgColor.isColor && frColor.isColor && !bgColor.equals(frColor) && frColor.contrastTo(bgColor) < bgColor.target) {
-            fixContrastMsg(bgColor, frColor); // !!!
-
-            // //if(frColor.contrastTo(bgColor) < bgColor.target) {
-            //     frColor.fixContrastTo(bgColor);
-            //     if(frColor.fixes.length > 0) {
-            //         isTop = "margin-top: 0; ";
-            //         frColor.fixes.forEach(function(frColor) {
-            //             if(frColor.contrast>0) {
-            //                 $fixSamples.append(
-            //                     '<div class="example" style="'+isTop+'background-color: '+bgColor.toHex()+'; font-size: 14px; font-weight: bold;">'+
-            //                     '   <span style="color:'+frColor.hex+';">Suggestion: '+frColor.hex+' (contrast: '+frColor.contrast.toFixed(2)+':1)</span>'+
-            //                     '   <img src="'+chrome.extension.getURL('/Images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btnOK"></img>'+
-            //                     '</div>');
-            //                 isTop = "";
-            //             }
-            //             else if(isTop=="") {
-            //                 $fixSamples.append(
-            //                     '<div class="example" style="background-color: '+bgColor.toHex()+'; height:2px;"></div>');
-            //             }
-            //         });
-            //         $('#fixSamples img').click(acceptSample);
-            //         $fixSamples.show();
-            //     }
-            // //}
+            fixContrastMsg(bgColor, frColor); 
         }
     },
 
@@ -282,11 +259,38 @@ $(document).ready(function() {
     };
 
     fixContrastMsg = function(color1, color2) {
+        if($('#Waiting').length == 0)
+            $fixSamples.append(
+                '<div id="Waiting" class="example" style="background-color: white; border: 2px solid red; '+
+                'font-size: 14px; font-weight: bold;">'+
+                '   <span style="color:red;">Waiting...</span>'+
+                '   <img src="'+chrome.extension.getURL('/Images/loading.gif')+'" style="margin-bottom: -2px;"></img>'+
+                //'   <img src="'+chrome.extension.getURL('/Images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btnOK"></img>'+
+                '</div>');
+        else 
+            $('#Waiting').show();
+        $fixSamples.show();
+
         var contrastDfr = $.Deferred();
         sendMessage({
                 type: "fix-contrast",
                 c1: color1,
                 c2: color2
+            }).then(function(req) {
+                console.log(req);
+                if(req.fixes.length > 0) {
+                    req.fixes.forEach(function(frColor) {
+                        $fixSamples.prepend(
+                            '<div class="example" style="background-color: '+frColor.bgHex+'; '+
+                            (frColor.bruteForce ? ('border: 2px solid '+frColor.hex+'; ') : '')+
+                            'font-size: 14px; font-weight: bold;">'+
+                            '   <span style="color:'+frColor.hex+';">Suggestion: '+frColor.hex+' (contrast: '+frColor.contrast.toFixed(2)+':1)</span>'+
+                            '   <img src="'+chrome.extension.getURL('/Images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btn btnOK"></img>'+
+                            '</div>');
+                    });
+                    $('#fixSamples img').click(acceptSample);
+                }
+                $('#Waiting').hide();
             });
         return contrastDfr.promise();
     };
@@ -295,7 +299,7 @@ $(document).ready(function() {
         $sendMessageDfr = $.Deferred();
         setTimeout(function(){ 
             port.postMessage(message); 
-        }, 100);
+        }, 200);
         return $sendMessageDfr.promise();
     };
 
@@ -304,23 +308,8 @@ $(document).ready(function() {
     port.onMessage.addListener(function(req) {
         switch (req.type) {
             case 'fix-contrast':
-                $sendMessageDfr.resolve();
-                console.log(req);
-                if(req.fixes.length > 0) {
-                req.fixes.forEach(function(frColor) {
-                    $fixSamples.append(
-                        '<div class="example" style="background-color: '+frColor.bgHex+'; '+
-                        (frColor.bruteForce ? ('border: 2px solid '+frColor.hex+'; ') : '')+
-                        'font-size: 14px; font-weight: bold;">'+
-                        '   <span style="color:'+frColor.hex+';">Suggestion: '+frColor.hex+' (contrast: '+frColor.contrast.toFixed(2)+':1)</span>'+
-                        '   <img src="'+chrome.extension.getURL('/Images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btnOK"></img>'+
-                        '</div>');
-                });
-                $('#fixSamples img').click(acceptSample);
-                $fixSamples.show();
-
+                $sendMessageDfr.resolve(req);
                 break;
-            }
         }
     });
 

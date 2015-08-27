@@ -15,7 +15,7 @@ $(document).ready(function() {
     $('#sample').change(function() {
         showSample($(this).is(':checked'))
     });
-    $('#gridSize').change(function() {
+    $('#gridSize').bind('input',function() {
         showGrid($(this).val());
     });
     $('#clickType').change(function() {
@@ -27,6 +27,15 @@ $(document).ready(function() {
     $.each($('img'), function(index, value) {
         $value = $(value);
         $value.attr('src', chrome.extension.getURL($value.attr('src'))).attr('alt', '');
+    })
+    $('#timeLimitSlider').bind('input',function() {
+        $('#timeLimitVal').val($(this).val());
+        chrome.storage.sync.set({
+            'restrictSeconds': $(this).val(),
+        });
+    });
+    $('#timeLimitRestrict').change(function() {
+        restrictTimeLimit($(this).is(':checked'));
     })
     // addCssClass('.mapBg', 'background-image: url("'+chrome.extension.getURL("/Images/mapbg.png")+'");', 'styles');
     // addCssClass('@font-face', 'font-family: "Poiret One";\n\t\tfont-weight: 400;\n\t\tsrc: url("'+chrome.extension.getURL("/Fonts/Poiret One.woff2")+'") format("woff2");', 'fonts');
@@ -80,8 +89,12 @@ function restore_options(optionsDfr) {
         $('#gridSize').val(options.gridSize);
         showGrid(options.gridSize);
         $('#gridSize').css("display", "block");
-        }
-    );
+        
+        $('#timeLimitVal').val(options.restrictSeconds);
+        $('#timeLimitSlider').val(options.restrictSeconds);
+        $('#timeLimitRestrict').prop('checked', options.restrictBruteForce);
+        restrictTimeLimit(options.restrictBruteForce);
+    });
 }
 
 function showGlass(val) {
@@ -157,5 +170,18 @@ function showDirections(show) {
 function showAutoCopy(show) {
     chrome.storage.sync.set({
         'autoCopy': $('#autoCopy').is(':checked')
+    });
+}
+
+function restrictTimeLimit(restrict) {
+    if(restrict) {
+        $('#restrictSeconds').css('display','inherit');
+        $('#timeLimitSlider').show();
+    } else {
+        $('#restrictSeconds').css('display','none');
+        $('#timeLimitSlider').hide();
+    }
+    chrome.storage.sync.set({
+        'restrictBruteForce': $('#timeLimitRestrict').is(':checked'),
     });
 }

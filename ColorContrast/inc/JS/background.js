@@ -46,7 +46,7 @@ Background.getOptionOrDefault = function(a, option, value) {
 
 Background.getDefaults = function() {
     var gdDfr = $.Deferred();
-    chrome.storage.sync.get(['magnifierGlass', 'MapBg', 'clickType', 'autoCopy', 'toolbar', 'sample', 'position', 'gridSize', 'eyeType'],
+    chrome.storage.sync.get(['magnifierGlass', 'MapBg', 'clickType', 'autoCopy', 'toolbar', 'sample', 'position', 'gridSize', 'eyeType', 'restrictBruteForce', 'restrictSeconds'],
     function(a) {
         defaults = {
             type:'defaults',
@@ -58,7 +58,9 @@ Background.getDefaults = function() {
             sample : Background.getOptionOrDefault(a, 'sample', true), 
             position : Background.getOptionOrDefault(a, 'position', {up:true, left:true}), 
             gridSize : Background.getOptionOrDefault(a, 'gridSize', 13),
-            eyeType : Background.getOptionOrDefault(a, 'eyeType', 'NormalVision')
+            eyeType : Background.getOptionOrDefault(a, 'eyeType', 'NormalVision'),
+            restrictBruteForce : Background.getOptionOrDefault(a, 'restrictBruteForce', true),
+            restrictSeconds : Background.getOptionOrDefault(a, 'restrictSeconds', 5),
         };
         gdDfr.resolve(defaults);
     });
@@ -101,9 +103,9 @@ chrome.extension.onConnect.addListener(function(port) {
                 fr = new WebColor(req.c1);
                 bg = new WebColor(req.c2);
                 bg.fixContrastTo(fr);
-                port.postMessage({
-                  type: req.type,fixes: (bg.fixes)}); 
-                bg.fixes = [];
+                // port.postMessage({
+                //   type: req.type,fixes: (bg.fixes)}); 
+                // bg.fixes = [];
                 bg.fixContrastBruteForce(fr);
                 port.postMessage({
                   type: req.type,

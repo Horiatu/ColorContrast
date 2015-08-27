@@ -356,6 +356,7 @@ WebColor.prototype._fixContrast = function(webColor, initialDelta, component) {
 }
 
 WebColor.prototype.fixContrastBruteForce = function(webColor) {
+    var startTime = new Date();
     var initialDelta = this.target - this.contrastTo(webColor);
     
     var playColorR = new WebColor(this);
@@ -387,12 +388,17 @@ WebColor.prototype.fixContrastBruteForce = function(webColor) {
         if(this.equals(playColorB)) dB=0;
     }
     if(dB != 0 && this.target - playColorB.contrastTo(webColor) >= initialDelta) dB = -dB;
-    console.log(dR+' '+dG+' '+dB);
+    //console.log(dR+' '+dG+' '+dB);
 
     hp = this.toHex();
     for(var r = this.r+dR; r>=0 && r<=255; r+=dR) {
         for(var g = this.g+dG; g>=0 && g<=255; g+=dG) {
             for(var b = this.b+dB; b>=0 && b<=255; b+=dB) {
+
+                var endTime = new Date();
+                var timeDiff = (endTime - startTime);
+                if(timeDiff > 5000) return;
+
                 var playColor = new WebColor({r:r,g:g,b:b});
                 h = playColor.toHex();
                 if(hp == h) {
@@ -402,11 +408,11 @@ WebColor.prototype.fixContrastBruteForce = function(webColor) {
                 contrast = playColor.contrastTo(webColor);
                 delta = this.target - contrast;
                 if(delta <= 0) {
-                    //this.fixes.push({hex:webColor.toHex(), bgHex:webColor.toHex(), contrast:0});
                     this.fixes.push({hex:h, bgHex:webColor.toHex(), contrast:contrast, bruteForce:true});
                     return;
                 }
             }
+
         }
     }
 }
