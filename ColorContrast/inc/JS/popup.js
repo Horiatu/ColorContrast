@@ -273,6 +273,7 @@ $(document).ready(function() {
         window.open(chrome.extension.getURL('/inc/html/test.html'),'_blank');
     };
 
+    $('#closeBtn').attr('src',chrome.extension.getURL('/Images/close.png')).click(function(e) { window.close(); });
     $(".txInput")
     .on("input", function(e) {
         getContrast(e.currentTarget.id);

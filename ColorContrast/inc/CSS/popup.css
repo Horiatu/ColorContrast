@@ -88,13 +88,22 @@ h1 span {
 .error{
   background-color: rgb(216, 216, 216);
 }
+#closeBtn{
+  width:15px;
+  height:15px;
+  position:absolute;
+  top:3px;
+  right:3px;
+  cursor: pointer;
+  opacity: 0.25;
+}
 .btn img {
   margin-top: 2px;
   margin-bottom: -3px;
   cursor: pointer;
   opacity: 0.5;
 }
-.btn img:hover {
+.btn img:hover, #closeBtn:hover {
   opacity: 1;
   
   filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=2, OffY=2, Color='#444')";
@@ -181,3 +190,4 @@ h1 span {
   color: white;
   border-radius: 4px;
 }
+
