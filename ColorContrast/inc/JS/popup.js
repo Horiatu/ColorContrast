@@ -54,12 +54,18 @@ $(document).ready(function() {
                 if(frColor.fixes.length > 0) {
                     isTop = "margin-top: 0; ";
                     frColor.fixes.forEach(function(frColor) {
-                        $fixSamples.append(
-                            '<div class="example" style="'+isTop+'background-color: '+bgColor.toHex()+'; font-size: 14px; font-weight: bold;">'+
-                            '   <span style="color:'+frColor.hex+';">Suggestion: '+frColor.hex+' (contrast: '+frColor.contrast.toFixed(2)+':1)</span>'+
-                            '   <img src="'+chrome.extension.getURL('/Images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btnOK"></img>'+
-                            '</div>');
-                        isTop = "";
+                        if(frColor.contrast>0) {
+                            $fixSamples.append(
+                                '<div class="example" style="'+isTop+'background-color: '+bgColor.toHex()+'; font-size: 14px; font-weight: bold;">'+
+                                '   <span style="color:'+frColor.hex+';">Suggestion: '+frColor.hex+' (contrast: '+frColor.contrast.toFixed(2)+':1)</span>'+
+                                '   <img src="'+chrome.extension.getURL('/Images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btnOK"></img>'+
+                                '</div>');
+                            isTop = "";
+                        }
+                        else if(isTop=="") {
+                            $fixSamples.append(
+                                '<div class="example" style="background-color: '+bgColor.toHex()+'; height:2px;"></div>');
+                        }
                     });
                     $('#fixSamples img').click(acceptSample);
                     $fixSamples.show();
