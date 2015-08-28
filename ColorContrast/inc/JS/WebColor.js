@@ -355,8 +355,10 @@ WebColor.prototype._fixContrast = function(webColor, initialDelta, component) {
 	this.fixes.push({hex:h, bgHex:webColor.toHex(), contrast:contrast, bruteForce: false});
 }
 
-WebColor.prototype.fixContrastBruteForce = function(webColor) {
-    var startTime = new Date();
+WebColor.prototype.fixContrastBruteForce = function(webColor, restrictTime) {
+    if(restrictTime) {
+        var startTime = new Date();
+    }
     var initialDelta = this.target - this.contrastTo(webColor);
     
     var playColorR = new WebColor(this);
@@ -395,10 +397,11 @@ WebColor.prototype.fixContrastBruteForce = function(webColor) {
         for(var g = this.g+dG; g>=0 && g<=255; g+=dG) {
             for(var b = this.b+dB; b>=0 && b<=255; b+=dB) {
 
-                var endTime = new Date();
-                var timeDiff = (endTime - startTime);
-                if(timeDiff > 5000) return;
-
+                if(restrictTime) {
+                    var endTime = new Date();
+                    var timeDiff = (endTime - startTime);
+                    if(timeDiff > restrictTime*1000) return;
+                }
                 var playColor = new WebColor({r:r,g:g,b:b});
                 h = playColor.toHex();
                 if(hp == h) {
