@@ -254,8 +254,21 @@ $(document).ready(function() {
         }
     };
 
+    pinCode = function(t) {
+        var id = t.currentTarget.id;
+        var val = $(id=='pinFr' ? '#foregroundValue' : '#backgroundValue').html();
+        if(val.indexOf('close to ')==0) val = val.substring(9);
+        if(val.indexOf(',')>=0) val = val.substring(0, val.indexOf(','));
+        $(id=='pinFr' ? '#foreground' : '#background').val(val);
+        getContrast();
+    }
+
     openTestPage = function(e) {
         window.open(chrome.extension.getURL('/inc/html/test.html'),'_blank');
+    };
+
+    openOptionsPage = function(e) {
+        window.open(chrome.extension.getURL('/inc/html/options.html'),'_blank');
     };
 
     fixContrastMsg = function(color1, color2) {
@@ -277,7 +290,7 @@ $(document).ready(function() {
                 c1: color1,
                 c2: color2
             }).then(function(req) {
-                console.log(req);
+                //console.log(req);
                 if(req.fixes.length > 0) {
                     req.fixes.forEach(function(frColor) {
                         $fixSamples.prepend(
@@ -314,6 +327,7 @@ $(document).ready(function() {
     });
 
     $('#closeBtn').attr('src',chrome.extension.getURL('/Images/close.png')).click(function(e) { window.close(); });
+    $('#optionsBtn').attr('src',chrome.extension.getURL('/Images/DisabledEye.png')).click(openOptionsPage);
     $(".txInput")
     .on("input", function(e) {
         getContrast(e.currentTarget.id);
@@ -335,10 +349,13 @@ $(document).ready(function() {
             $('.pickOne').show();
             $('.pick').on('click', pickAction);
         }
-        $('#testPage').click(openTestPage);
+        // $('#testPage').click(openTestPage);
+        // $('#optionsPage').click(openOptionsPage);
     });
     
     $('.code').on('click', copyCode);
+
+    $('.pin').on('click', pinCode);
 
     $('#toggle').on('click', function(t) {
         var backgroundVal = $("#background").val().trim();

@@ -97,13 +97,22 @@ h1 span {
   cursor: pointer;
   opacity: 0.25;
 }
+#optionsBtn{
+  width:15px;
+  height:15px;
+  position:absolute;
+  top:3px;
+  right:20px;
+  cursor: pointer;
+  opacity: 0.05;
+}
 .btn img {
   margin-top: 2px;
   margin-bottom: -3px;
   cursor: pointer;
   opacity: 0.5;
 }
-.btn img:hover, #closeBtn:hover {
+.btn img:hover, #closeBtn:hover, #optionsBtn:hover {
   opacity: 1;
   
   filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=2, OffY=2, Color='#444')";
@@ -119,6 +128,18 @@ h1 span {
 }
 .code{
   margin-left: -29px;
+}
+.pin {
+    margin-left: -22px;
+    margin-top: -2px;
+    display: block;
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+    opacity:0.5;
+}
+.pin:hover {
+    opacity:1;
 }
 #toggle{
   margin-left: -8px;

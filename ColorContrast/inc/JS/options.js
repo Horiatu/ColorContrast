@@ -1,8 +1,9 @@
 // On document load
 $(document).ready(function() {
     // show tabs
-    restore_options($.Deferred());
-
+    addCssClass('.mapBg', 'background-image: url("'+chrome.extension.getURL("/Images/mapbg.png")+'");', 'styles');
+    addCssClass('@font-face', 'font-family: "Poiret One";\n\t\tfont-weight: 400;\n\t\tsrc: url("'+chrome.extension.getURL("/Fonts/Poiret One.woff2")+'") format("woff2");', 'fonts');
+    
     $('input[name="magnifyGlass"]').on('change', function() {
         showGlass($(this).val())
     })
@@ -37,18 +38,18 @@ $(document).ready(function() {
     $('#timeLimitRestrict').change(function() {
         restrictTimeLimit($(this).is(':checked'));
     })
-    // addCssClass('.mapBg', 'background-image: url("'+chrome.extension.getURL("/Images/mapbg.png")+'");', 'styles');
-    // addCssClass('@font-face', 'font-family: "Poiret One";\n\t\tfont-weight: 400;\n\t\tsrc: url("'+chrome.extension.getURL("/Fonts/Poiret One.woff2")+'") format("woff2");', 'fonts');
+    restore_options($.Deferred());
+
 });
 
-// function addCssClass(className, classValue, styleId) {
-//     if(!styleId) styleId='css-modifier-container';
-//     if ($('#'+styleId).length == 0) {
-//         $('head').prepend('<style id="'+styleId+'"></style>');
-//     }
+function addCssClass(className, classValue, styleId) {
+    if(!styleId) styleId='css-modifier-container';
+    if ($('#'+styleId).length == 0) {
+        $('head').prepend('<style id="'+styleId+'"></style>');
+    }
 
-//     $('#'+styleId).append('\t'+className + "{\n\t\t" + classValue + "\n\t}\n");
-// };
+    $('#'+styleId).append('\t'+className + "{\n\t\t" + classValue + "\n\t}\n");
+};
 
 function getOptions(optionsDfr) {
     chrome.extension.connect().postMessage({type: 'get-defaults'});
@@ -69,7 +70,7 @@ function restore_options(optionsDfr) {
     getOptions(optionsDfr).done(function(options) {
         var magnifyGlass = $('.magnifyGlass input');
 
-        for (i = 0; i < magnifyGlass.length; i++) {
+        for (var i = 0; i < magnifyGlass.length; i++) {
             magnifyGlass[i].checked = (magnifyGlass[i].value === options.magnifierGlass);
         }
         $('#gridSettings').css('display',(options.magnifierGlass == 'none')?'none':'inherit');
@@ -106,9 +107,7 @@ function showGlass(val) {
 
 function showMapBg(show) {
     if (show) {
-        $('.glassBox')
-        .addClass('mapBg')
-        //.css('background-image', 'url("'+chrome.extension.getURL("/Images/mapbg.png")+'")');
+        $('.glassBox').addClass('mapBg')
     } else {
         $('.glassBox').removeClass('mapBg');
     }
@@ -134,14 +133,14 @@ function showGrid(val) {
     $('#gridSizeVal').text(val);
 
     $('#grid').empty();
-    grid=$(document.createElement('table'));
+    var grid=$(document.createElement('table'));
     grid.attr("cellspacing", 1);
     $('#grid').append(grid);
-    for(i=0; i<val; i++) {
-        tr=$(document.createElement('tr'));
+    for(var i=0; i<val; i++) {
+        var tr=$(document.createElement('tr'));
         grid.append(tr);
-        for(j=0; j<val; j++) {
-        td=$(document.createElement('td'));
+        for(var j=0; j<val; j++) {
+        var td=$(document.createElement('td'));
         tr.append(td);
         }
     }

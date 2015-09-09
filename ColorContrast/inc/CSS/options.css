@@ -1,8 +1,8 @@
-@font-face {
+/*@font-face {
   font-family: "Poiret One";
   font-weight: 400;
   src: url('/Fonts/Poiret One.woff2') format('woff2');
-}
+}*/
 .jumbotron {
   margin-bottom:0;
 }
@@ -36,9 +36,9 @@ legend {
   background-color: rgba(199, 199, 199, 0.5);
   padding: 5px 20px;
 }
-.mapBg {
+/*.mapBg {
   background-image: url("/Images/mapbg.png");
-}
+}*/
 .glassBox img {
   width:50px;
   height:50px;
@@ -76,3 +76,4 @@ input[type=radio], input[type=checkbox] {
 kbd{
   background-color: #777;
 }
+
