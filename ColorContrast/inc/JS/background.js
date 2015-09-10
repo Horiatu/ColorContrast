@@ -57,7 +57,7 @@ Background.getDefaults = function() {
             toolbar : Background.getOptionOrDefault(a, 'toolbar', true), 
             sample : Background.getOptionOrDefault(a, 'sample', true), 
             position : Background.getOptionOrDefault(a, 'position', {up:true, left:true}), 
-            gridSize : Background.getOptionOrDefault(a, 'gridSize', 17),
+            gridSize : Background.getOptionOrDefault(a, 'gridSize', 19),
             eyeType : Background.getOptionOrDefault(a, 'eyeType', 'NormalVision'),
             restrictBruteForce : Background.getOptionOrDefault(a, 'restrictBruteForce', true),
             restrictSeconds : Background.getOptionOrDefault(a, 'restrictSeconds', 5),

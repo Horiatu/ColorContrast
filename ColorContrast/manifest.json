@@ -1,31 +1,30 @@
 {
   "manifest_version": 2,
-
   "name": "WCAG Luminosity Contrast Ratio Analyzer",
+  "version": "1.0.3.10",
+
   "description": "Color Contrast Analyzer for WCAG 2.0 compliance",
-  "version": "1.0.3.1",
+  "icons": { 
+    "16": "/images/logos/16.png", 
+    "48":  "/images/logos/48.png", 
+    "128": "/images/logos/128.png" 
+  },
 
   "browser_action": {
     "default_icon": "/Images/icon.png",
     "default_popup": "/inc/html/popup.html"
   },
 
-  "icons": { 
-    "16": "/images/logos/16.png", 
-    "48":  "/images/logos/48.png", 
-    "128": "/images/logos/128.png" 
-    },
-
   "background":
   {
       "page" : "/inc/html/background.html",
-      "persistent": true
+      "persistent": false
   },
 
   "options_page": "/inc/html/options.html",
 
   "permissions": [
-    "tabs", "activeTab", "<all_urls>", "storage", "clipboardRead", "clipboardWrite"
+    "tabs", "activeTab", "<all_urls>", "storage", "contentSettings", "clipboardRead", "clipboardWrite"
   ],
 
   "web_accessible_resources": [
@@ -33,6 +32,7 @@
     "/Images/*.png",
     "/Images/*.gif",
     "/Images/logos/*.png",
+    "/Images/logos/*.ico",
     "/Images/Cursors/*.cur",
     "/inc/css/*.css",
     "/inc/js/*.js",

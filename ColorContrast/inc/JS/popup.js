@@ -328,6 +328,7 @@ $(document).ready(function() {
 
     $('#closeBtn').attr('src',chrome.extension.getURL('/Images/close.png')).click(function(e) { window.close(); });
     $('#optionsBtn').attr('src',chrome.extension.getURL('/Images/DisabledEye.png')).click(openOptionsPage);
+    $('#sampleBtn').attr('src',chrome.extension.getURL('/Images/Sample.png')).click(openTestPage);
     $(".txInput")
     .on("input", function(e) {
         getContrast(e.currentTarget.id);
@@ -368,7 +369,7 @@ $(document).ready(function() {
 
     var backgroundPage = chrome.extension.getBackgroundPage().Background;
 
-    getSelectedTab().done(function(tab) {
+    getSelectedTab().done(function(tab) { // The extensions gallery cannot be scripted.
         chrome.tabs.executeScript(tab.id, {
             allFrames: false,
             "code":

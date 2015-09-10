@@ -1,20 +1,19 @@
 <!doctype html>
 <html lang="en">
 
-<head>
-    <title>WCAG Luminosity Contrast Ratio Analyzer - Options</title>
+    <head>
+        <title>WCAG Luminosity Contrast Ratio Analyzer - Options</title>
 
-    <meta charset="utf-8"></meta>
-    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+        <meta charset="utf-8"></meta>
+        <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
 
-    <link type="text/css" rel="stylesheet" href="/inc/bootstrap/3.1.1/css/bootstrap.min.css"></link>
-    <link type="text/css" rel="stylesheet" href="/inc/bootstrap/3.1.1/css/bootstrap-theme.min.css"></link>
-    <link rel="stylesheet" href="/inc/css/options.css" type="text/css"></link>
-    <link href="/images/logos/favicon.ico" rel="shortcut icon"></link>
-</head>
+        <link type="text/css" rel="stylesheet" href="/inc/bootstrap/3.1.1/css/bootstrap.min.css"></link>
+        <!-- <link type="text/css" rel="stylesheet" href="/inc/bootstrap/3.1.1/css/bootstrap-theme.min.css"></link> -->
+        <link rel="stylesheet" href="/inc/css/options.css" type="text/css"></link>
+        <link href="/images/logos/favicon.ico" rel="shortcut icon"></link>
+    </head>
 
-<body>
-    <div>
+    <body>
         <div class="jumbotron">
             <h1>WCAG Luminosity Contrast Ratio Analyzer</h1>
             <h2>Options page</h2>
@@ -67,26 +66,28 @@
                             </td>
                         </tr>
                         <tr>
-                            <table id="gridSettings" style="margin-top:20px;">
-                                <tr>
-                                    <td style="width:80px;">
-                                        <label for="gridSize" style="font-weight: 400">Grid Size:</label>
-                                    </td>
-                                    <td>
-                                        <text id="gridSizeVal" style="font-weight: 400; "></text>
-                                    </td>
-                                    <td>
-                                        <div id="grid"></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                  <td colspan="2">
-                                      <div style="width:200px;">
-                                          <input id="gridSize" type="range" min="7" max="25" step="2" value="7" style="display:none;" />
-                                      </div>
-                                  </td>
-                                </tr>
-                            </table>
+                            <td colspan="2">
+                                <table id="gridSettings" style="padding-top:10px;">
+                                    <tr>
+                                        <td style="width:80px;">
+                                            <label for="gridSize" style="font-weight: 400">Grid Size:</label>
+                                        </td>
+                                        <td>
+                                            <text id="gridSizeVal" style="font-weight: 400; "></text>
+                                        </td>
+                                        <td>
+                                            <div id="grid"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                      <td colspan="2">
+                                          <div style="width:200px;">
+                                              <input id="gridSize" type="range" min="7" max="25" step="2" value="7" style="display:none;" />
+                                          </div>
+                                      </td>
+                                    </tr>
+                                </table>
+                            </td>
                         </tr>
                     </table>
                 </div>
@@ -156,11 +157,9 @@
             </fieldset>
         </div>
 
-    </div>
-
-    <script type="text/javascript" src="/inc/js/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="/inc/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/inc/js/options.js"></script>
-</body>
+        <script type="text/javascript" src="/inc/js/jquery-2.1.4.min.js"></script>
+        <!-- <script type="text/javascript" src="/inc/bootstrap/3.1.1/js/bootstrap.min.js"></script> -->
+        <script type="text/javascript" src="/inc/js/options.js"></script>
+    </body>
 
 </html>
