@@ -1,8 +1,8 @@
 // On document load
 $(document).ready(function() {
     // show tabs
-    addCssClass('.mapBg', 'background-image: url("'+chrome.extension.getURL("/Images/mapbg.png")+'");', 'styles');
-    addCssClass('@font-face', 'font-family: "Poiret One";\n\t\tfont-weight: 400;\n\t\tsrc: url("'+chrome.extension.getURL("/Fonts/Poiret One.woff2")+'") format("woff2");', 'fonts');
+    addCssClass('.mapBg', 'background-image: url("'+chrome.extension.getURL("/images/mapbg.png")+'");', 'styles');
+    addCssClass('@font-face', 'font-family: "Poiret One";\n\t\tfont-weight: 400;\n\t\tsrc: url("'+chrome.extension.getURL("/fonts/Poiret One.woff2")+'") format("woff2");', 'fonts');
     
     $('input[name="magnifyGlass"]').on('change', function() {
         showGlass($(this).val())
@@ -155,9 +155,9 @@ function showDirections(show) {
         '<li>Explore the page for the desired color.</li>' +
         '<li>'+(show?'Left or right-c':'C')+'lick the point - you may repeat this step.</li>' +
         '<li>(Click-and-Drag to get the averge color over multiple pixels.)</li>' +
-        '<li>Use the <img src="'+chrome.extension.getURL('/Images/menu.png')+'"></img> menu button on the toolbar for more options. (Look for shortcuts.)</li>'+
+        '<li>Use the <img src="'+chrome.extension.getURL('/images/menu.png')+'"></img> menu button on the toolbar for more options. (Look for shortcuts.)</li>'+
         '<li>(You may display a text sample, or you may select some challenged visions and effects.)</li>'+
-        '<li>Click again the extension button <img src="'+chrome.extension.getURL('/Images/Logos/16.png')+'"></img> to finish the selection and play with the results.</li>'+
+        '<li>Click again the extension button <img src="'+chrome.extension.getURL('/images/logos/16.png')+'"></img> to finish the selection and play with the results.</li>'+
         '<li>When there are choices for foreground with AAA contrast, click an <kbd>OK</kbd> button to accept it.<br/>'+
         '(You may toggle colors to get choices for the background color.)</li>');
 

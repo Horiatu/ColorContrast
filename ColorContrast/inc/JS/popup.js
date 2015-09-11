@@ -184,19 +184,19 @@ $(document).ready(function() {
                             loadScripts(tab.id, [{
                                 allFrames: false,
                                 file: true,
-                                content: "/inc/JS/jquery-2.1.4.min.js"
+                                content: "/inc/js/jquery-2.1.4.min.js"
                             }, {
                                 allFrames: false,
                                 file: true,
-                                content: "/inc/JS/dropit.js"
+                                content: "/inc/js/dropit.js"
                             }, {
                                 allFrames: false,
                                 file: true,
-                                content: "/inc/JS/scrollstop.js"
+                                content: "/inc/js/scrollstop.js"
                             }, {
                                 allFrames: false,
                                 file: true,
-                                content: "/inc/JS/ColorPicker.js"
+                                content: "/inc/js/ColorPicker.js"
                             }, {
                                 allFrames: false,
                                 file: false,
@@ -277,8 +277,8 @@ $(document).ready(function() {
                 '<div id="Waiting" class="example" style="background-color: white; border: 2px solid red; '+
                 'font-size: 14px; font-weight: bold;">'+
                 '   <span style="color:red;">Waiting...</span>'+
-                '   <img src="'+chrome.extension.getURL('/Images/loading.gif')+'" style="margin-bottom: -2px;"></img>'+
-                //'   <img src="'+chrome.extension.getURL('/Images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btnOK"></img>'+
+                '   <img src="'+chrome.extension.getURL('/images/loading.gif')+'" style="margin-bottom: -2px;"></img>'+
+                //'   <img src="'+chrome.extension.getURL('/images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btnOK"></img>'+
                 '</div>');
         else 
             $('#Waiting').show();
@@ -298,7 +298,7 @@ $(document).ready(function() {
                             (frColor.bruteForce ? ('border: 2px solid '+frColor.hex+'; ') : '')+
                             'font-size: 14px; font-weight: bold;">'+
                             '   <span style="color:'+frColor.hex+';">Suggestion: '+frColor.hex+' (contrast: '+frColor.contrast.toFixed(2)+':1)</span>'+
-                            '   <img src="'+chrome.extension.getURL('/Images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btn btnOK"></img>'+
+                            '   <img src="'+chrome.extension.getURL('/images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btn btnOK"></img>'+
                             '</div>');
                     });
                     $('#fixSamples img').click(acceptSample);
@@ -326,9 +326,9 @@ $(document).ready(function() {
         }
     });
 
-    $('#closeBtn').attr('src',chrome.extension.getURL('/Images/close.png')).click(function(e) { window.close(); });
-    $('#optionsBtn').attr('src',chrome.extension.getURL('/Images/DisabledEye.png')).click(openOptionsPage);
-    $('#sampleBtn').attr('src',chrome.extension.getURL('/Images/Sample.png')).click(openTestPage);
+    $('#closeBtn').attr('src',chrome.extension.getURL('/images/close.png')).click(function(e) { window.close(); });
+    $('#optionsBtn').attr('src',chrome.extension.getURL('/images/DisabledEye.png')).click(openOptionsPage);
+    $('#sampleBtn').attr('src',chrome.extension.getURL('/images/Sample.png')).click(openTestPage);
     $(".txInput")
     .on("input", function(e) {
         getContrast(e.currentTarget.id);
@@ -369,7 +369,7 @@ $(document).ready(function() {
 
     var backgroundPage = chrome.extension.getBackgroundPage().Background;
 
-    getSelectedTab().done(function(tab) { // The extensions gallery cannot be scripted.
+    getSelectedTab().done(function(tab) { // ??? The extensions gallery cannot be scripted.
         chrome.tabs.executeScript(tab.id, {
             allFrames: false,
             "code":

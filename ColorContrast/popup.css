@@ -4,13 +4,13 @@
         font-family: 'Nixie One';
         font-style: normal;
         font-weight: 400;
-        src: url('Fonts/Nixie One.woff2') format('woff2');
+        src: url('fonts/Nixie One.woff2') format('woff2');
         }
       /* latin */
       @font-face {
         font-family: "Poiret One";
         font-weight: 400;
-        src: url('Fonts/Poiret One.woff2') format('woff2');
+        src: url('fonts/Poiret One.woff2') format('woff2');
       }
       /* latin */
       @font-face {

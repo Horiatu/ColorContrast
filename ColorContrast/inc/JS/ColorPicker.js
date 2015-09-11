@@ -579,7 +579,7 @@ var ColorPicker = function() {
                 if(!contentDocument.getElementById("#ColorPickerOvr")) {
                     //$("body").wrapInner("<div id='bodyNew'></div>");
                     $("body").append('<div id="ColorPickerLdr"></div>');
-                    $("#ColorPickerLdr").append('<div id="ColorPickerOvr" style="display:none; cursor: url(' + chrome.extension.getURL("Images/Cursors/pickColor.cur") + '), crosshair !important;"></div>');
+                    $("#ColorPickerLdr").append('<div id="ColorPickerOvr" style="display:none; cursor: url(' + chrome.extension.getURL("images/cursors/pickColor.cur") + '), crosshair !important;"></div>');
                     _private.addFilters('#ColorPickerLdr');
                 }
                 _private.removeMouseSupport();
@@ -621,7 +621,7 @@ var ColorPicker = function() {
                         $('#colorPickerViewer')
                             .append(
                                 '<img alt="" width="100%" height="100%" style="position:absolute; top:0; left:0;" '+
-                                'src="'+chrome.extension.getURL('Images/' + options.magnifierGlass + '.png')+'"></img>')
+                                'src="'+chrome.extension.getURL('images/' + options.magnifierGlass + '.png')+'"></img>')
                             .append(
                                 '<canvas id="colorPickerViewerMarker" style="position:absolute; border:1px solid red;"></canvas>')
                             .css('border-radius', '100%');
@@ -636,11 +636,11 @@ var ColorPicker = function() {
                     if (!contentDocument.getElementById("colorPickerToolbar")) {
                         $('#ColorPickerOvr').append('<div id="colorPickerToolbar"></div>');
                         $('#colorPickerToolbar').load(chrome.extension.getURL("/inc/html/ToolBar.html"), function() {
-                            $('img.ok').attr('src', chrome.extension.getURL("/Images/Ok.png"));
-                            $('img.SoSo').attr('src', chrome.extension.getURL("/Images/SoSo.png"));
-                            $('img.fail').attr('src', chrome.extension.getURL("/Images/NotOk.png"));
-                            $('#menu1 img').attr('src', chrome.extension.getURL("/Images/menu.png"));
-                            $('#menu1 img.yes').attr('src', chrome.extension.getURL("/Images/yes.png"));
+                            $('img.ok').attr('src', chrome.extension.getURL("/images/Ok.png"));
+                            $('img.SoSo').attr('src', chrome.extension.getURL("/images/SoSo.png"));
+                            $('img.fail').attr('src', chrome.extension.getURL("/images/NotOk.png"));
+                            $('#menu1 img').attr('src', chrome.extension.getURL("/images/menu.png"));
+                            $('#menu1 img.yes').attr('src', chrome.extension.getURL("/images/yes.png"));
 
                             _private.colorTxt = contentDocument.getElementById("colorTxt");
                             _private.colorDiv = contentDocument.getElementById("colorDiv");
@@ -693,15 +693,15 @@ var ColorPicker = function() {
                                 }
                             });
 
-                            var yesSrc = chrome.extension.getURL("Images/Yes.png");
+                            var yesSrc = chrome.extension.getURL("images/Yes.png");
 
-                            $('#eye-menu li a img').attr('src', chrome.extension.getURL('Images/DisabledEye.png'));
-                            $('img.toLeft').attr('src', chrome.extension.getURL('Images/ToLeft.png'));
+                            $('#eye-menu li a img').attr('src', chrome.extension.getURL('images/DisabledEye.png'));
+                            $('img.toLeft').attr('src', chrome.extension.getURL('images/ToLeft.png'));
                             $('#eye-menu .yes').attr('src', yesSrc).hide();
 
                             $('#eye-menu li ul li a').click(_private.menuLeftClick);
 
-                            $('#effects-menu li a img').attr('src', chrome.extension.getURL('Images/Effects.png'));
+                            $('#effects-menu li a img').attr('src', chrome.extension.getURL('images/Effects.png'));
                             $('#effects-menu .yes').attr('src', yesSrc).hide();
                             $('.effect').attr('title', 'Or, use the mouse wheel');
 
@@ -905,7 +905,7 @@ var ColorPicker = function() {
                         _private.addMouseSupport();
                     });
                $SampleContent.load(chrome.extension.getURL("/inc/html/TextSample.html"), function() {
-                    $colorPickerSample.append("<div id='PickerSampleclose' class='PickerSampleBtn PickerSampleHover shadowed'><img src='"+chrome.extension.getURL("Images/close.png")+"' title='close (image)'></img></div>");
+                    $colorPickerSample.append("<div id='PickerSampleclose' class='PickerSampleBtn PickerSampleHover shadowed'><img src='"+chrome.extension.getURL("images/close.png")+"' title='close (image)'></img></div>");
                     $('#PickerSampleclose').click(function(e) {
                         $colorPickerSample.hide();
                         chrome.storage.sync.set({'sample': false});
@@ -914,7 +914,7 @@ var ColorPicker = function() {
                         e.preventDefault();
                     });
                
-                    $colorPickerSample.append("<div id='PickerSampleToggle' class='PickerSampleBtn PickerSampleHover shadowed'><img src='"+chrome.extension.getURL("Images/toggle.png")+"' title='Toggle Colors'></img></div>");
+                    $colorPickerSample.append("<div id='PickerSampleToggle' class='PickerSampleBtn PickerSampleHover shadowed'><img src='"+chrome.extension.getURL("images/toggle.png")+"' title='Toggle Colors'></img></div>");
                     $colorPickerSample.click(function(e) {
                         e.stopPropagation();
                         e.preventDefault();
