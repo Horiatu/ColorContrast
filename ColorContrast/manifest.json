@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "WCAG Luminosity Contrast Ratio Analyzer",
-  "version": "1.0.3.14",
+  "version": "1.0.3.15",
 
   "description": "Color Contrast Analyzer for WCAG 2.0 compliance",
   "icons": { 
@@ -18,7 +18,7 @@
   "background":
   {
       "page" : "/inc/html/background.html",
-      "persistent": false
+      "persistent": true
   },
 
   "options_page": "/inc/html/options.html",

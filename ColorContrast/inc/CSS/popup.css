@@ -88,40 +88,33 @@ h1 span {
 .error{
   background-color: rgb(216, 216, 216);
 }
-#closeBtn{
-  width:15px;
-  height:15px;
-  position:absolute;
-  top:3px;
-  right:3px;
-  cursor: pointer;
-  opacity: 0.25;
-}
-#optionsBtn{
-  width:15px;
-  height:15px;
-  position:absolute;
-  top:3px;
-  right:23px;
-  cursor: pointer;
-  opacity: 0.05;
-}
-#sampleBtn{
-  width:15px;
-  height:15px;
-  position:absolute;
-  top:3px;
-  right:43px;
-  cursor: pointer;
-  opacity: 0.05;
-}
+
 .btn img {
   margin-top: 2px;
   margin-bottom: -3px;
   cursor: pointer;
   opacity: 0.5;
 }
-.btn img:hover, #closeBtn:hover, #optionsBtn:hover, #sampleBtn:hover {
+#toolbar {
+  position:absolute;
+  right:8px;
+  top:2px;
+}
+.toolbarBtn {
+  width:15px;
+  height:15px;
+  cursor: pointer;
+  opacity: 0.25;
+}
+#sampleBtn{
+  opacity: 0.05;
+}
+
+#closeBtn{
+  margin-left:4px;
+}
+
+.btn img:hover, .toolbarBtn:hover, #sampleBtn:hover {
   opacity: 1;
   
   filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=2, OffY=2, Color='#444')";
@@ -139,7 +132,7 @@ h1 span {
   margin-left: -29px;
 }
 .pin {
-    margin-left: -22px;
+    margin-left: -18px;
     margin-top: -2px;
     display: block;
     width: 12px;
@@ -150,12 +143,6 @@ h1 span {
 .pin:hover {
     opacity:1;
 }
-#toggle{
-  margin-left: -8px;
-  padding-top:17px;
-  padding-bottom:17px;
-}
-
 #fixSamples img {
   margin-top: 4px;
   -webkit-filter: drop-shadow(2px 2px 1px rgba(255,255,255,0.9));

@@ -221,6 +221,9 @@ WebColor.ColorNames = [
 
 WebColor.hexToColorName = function(hex) {
 	hex = hex.toLowerCase()
+    if(hex.length==4) {
+        hex = '#'+hex[1]+hex[1]+hex[2]+hex[2]+hex[3]+hex[3];
+    }
 	var rgb = WebColor.toRgb(hex);
 	var dist = 3 * 255 + 1;
 	var closeTo = '';
@@ -415,7 +418,6 @@ WebColor.prototype.fixContrastBruteForce = function(webColor, restrictTime) {
                     return;
                 }
             }
-
         }
     }
 }

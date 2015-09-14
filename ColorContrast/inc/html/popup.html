@@ -16,10 +16,19 @@
     <script type="text/javascript" src="/inc/js/WebColor.js"></script>
     <script type="text/javascript" src="/inc/js/popup.js"></script>
     <script type="text/javascript" src="/inc/js/jquery.autocomplete.js"></script>
+    <script type="text/javascript" src="/inc/js/jquery.undoable.js"></script>
 </head>
 
 <body>
-    <h1 id="specify">
+    <div id='toolbar'>
+        <img class='toolbarBtn' id='sampleBtn' alt='' title='Test Page'></img>
+        <img class='toolbarBtn' id="toggle" src="/images/toggle.png" alt="toggle" title="Toggle Colors">
+        <img class='toolbarBtn' id='redoBtn' alt='' title='Redo [^y]' src="/images/redo.png"></img>
+        <img class='toolbarBtn' id='undoBtn' alt='' title='Undo [^z]' src="/images/undo.png"></img>
+        <img class='toolbarBtn' id='optionsBtn' alt='' title='Options'></img>
+        <img class='toolbarBtn' id='closeBtn' alt='' title='Close [esc]'></img>
+    </div>
+    <h1 id="specify" style='padding-top:4px;'>
         <table>
             <tr>
                 <td><img src="/images/logos/32.png" /></td>
@@ -27,10 +36,6 @@
             </tr>
         </table>
     </h1>
-    <img id='closeBtn' alt='' title='Close'></img>
-    <img id='optionsBtn' alt='' title='Options'></img>
-    <img id='sampleBtn' alt='' title='Test Page'></img>
-
     <table id="colors">
         <tr>
             <td rowspan="2">
@@ -45,15 +50,6 @@
                 </div>
             </td>
 
-            <td>
-                <div class="btn"><img class="code" id="bgCode" src="/images/copy-code.png" alt="copy code" title="copy code"></img>
-                </div>
-            </td>
-            <td rowspan="4">
-                <div class="btn"><img id="toggle" src="/images/toggle.png" alt="toggle" title="toggle colors"></img>
-                </div>
-            </td>
-            
             <td id="contrast" rowspan="3"><span>4.35:1</span></td>
         </tr>
         <tr>
@@ -70,10 +66,6 @@
             <td>
                 <div class="pickOne btn"><img class="pick" name="foreground" src="/images/pick-color.png" alt="pick color" title="Pick Color"></img>
                     <div>
-            </td>
-            <td>
-                <div class="btn"><img class="code" id="frCode" src="/images/copy-code.png" alt="copy code" title="copy code"></img>
-                </div>
             </td>
         </tr>
         <tr>

@@ -103,62 +103,10 @@ $(document).ready(function() {
             $(".example span").css("color", foregroundTxt);
 
             var cc = c1.contrastTo(c2);
-
-            $("#contrast span").html(parseFloat(cc).toFixed(2) + ":1");
-
-            if (cc >= 7.0) {
-                $("#contrast span").css("text-shadow", "2px 2px 2px darkgreen");
-                $(".largeAAA").show();
-                $(".smallAAA").show();
-
-                $(".largeAA").hide();
-                $(".smallAA").hide();
-
-                $(".large").hide();
-                $(".small").hide();
-
-                //$('#fixContrast').hide();
+            analyseResults(cc);
+            if (cc < 7.0) {
+                fixContrast();
             }
-            else if (cc >= 4.5) {
-                $("#contrast span").css("text-shadow", "2px 2px 2px orange");
-                $(".largeAAA").show();
-                $(".smallAAA").hide();
-
-                $(".largeAA").hide();
-                $(".smallAA").show();
-
-                $(".large").hide();
-                $(".small").hide();
-
-                //$('#fixContrast').show();
-                fixContrast();
-            } else if (cc >= 3.0) {
-                $("#contrast span").css("text-shadow", "2px 2px 2px orangered");
-                $(".largeAAA").hide();
-                $(".smallAAA").hide();
-
-                $(".largeAA").show();
-                $(".smallAA").hide();
-
-                $(".large").hide();
-                $(".small").show();
-
-                //$('#fixContrast').show();
-                fixContrast();
-            } else {
-                $("#contrast span").css("text-shadow", "2px 2px 2px red");
-                $(".largeAAA").hide();
-                $(".smallAAA").hide();
-
-                $(".largeAA").hide();
-                $(".smallAA").hide();
-
-                $(".large").show();
-                $(".small").show();
-
-                //$('#fixContrast').show();
-                fixContrast();
-            };
         } else {
             if (id) {
                 $("#" + id).addClass("error");
@@ -166,6 +114,53 @@ $(document).ready(function() {
                 $(".txInput").addClass("error");
             }
             $("#contrast span").css("text-shadow", "2px 2px 2px transparent");
+        };
+    };
+
+    analyseResults = function(cc) {
+        $("#contrast span").html(parseFloat(cc).toFixed(2) + ":1");
+
+        if (cc >= 7.0) {
+            $("#contrast span").css("text-shadow", "2px 2px 2px darkgreen");
+            $(".largeAAA").show();
+            $(".smallAAA").show();
+
+            $(".largeAA").hide();
+            $(".smallAA").hide();
+
+            $(".large").hide();
+            $(".small").hide();
+        }
+        else if (cc >= 4.5) {
+            $("#contrast span").css("text-shadow", "2px 2px 2px orange");
+            $(".largeAAA").show();
+            $(".smallAAA").hide();
+
+            $(".largeAA").hide();
+            $(".smallAA").show();
+
+            $(".large").hide();
+            $(".small").hide();
+        } else if (cc >= 3.0) {
+            $("#contrast span").css("text-shadow", "2px 2px 2px orangered");
+            $(".largeAAA").hide();
+            $(".smallAAA").hide();
+
+            $(".largeAA").show();
+            $(".smallAA").hide();
+
+            $(".large").hide();
+            $(".small").show();
+        } else {
+            $("#contrast span").css("text-shadow", "2px 2px 2px red");
+            $(".largeAAA").hide();
+            $(".smallAAA").hide();
+
+            $(".largeAA").hide();
+            $(".smallAA").hide();
+
+            $(".large").show();
+            $(".small").show();
         };
     };
 
@@ -239,20 +234,20 @@ $(document).ready(function() {
         return dfr.promise();
     }
 
-    copyCode = function(t) {
-        //console.log(t.currentTarget.id);
-        var o = $(t.currentTarget).closest('tr').find("input");
-        var initial = o.val();
-        var wc = new WebColor(initial);
-        if(wc.isColor)
-        {
-            o.val(wc.toHex());
-            o.focus();
-            o.select();
-            document.execCommand("Copy", false, null);
-            o.val(initial);
-        }
-    };
+    // copyCode = function(t) {
+    //     //console.log(t.currentTarget.id);
+    //     var o = $(t.currentTarget).closest('tr').find("input");
+    //     var initial = o.val();
+    //     var wc = new WebColor(initial);
+    //     if(wc.isColor)
+    //     {
+    //         o.val(wc.toHex());
+    //         o.focus();
+    //         o.select();
+    //         document.execCommand("Copy", false, null);
+    //         o.val(initial);
+    //     }
+    // };
 
     pinCode = function(t) {
         var id = t.currentTarget.id;
@@ -316,6 +311,18 @@ $(document).ready(function() {
         return $sendMessageDfr.promise();
     };
 
+            closeSample = function(n) {
+                $().undoable(function(){ $('#sample' + n).toggle(); console.log('hiding #'+n); }, function(){ $('#sample' + n).toggle(); console.log('showing #'+n); });
+            };
+            slideSample = function(n) {
+                $().undoable(function(){ $('#sample' + n).slideToggle(); console.log('hiding (via slide) #'+n); }, function(){ $('#sample' + n).slideToggle(); console.log('showing (via slide) #'+n); });
+            };
+
+    jQuery(function(){
+        jQuery().enableUndo({ redoCtrlChar : 'y', redoShiftReq : false });
+    });
+
+
     $sendMessageDfr = null;
     var port = chrome.extension.connect({name: "Sample Communication"});
     port.onMessage.addListener(function(req) {
@@ -354,7 +361,7 @@ $(document).ready(function() {
         // $('#optionsPage').click(openOptionsPage);
     });
     
-    $('.code').on('click', copyCode);
+    //$('.code').on('click', copyCode);
 
     $('.pin').on('click', pinCode);
 
