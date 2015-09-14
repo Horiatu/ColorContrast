@@ -99,6 +99,15 @@ $(document).ready(function() {
                 addColorTitle('foreground');
             });
 
+            // $().undoable(
+            //     function(){ // redo
+            //         alert('redo ');
+            //     },
+            //     function(){ // undo
+            //         alert('undo ');
+            //     } 
+            // );
+
             $(".example").css("background-color", backgroundTxt);
             $(".example span").css("color", foregroundTxt);
 
@@ -234,28 +243,13 @@ $(document).ready(function() {
         return dfr.promise();
     }
 
-    // copyCode = function(t) {
-    //     //console.log(t.currentTarget.id);
-    //     var o = $(t.currentTarget).closest('tr').find("input");
-    //     var initial = o.val();
-    //     var wc = new WebColor(initial);
-    //     if(wc.isColor)
-    //     {
-    //         o.val(wc.toHex());
-    //         o.focus();
-    //         o.select();
-    //         document.execCommand("Copy", false, null);
-    //         o.val(initial);
-    //     }
-    // };
-
     pinCode = function(t) {
         var id = t.currentTarget.id;
         var val = $(id=='pinFr' ? '#foregroundValue' : '#backgroundValue').html();
         if(val.indexOf('close to ')==0) val = val.substring(9);
         if(val.indexOf(',')>=0) val = val.substring(0, val.indexOf(','));
         $(id=='pinFr' ? '#foreground' : '#background').val(val);
-        getContrast();
+        getContrast(id=='pinFr' ? 'foreground' : 'background');
     }
 
     openTestPage = function(e) {
@@ -311,16 +305,9 @@ $(document).ready(function() {
         return $sendMessageDfr.promise();
     };
 
-            closeSample = function(n) {
-                $().undoable(function(){ $('#sample' + n).toggle(); console.log('hiding #'+n); }, function(){ $('#sample' + n).toggle(); console.log('showing #'+n); });
-            };
-            slideSample = function(n) {
-                $().undoable(function(){ $('#sample' + n).slideToggle(); console.log('hiding (via slide) #'+n); }, function(){ $('#sample' + n).slideToggle(); console.log('showing (via slide) #'+n); });
-            };
-
-    jQuery(function(){
-        jQuery().enableUndo({ redoCtrlChar : 'y', redoShiftReq : false });
-    });
+    // jQuery(function(){
+    //     jQuery().enableUndo({ redoCtrlChar : 'y', redoShiftReq : false });
+    // });
 
 
     $sendMessageDfr = null;
@@ -337,15 +324,15 @@ $(document).ready(function() {
     $('#optionsBtn').attr('src',chrome.extension.getURL('/images/DisabledEye.png')).click(openOptionsPage);
     $('#sampleBtn').attr('src',chrome.extension.getURL('/images/Sample.png')).click(openTestPage);
     $(".txInput")
-    .on("input", function(e) {
-        getContrast(e.currentTarget.id);
-    })
-    .autocomplete({
-      lookup: WebColor.ColorNames,
-      onSelect: function (suggestion) {
-        getContrast();
-      }
-    });
+        .on("input", function(e) {
+            getContrast(e.currentTarget.id);
+        })
+        .autocomplete({
+          lookup: WebColor.ColorNames,
+          onSelect: function (suggestion) {
+            getContrast(this.id);
+          }
+        });
 
     chrome.storage.sync.get(['clickType'], function(a) {
         if(a['clickType'] == undefined || a['clickType']) {
@@ -369,7 +356,7 @@ $(document).ready(function() {
         var backgroundVal = $("#background").val().trim();
         var foregroundVal = $("#foreground").val().trim();
         $("#background").val(foregroundVal);
-        getContrast("background");
+        //getContrast("background"); // ???
         $("#foreground").val(backgroundVal);
         getContrast();
     });
@@ -394,7 +381,7 @@ $(document).ready(function() {
                     if (a['foreground']) {
                         $("#foreground").val(a['foreground']);
                     }
-                    getContrast(null);
+                    getContrast();
                 });
             }
         )
