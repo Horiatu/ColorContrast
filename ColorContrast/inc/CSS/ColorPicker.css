@@ -32,6 +32,11 @@
 	width:7px; 
 	height:7px; 
 	border-radius: 1px;
+	border-width: 0;
+}
+
+#colorPickerViewer img {
+	margin:0;
 }
 
 #colorPickerToolbar {
@@ -118,6 +123,8 @@
 	display: inline-block;
 	margin-left: -30px;
   	margin-right: 12px;
+  	margin-top: 0;
+    margin-bottom: 0;
 	vertical-align: top;
 }
 
@@ -365,3 +372,8 @@
     text-shadow: 2px 2px 1px black;
 }
 
+#ColorToolbar td {
+    padding: 0;
+    vertical-align: middle;
+    border-width: 0;
+}
