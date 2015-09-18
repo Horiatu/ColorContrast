@@ -201,9 +201,8 @@ h1 span {
   padding: 2px;
   font-size: 10px;
   margin-top: -6px;
-  margin-right: 1px;
   margin-bottom: -3px;
-  background-color: rgb(145, 145, 145);
+  background-color: rgb(100, 100, 100);
   color: white;
   border-radius: 4px;
 }
