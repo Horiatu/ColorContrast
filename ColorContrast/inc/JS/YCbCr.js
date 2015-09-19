@@ -203,32 +203,40 @@ YCbCr.invert3x3Matrix = function(matrix) {
 };
 
 YCbCr.luminanceFromContrastRatio = function(luminance, contrast, higher) {
+	contrast += 0.025;
     return higher
-        ? (luminance + 0.05) * (contrast + 0.02) - 0.05
-		: (luminance + 0.05) / (contrast + 0.02) - 0.05;
+        ? (luminance + 0.05) * contrast - 0.05
+		: (luminance + 0.05) / contrast - 0.05;
 };
 
-YCbCr.suggestColors = function(bgColor, fgColor, desiredContrast) {
-	bgYCbCr = new YCbCr(bgColor);
-	fgYCbCr = new YCbCr(fgColor);
+YCbCr.suggestColors = function(bgColor, fgColor, desiredContrasts) {
+	var bgYCbCr = new YCbCr(bgColor);
+	var fgYCbCr = new YCbCr(fgColor);
 
     var bgLuminance = bgYCbCr.luma;
     var fgLuminance = fgYCbCr.luma;
 
-    var fgLuminanceIsHigher = fgLuminance > bgLuminance;
+    var fgLuminanceIsHigher = fgLuminance >= bgLuminance;
 
     var results = [];
-    var desiredFgLuminance = YCbCr.luminanceFromContrastRatio(bgLuminance, desiredContrast, fgLuminanceIsHigher);
-    if (desiredFgLuminance <= 1 && desiredFgLuminance >= 0) {
-        fgYCbCr.translateColor(desiredFgLuminance);
-        results.push([fgYCbCr.toWebColor(), bgYCbCr.toWebColor()]);
-    }
 
-    var desiredBgLuminance = YCbCr.luminanceFromContrastRatio(fgLuminance, desiredContrast, !fgLuminanceIsHigher);
-    if (desiredBgLuminance <= 1 && desiredBgLuminance >= 0) {
-        bgYCbCr.translateColor(desiredBgLuminance);
-        results.push([fgYCbCr.toWebColor(), bgYCbCr.toWebColor()]);
-    }
+    desiredContrasts.forEach(function(desiredContrast) {
+    	try {
+		    var desiredFgLuminance = YCbCr.luminanceFromContrastRatio(bgLuminance, desiredContrast, fgLuminanceIsHigher);
+		    if (desiredFgLuminance <= 1 && desiredFgLuminance >= 0) {
+		        fgYCbCr.translateColor(desiredFgLuminance);
+		        results.push([fgYCbCr.toWebColor(), bgColor, desiredContrast]);
+		    }
+		} catch(e) {}
+
+		try {
+		    var desiredBgLuminance = YCbCr.luminanceFromContrastRatio(fgLuminance, desiredContrast, !fgLuminanceIsHigher);
+		    if (desiredBgLuminance <= 1 && desiredBgLuminance >= 0) {
+		        bgYCbCr.translateColor(desiredBgLuminance);
+		        results.push([fgColor, bgYCbCr.toWebColor(), desiredContrast]);
+		    }
+		} catch(e) {}
+	});
 
     return results;
 };

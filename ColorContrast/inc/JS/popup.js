@@ -48,9 +48,15 @@ $(document).ready(function() {
         var bgColor=new WebColor($("#background").val().trim());
         var frColor=new WebColor($("#foreground").val().trim());
 
-        if(bgColor.isColor && frColor.isColor && !bgColor.equals(frColor) && frColor.contrastTo(bgColor) < bgColor.target) {
-            //fixContrastMsg(bgColor, frColor); 
-            var colors = YCbCr.suggestColors(bgColor, frColor, 7.005);
+        if(bgColor.isColor && frColor.isColor && !bgColor.equals(frColor)) {
+            var contrast = frColor.contrastTo(bgColor);
+            var desiredContrasts = [];
+            if(contrast < 7.0) desiredContrasts.push(7.0);
+            if(contrast < 4.5) desiredContrasts.push(4.5);
+            if(contrast < 3.0) desiredContrasts.push(3.0);
+            if(desiredContrasts.length == 0) return;
+
+            var colors = YCbCr.suggestColors(bgColor, frColor, desiredContrasts);
 
             if(colors.length > 0) {
                 colors.forEach(function(color) {
@@ -61,7 +67,9 @@ $(document).ready(function() {
                         '<div class="example" style="background-color: '+bgColor+'; '+
                         //'border: 2px solid '+frColor+'; '+
                         'font-size: 12px; font-weight: bold;">'+
-                        '   <span style="color:'+frColor+';">Suggestion: '+frColor+' on '+bgColor+' ['+contrast+']</span>'+
+                        '   <span style="color:'+frColor+';">Suggestion: '+frColor+' on '+bgColor+' ['+contrast+']'+
+                        ' ('+color[2]+')'+
+                        '</span>'+
                         '   <img src="'+chrome.extension.getURL('/images/btnOK.png')+'" data-fr="'+frColor+'" data-bg="'+bgColor+'" class="btn btnOK"></img>'+
                         '</div>');
                 });
@@ -279,64 +287,8 @@ $(document).ready(function() {
         window.open(chrome.extension.getURL('/inc/html/options.html'),'_blank');
     };
 
-    // fixContrastMsg = function(color1, color2) {
-    //     if($('#Waiting').length == 0)
-    //         $fixSamples.append(
-    //             '<div id="Waiting" class="example" style="background-color: white; border: 2px solid red; '+
-    //             'font-size: 14px; font-weight: bold;">'+
-    //             '   <span style="color:red;">Waiting...</span>'+
-    //             '   <img src="'+chrome.extension.getURL('/images/loading.gif')+'" style="margin-bottom: -2px;"></img>'+
-    //             //'   <img src="'+chrome.extension.getURL('/images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btnOK"></img>'+
-    //             '</div>');
-    //     else 
-    //         $('#Waiting').show();
-    //     $fixSamples.show();
-
-    //     var contrastDfr = $.Deferred();
-    //     sendMessage({
-    //             type: "fix-contrast",
-    //             c1: color1,
-    //             c2: color2
-    //         }).then(function(req) {
-    //             //console.log(req);
-    //             if(req.fixes.length > 0) {
-    //                 req.fixes.forEach(function(frColor) {
-    //                     $fixSamples.prepend(
-    //                         '<div class="example" style="background-color: '+frColor.bgHex+'; '+
-    //                         (frColor.bruteForce ? ('border: 2px solid '+frColor.hex+'; ') : '')+
-    //                         'font-size: 14px; font-weight: bold;">'+
-    //                         '   <span style="color:'+frColor.hex+';">Suggestion: '+frColor.hex+' (contrast: '+frColor.contrast.toFixed(2)+':1)</span>'+
-    //                         '   <img src="'+chrome.extension.getURL('/images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btn btnOK"></img>'+
-    //                         '</div>');
-    //                 });
-    //                 $('#fixSamples img').click(acceptSample);
-    //             }
-    //             $('#Waiting').hide();
-    //         });
-    //     return contrastDfr.promise();
-    // };
-
-    // sendMessage = function(message) {
-    //     $sendMessageDfr = $.Deferred();
-    //     setTimeout(function(){ 
-    //         port.postMessage(message); 
-    //     }, 200);
-    //     return $sendMessageDfr.promise();
-    // };
-
     // jQuery(function(){
     //     jQuery().enableUndo({ redoCtrlChar : 'y', redoShiftReq : false });
-    // });
-
-
-    // $sendMessageDfr = null;
-    // var port = chrome.extension.connect({name: "Sample Communication"});
-    // port.onMessage.addListener(function(req) {
-    //     switch (req.type) {
-    //         case 'fix-contrast':
-    //             $sendMessageDfr.resolve(req);
-    //             break;
-    //     }
     // });
 
     $('#closeBtn').attr('src',chrome.extension.getURL('/images/close.png')).click(function(e) { window.close(); });
