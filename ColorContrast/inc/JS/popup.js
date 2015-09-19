@@ -66,9 +66,11 @@ $(document).ready(function() {
                     $fixSamples.append(
                         '<div class="example" style="background-color: '+bgColor+'; '+
                         //'border: 2px solid '+frColor+'; '+
-                        'font-size: 12px; font-weight: bold;">'+
+                        'font-size: 12px; font-weight: bold;"'+
+                        'title="Pass '+ (color[2]==7?'AAA':color[2]==4.5?'AA and AAA for Large':'A and AA for Large')+'" '+
+                        '>'+
                         '   <span style="color:'+frColor+';">Suggestion: '+frColor+' on '+bgColor+' ['+contrast+']'+
-                        ' ('+color[2]+')'+
+                        //' ('+color[2]+')'+
                         '</span>'+
                         '   <img src="'+chrome.extension.getURL('/images/btnOK.png')+'" data-fr="'+frColor+'" data-bg="'+bgColor+'" class="btn btnOK"></img>'+
                         '</div>');

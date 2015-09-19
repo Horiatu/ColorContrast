@@ -86,14 +86,13 @@ YCbCr.prototype = {
 
 	    // If intersection.luma is closer to endpoint than desired luma, then luma is inside cube
 	    // and we can immediately return new value.
-	    if (Math.abs(endpoint.luma - intersection.luma) < Math.abs(endpoint.luma - luma)) {
+	    if (Math.abs(endpoint.luma - intersection.luma) <= Math.abs(endpoint.luma - luma)) {
 	        this.luma = luma;
 	        return this;
 	    }
 
 	    // Otherwise, translate from intersection towards white/black such that luma is correct.
-	    var dLuma = luma - intersection.luma;
-	    var scale = dLuma / (endpoint.luma - intersection.luma);
+	    var scale = (luma - intersection.luma) / (endpoint.luma - intersection.luma);
 	    this.luma = luma;
 	    this.Cb = intersection.Cb - (intersection.Cb * scale);
 	    this.Cr = intersection.Cr - (intersection.Cr * scale);
