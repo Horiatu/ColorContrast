@@ -65,13 +65,11 @@ YCbCr.prototype = {
 
 	translateColor: function(luma) {
 	    var endpoint = (luma > this.luma) ? YCbCr.white : YCbCr.black;
-	    var cubeFaces = (endpoint == YCbCr.white) 
+	    var cubeFaces = (luma > this.luma) 
 	    	? YCbCr.CUBE_FACES_WHITE
 	        : YCbCr.CUBE_FACES_BLACK;
 
-	    var a = new YCbCr([0, this.Cb, this.Cr]);
-	    var b = new YCbCr([1, this.Cb, this.Cr]);
-	    var line = { a: a, b: b };
+	    var line = { a: new YCbCr([0, this.Cb, this.Cr]), b: new YCbCr([1, this.Cb, this.Cr]) };
 
 	    var intersection = null;
 	    for (var i = 0; i < cubeFaces.length; i++) {
@@ -84,10 +82,6 @@ YCbCr.prototype = {
 	    if (!intersection) {
 	        // Should never happen
 	        throw "Couldn't find intersection with YCbCr color cube for Cb=" + this.Cb + ", Cr=" + this.Cr + ".";
-	    }
-	    if (intersection.x != this.x || intersection.y != this.y) {
-	        // Should never happen
-	        throw "Intersection has wrong Cb/Cr values.";
 	    }
 
 	    // If intersection.luma is closer to endpoint than desired luma, then luma is inside cube
@@ -249,14 +243,14 @@ YCbCr.suggestColors = function(bgColor, fgColor, desiredContrasts) {
 YCbCr.YCC_MATRIX = YCbCr.RGBToYCbCrMatrix(0.2126, 0.0722);
 YCbCr.INVERTED_YCC_MATRIX = YCbCr.invert3x3Matrix(YCbCr.YCC_MATRIX);
 
-YCbCr.black = new YCbCr(new WebColor(WebColor.colorNameToHex('black')));
-YCbCr.white = new YCbCr(new WebColor(WebColor.colorNameToHex('white')));
-YCbCr.red = new YCbCr(new WebColor(WebColor.colorNameToHex('red')));
-YCbCr.green = new YCbCr(new WebColor(WebColor.colorNameToHex('green')));
-YCbCr.blue = new YCbCr(new WebColor(WebColor.colorNameToHex('blue')));
-YCbCr.cyan = new YCbCr(new WebColor(WebColor.colorNameToHex('cyan')));
-YCbCr.magenta = new YCbCr(new WebColor(WebColor.colorNameToHex('magenta')));
-YCbCr.yellow = new YCbCr(new WebColor(WebColor.colorNameToHex('yellow')));
+YCbCr.black = new YCbCr(new WebColor(WebColor.colorNameToHex('black'))); // console.log(YCbCr.black);
+YCbCr.white = new YCbCr(new WebColor(WebColor.colorNameToHex('white'))); // console.log(YCbCr.white);
+YCbCr.red = new YCbCr(new WebColor(WebColor.colorNameToHex('red'))); // console.log(YCbCr.red);
+YCbCr.green = new YCbCr(new WebColor(WebColor.colorNameToHex('green'))); // console.log(YCbCr.green);
+YCbCr.blue = new YCbCr(new WebColor(WebColor.colorNameToHex('blue'))); // console.log(YCbCr.blue);
+YCbCr.cyan = new YCbCr(new WebColor(WebColor.colorNameToHex('cyan'))); // console.log(YCbCr.cyan);
+YCbCr.magenta = new YCbCr(new WebColor(WebColor.colorNameToHex('magenta'))); // console.log(YCbCr.magenta);
+YCbCr.yellow = new YCbCr(new WebColor(WebColor.colorNameToHex('yellow'))); // console.log(YCbCr.yellow);
 
 YCbCr.CUBE_FACES_BLACK = [ { p0: YCbCr.black, p1: YCbCr.red, p2: YCbCr.green },
                            { p0: YCbCr.black, p1: YCbCr.green, p2: YCbCr.blue },
