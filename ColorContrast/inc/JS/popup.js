@@ -49,7 +49,25 @@ $(document).ready(function() {
         var frColor=new WebColor($("#foreground").val().trim());
 
         if(bgColor.isColor && frColor.isColor && !bgColor.equals(frColor) && frColor.contrastTo(bgColor) < bgColor.target) {
-            fixContrastMsg(bgColor, frColor); 
+            //fixContrastMsg(bgColor, frColor); 
+            var colors = YCbCr.suggestColors(bgColor, frColor, 7.005);
+
+            if(colors.length > 0) {
+                colors.forEach(function(color) {
+                    var frColor = color[0].toHex();
+                    var bgColor = color[1].toHex();
+                    var contrast = color[0].contrastTo(color[1]).toFixed(2)+':1';
+                    $fixSamples.append(
+                        '<div class="example" style="background-color: '+bgColor+'; '+
+                        //'border: 2px solid '+frColor+'; '+
+                        'font-size: 12px; font-weight: bold;">'+
+                        '   <span style="color:'+frColor+';">Suggestion: '+frColor+' on '+bgColor+' ['+contrast+']</span>'+
+                        '   <img src="'+chrome.extension.getURL('/images/btnOK.png')+'" data-fr="'+frColor+'" data-bg="'+bgColor+'" class="btn btnOK"></img>'+
+                        '</div>');
+                });
+                $('#fixSamples img').click(acceptSample);
+                $fixSamples.show();
+            }
         }
     },
 
@@ -59,7 +77,8 @@ $(document).ready(function() {
     },
 
     acceptSample = function(e) {
-        $("#foreground").val($(e.toElement).attr('data-color'));
+        $("#foreground").val($(e.toElement).attr('data-fr'));
+        $("#background").val($(e.toElement).attr('data-bg'));
         getContrast();
     },
 
@@ -260,65 +279,65 @@ $(document).ready(function() {
         window.open(chrome.extension.getURL('/inc/html/options.html'),'_blank');
     };
 
-    fixContrastMsg = function(color1, color2) {
-        if($('#Waiting').length == 0)
-            $fixSamples.append(
-                '<div id="Waiting" class="example" style="background-color: white; border: 2px solid red; '+
-                'font-size: 14px; font-weight: bold;">'+
-                '   <span style="color:red;">Waiting...</span>'+
-                '   <img src="'+chrome.extension.getURL('/images/loading.gif')+'" style="margin-bottom: -2px;"></img>'+
-                //'   <img src="'+chrome.extension.getURL('/images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btnOK"></img>'+
-                '</div>');
-        else 
-            $('#Waiting').show();
-        $fixSamples.show();
+    // fixContrastMsg = function(color1, color2) {
+    //     if($('#Waiting').length == 0)
+    //         $fixSamples.append(
+    //             '<div id="Waiting" class="example" style="background-color: white; border: 2px solid red; '+
+    //             'font-size: 14px; font-weight: bold;">'+
+    //             '   <span style="color:red;">Waiting...</span>'+
+    //             '   <img src="'+chrome.extension.getURL('/images/loading.gif')+'" style="margin-bottom: -2px;"></img>'+
+    //             //'   <img src="'+chrome.extension.getURL('/images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btnOK"></img>'+
+    //             '</div>');
+    //     else 
+    //         $('#Waiting').show();
+    //     $fixSamples.show();
 
-        var contrastDfr = $.Deferred();
-        sendMessage({
-                type: "fix-contrast",
-                c1: color1,
-                c2: color2
-            }).then(function(req) {
-                //console.log(req);
-                if(req.fixes.length > 0) {
-                    req.fixes.forEach(function(frColor) {
-                        $fixSamples.prepend(
-                            '<div class="example" style="background-color: '+frColor.bgHex+'; '+
-                            (frColor.bruteForce ? ('border: 2px solid '+frColor.hex+'; ') : '')+
-                            'font-size: 14px; font-weight: bold;">'+
-                            '   <span style="color:'+frColor.hex+';">Suggestion: '+frColor.hex+' (contrast: '+frColor.contrast.toFixed(2)+':1)</span>'+
-                            '   <img src="'+chrome.extension.getURL('/images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btn btnOK"></img>'+
-                            '</div>');
-                    });
-                    $('#fixSamples img').click(acceptSample);
-                }
-                $('#Waiting').hide();
-            });
-        return contrastDfr.promise();
-    };
+    //     var contrastDfr = $.Deferred();
+    //     sendMessage({
+    //             type: "fix-contrast",
+    //             c1: color1,
+    //             c2: color2
+    //         }).then(function(req) {
+    //             //console.log(req);
+    //             if(req.fixes.length > 0) {
+    //                 req.fixes.forEach(function(frColor) {
+    //                     $fixSamples.prepend(
+    //                         '<div class="example" style="background-color: '+frColor.bgHex+'; '+
+    //                         (frColor.bruteForce ? ('border: 2px solid '+frColor.hex+'; ') : '')+
+    //                         'font-size: 14px; font-weight: bold;">'+
+    //                         '   <span style="color:'+frColor.hex+';">Suggestion: '+frColor.hex+' (contrast: '+frColor.contrast.toFixed(2)+':1)</span>'+
+    //                         '   <img src="'+chrome.extension.getURL('/images/btnOK.png')+'" data-color="'+frColor.hex+'" class="btn btnOK"></img>'+
+    //                         '</div>');
+    //                 });
+    //                 $('#fixSamples img').click(acceptSample);
+    //             }
+    //             $('#Waiting').hide();
+    //         });
+    //     return contrastDfr.promise();
+    // };
 
-    sendMessage = function(message) {
-        $sendMessageDfr = $.Deferred();
-        setTimeout(function(){ 
-            port.postMessage(message); 
-        }, 200);
-        return $sendMessageDfr.promise();
-    };
+    // sendMessage = function(message) {
+    //     $sendMessageDfr = $.Deferred();
+    //     setTimeout(function(){ 
+    //         port.postMessage(message); 
+    //     }, 200);
+    //     return $sendMessageDfr.promise();
+    // };
 
     // jQuery(function(){
     //     jQuery().enableUndo({ redoCtrlChar : 'y', redoShiftReq : false });
     // });
 
 
-    $sendMessageDfr = null;
-    var port = chrome.extension.connect({name: "Sample Communication"});
-    port.onMessage.addListener(function(req) {
-        switch (req.type) {
-            case 'fix-contrast':
-                $sendMessageDfr.resolve(req);
-                break;
-        }
-    });
+    // $sendMessageDfr = null;
+    // var port = chrome.extension.connect({name: "Sample Communication"});
+    // port.onMessage.addListener(function(req) {
+    //     switch (req.type) {
+    //         case 'fix-contrast':
+    //             $sendMessageDfr.resolve(req);
+    //             break;
+    //     }
+    // });
 
     $('#closeBtn').attr('src',chrome.extension.getURL('/images/close.png')).click(function(e) { window.close(); });
     $('#optionsBtn').attr('src',chrome.extension.getURL('/images/DisabledEye.png')).click(openOptionsPage);

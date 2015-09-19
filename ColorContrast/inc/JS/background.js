@@ -99,20 +99,6 @@ chrome.extension.onConnect.addListener(function(port) {
                     //console.log(defaults);
                 });
                 break;
-            case 'fix-contrast':
-                Background.getDefaults().done(function(defaults) {
-                    fr = new WebColor(req.c1);
-                    bg = new WebColor(req.c2);
-                    bg.fixContrastTo(fr);
-                    // port.postMessage({
-                    //   type: req.type,fixes: (bg.fixes)}); 
-                    // bg.fixes = [];
-                    bg.fixContrastBruteForce(fr,defaults.restrictBruteForce ? defaults.restrictSeconds : null);
-                    port.postMessage({
-                      type: req.type,
-                      fixes: (bg.fixes)}); 
-                });
-                break;
         }
     });
 });

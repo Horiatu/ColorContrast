@@ -8,11 +8,10 @@
 //
 
 function YCbCr(p) {
-	if(typeof(p) == 'array') {
-		this.luma = this.z = p[0];
-	    this.Cb = this.x = p[1];
-	    this.Cr = this.y = p[2];
-	} else {
+// console.log(p);
+// debugger;
+//alert(typeof(p));
+	if(p.hasOwnProperty('r') && p.hasOwnProperty('g') && p.hasOwnProperty('b')) {
 	    var rSRGB = p.r / 255;
 	    var gSRGB = p.g / 255;
 	    var bSRGB = p.b / 255;
@@ -27,6 +26,11 @@ function YCbCr(p) {
 	    this.Cb = this.x = coords[1];
 	    this.Cr = this.y = coords[2];
 	}
+	else if(p.length == 3) {
+		this.luma = this.z = p[0];
+	    this.Cb = this.x = p[1];
+	    this.Cr = this.y = p[2];
+	} 
 }
 
 YCbCr.prototype = {
@@ -38,9 +42,9 @@ YCbCr.prototype = {
 	    var b = rgb[2];
 
 	    return new WebColor({ 
-	    	r: r <= (0.00303949 ? (r * 12.92) : (Math.pow(r, (1/2.4)) * 1.055)) - 0.055, 
-	    	g: g <= (0.00303949 ? (g * 12.92) : (Math.pow(g, (1/2.4)) * 1.055)) - 0.055, 
-	    	b: b <= (0.00303949 ? (b * 12.92) : (Math.pow(b, (1/2.4)) * 1.055)) - 0.055
+	    	r: r <= 0.00303949 ? (r * 12.92) : (Math.pow(r, (1/2.4)) * 1.055) - 0.055, 
+	    	g: g <= 0.00303949 ? (g * 12.92) : (Math.pow(g, (1/2.4)) * 1.055) - 0.055, 
+	    	b: b <= 0.00303949 ? (b * 12.92) : (Math.pow(b, (1/2.4)) * 1.055) - 0.055
 	    });
 	},
 
@@ -72,7 +76,7 @@ YCbCr.prototype = {
 	    var intersection = null;
 	    for (var i = 0; i < cubeFaces.length; i++) {
 	        var cubeFace = cubeFaces[i];
-	        intersection = findIntersection(line, cubeFace);
+	        intersection = YCbCr.findIntersection(line, cubeFace);
 	        // If intersection within [0, 1] in Z axis, it is within the cube.
 	        if (intersection.z >= 0 && intersection.z <= 1)
 	            break;
@@ -142,9 +146,9 @@ YCbCr.findIntersection = function(l, p) {
     var matrix = [ [ l.a.x - l.b.x, p.p1.x - p.p0.x, p.p2.x - p.p0.x ],
                    [ l.a.y - l.b.y, p.p1.y - p.p0.y, p.p2.y - p.p0.y ],
                    [ l.a.z - l.b.z, p.p1.z - p.p0.z, p.p2.z - p.p0.z ] ];
-    var invertedMatrix = invert3x3Matrix(matrix);
+    var invertedMatrix = YCbCr.invert3x3Matrix(matrix);
 
-    var tuv = axs.color.multiplyMatrixVector(invertedMatrix, lhs);
+    var tuv = YCbCr.multiplyMatrixVector(invertedMatrix, lhs);
     var t = tuv[0];
 
     var result = l.a.add(l.b.subtract(l.a).multiply(t));
@@ -204,16 +208,16 @@ YCbCr.luminanceFromContrastRatio = function(luminance, contrast, higher) {
 		: (luminance + 0.05) / (contrast + 0.02) - 0.05;
 };
 
-YCbCr.suggestColors = function(bgYCbCr, fgColor, desiredContrast) {
-	if(typeof(fgColor) == 'WebColor') fgYCbCr = new YCbCr(fgYCbCr);
-	if(typeof(bgColor) == 'WebColor') bgYCbCr = new YCbCr(bgYCbCr);
+YCbCr.suggestColors = function(bgColor, fgColor, desiredContrast) {
+	bgYCbCr = new YCbCr(bgColor);
+	fgYCbCr = new YCbCr(fgColor);
 
-    var bgLuminance = bgColor.luma;
-    var fgLuminance = fgColor.luma;
+    var bgLuminance = bgYCbCr.luma;
+    var fgLuminance = fgYCbCr.luma;
 
     var fgLuminanceIsHigher = fgLuminance > bgLuminance;
 
-    var result = [];
+    var results = [];
     var desiredFgLuminance = YCbCr.luminanceFromContrastRatio(bgLuminance, desiredContrast, fgLuminanceIsHigher);
     if (desiredFgLuminance <= 1 && desiredFgLuminance >= 0) {
         fgYCbCr.translateColor(desiredFgLuminance);
@@ -237,14 +241,14 @@ YCbCr.suggestColors = function(bgYCbCr, fgColor, desiredContrast) {
 YCbCr.YCC_MATRIX = YCbCr.RGBToYCbCrMatrix(0.2126, 0.0722);
 YCbCr.INVERTED_YCC_MATRIX = YCbCr.invert3x3Matrix(YCbCr.YCC_MATRIX);
 
-YCbCr.black = new YCbCr(WebColor.colorNameToHex('black'));
-YCbCr.white = new YCbCr(WebColor.colorNameToHex('white'));
-YCbCr.red = new YCbCr(WebColor.colorNameToHex('red'));
-YCbCr.green = new YCbCr(WebColor.colorNameToHex('green'));
-YCbCr.blue = new YCbCr(WebColor.colorNameToHex('blue'));
-YCbCr.cyan = new YCbCr(WebColor.colorNameToHex('cyan'));
-YCbCr.magenta = new YCbCr(WebColor.colorNameToHex('magenta'));
-YCbCr.yellow = new YCbCr(WebColor.colorNameToHex('yellow'));
+YCbCr.black = new YCbCr(new WebColor(WebColor.colorNameToHex('black')));
+YCbCr.white = new YCbCr(new WebColor(WebColor.colorNameToHex('white')));
+YCbCr.red = new YCbCr(new WebColor(WebColor.colorNameToHex('red')));
+YCbCr.green = new YCbCr(new WebColor(WebColor.colorNameToHex('green')));
+YCbCr.blue = new YCbCr(new WebColor(WebColor.colorNameToHex('blue')));
+YCbCr.cyan = new YCbCr(new WebColor(WebColor.colorNameToHex('cyan')));
+YCbCr.magenta = new YCbCr(new WebColor(WebColor.colorNameToHex('magenta')));
+YCbCr.yellow = new YCbCr(new WebColor(WebColor.colorNameToHex('yellow')));
 
 YCbCr.CUBE_FACES_BLACK = [ { p0: YCbCr.black, p1: YCbCr.red, p2: YCbCr.green },
                            { p0: YCbCr.black, p1: YCbCr.green, p2: YCbCr.blue },
