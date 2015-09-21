@@ -83,7 +83,7 @@ WebColor.prototype = {
         var l1 = this.luminance() + 0.05;
         var l2 = webColor.luminance() + 0.05;
         var l = l1 > l2 ? l1 / l2 : l2 / l1;
-        return l;
+        return Math.round(l*100)/100;
     },
 
     equals: function(webColor) {

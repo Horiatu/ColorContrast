@@ -62,18 +62,19 @@ $(document).ready(function() {
                 colors.forEach(function(color) {
                     var frColor = color[0].toHex();
                     var bgColor = color[1].toHex();
-                    var contrast = color[0].contrastTo(color[1]).toFixed(2)+':1';
-                    $fixSamples.append(
-                        '<div class="example" style="background-color: '+bgColor+'; '+
-                        //'border: 2px solid '+frColor+'; '+
-                        'font-size: 12px; font-weight: bold;"'+
-                        'title="Pass '+ (color[2]==7?'AAA':color[2]==4.5?'AA and AAA for Large':'A and AA for Large')+'" '+
-                        '>'+
-                        '   <span style="color:'+frColor+';">Suggestion: '+frColor+' on '+bgColor+' ['+contrast+']'+
-                        //' ('+color[2]+')'+
-                        '</span>'+
-                        '   <img src="'+chrome.extension.getURL('/images/btnOK.png')+'" data-fr="'+frColor+'" data-bg="'+bgColor+'" class="btn btnOK"></img>'+
-                        '</div>');
+                    var contrast = color[0].contrastTo(color[1]);
+                    if(contrast >= 3) 
+                        $fixSamples.append(
+                            '<div class="example" style="background-color: '+bgColor+'; '+
+                            //'border: 2px solid '+frColor+'; '+
+                            'font-size: 12px; font-weight: bold;"'+
+                            'title="Pass ' + (contrast>=7?'AAA':contrast>=4.5?'AA, and AAA for Large':'A, and AA for Large')+'" '+
+                            '>'+
+                            '   <span style="color:'+frColor+';">Suggestion: '+frColor+' on '+bgColor+' ['+contrast.toFixed(2)+':1]'+
+                            //' ('+color[2]+')'+
+                            '</span>'+
+                            '   <img src="'+chrome.extension.getURL('/images/btnOK.png')+'" data-fr="'+frColor+'" data-bg="'+bgColor+'" class="btn btnOK"></img>'+
+                            '</div>');
                 });
                 $('#fixSamples img').click(acceptSample);
                 $fixSamples.show();

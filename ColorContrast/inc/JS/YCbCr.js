@@ -8,9 +8,6 @@
 //
 
 function YCbCr(p) {
-// console.log(p);
-// debugger;
-//alert(typeof(p));
 	if(p.hasOwnProperty('r') && p.hasOwnProperty('g') && p.hasOwnProperty('b')) {
 	    var rSRGB = p.r / 255;
 	    var gSRGB = p.g / 255;
@@ -65,7 +62,7 @@ YCbCr.prototype = {
 
 	translateColor: function(luma) {
 	    var endpoint = (luma > this.luma) ? YCbCr.white : YCbCr.black;
-	    var cubeFaces = (luma > this.luma) 
+	    var cubeFaces = (endpoint == YCbCr.white) 
 	    	? YCbCr.CUBE_FACES_WHITE
 	        : YCbCr.CUBE_FACES_BLACK;
 
@@ -83,19 +80,24 @@ YCbCr.prototype = {
 	        // Should never happen
 	        throw "Couldn't find intersection with YCbCr color cube for Cb=" + this.Cb + ", Cr=" + this.Cr + ".";
 	    }
+        if (intersection.x != this.x || intersection.y != this.y) {
+            // Should never happen
+            throw "Intersection has wrong Cb/Cr values.";
+        }
 
 	    // If intersection.luma is closer to endpoint than desired luma, then luma is inside cube
 	    // and we can immediately return new value.
-	    if (Math.abs(endpoint.luma - intersection.luma) <= Math.abs(endpoint.luma - luma)) {
-	        this.luma = luma;
+	    if (Math.abs(endpoint.luma - intersection.luma) < Math.abs(endpoint.luma - luma)) {
+	        this.luma = this.z = luma;
 	        return this;
 	    }
 
 	    // Otherwise, translate from intersection towards white/black such that luma is correct.
-	    var scale = (luma - intersection.luma) / (endpoint.luma - intersection.luma);
-	    this.luma = luma;
-	    this.Cb = intersection.Cb - (intersection.Cb * scale);
-	    this.Cr = intersection.Cr - (intersection.Cr * scale);
+        var dluma = luma - intersection.luma;
+	    var scale = 1 - dluma / (endpoint.luma - intersection.luma);
+	    this.luma = this.z = luma;
+	    this.Cb = this.x = intersection.Cb * scale;
+	    this.Cr = this.y = intersection.Cr * scale;
 	    return this;
 	},
 
@@ -198,8 +200,8 @@ YCbCr.invert3x3Matrix = function(matrix) {
 YCbCr.luminanceFromContrastRatio = function(luminance, contrast, higher) {
 	contrast += 0.025;
     return higher
-        ? (luminance + 0.05) * contrast - 0.05
-		: (luminance + 0.05) / contrast - 0.05;
+        ? ((luminance + 0.05) * contrast - 0.05)
+		: ((luminance + 0.05) / contrast - 0.05);
 };
 
 YCbCr.suggestColors = function(bgColor, fgColor, desiredContrasts) {
