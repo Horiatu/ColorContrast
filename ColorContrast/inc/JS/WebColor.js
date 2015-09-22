@@ -3,7 +3,6 @@ function WebColor(color) {
 	this.g = 0;
 	this.b = 0;
 	this.isColor = true;
-	this.fixes = [];
     this.target = 7;
 
 	if(color && color != undefined) {
@@ -95,128 +94,6 @@ WebColor.prototype = {
         clone.r = this.r; clone.g = this.g; clone.b = this.b;
         return clone;
     },
-
-    fixContrastTo: function(webColor) {
-        this.fixes = [];
-        if(this.equals(webColor)) return;
-        var initialDelta = this.target - this.contrastTo(webColor);
-        if(initialDelta <= 0) {
-            return;
-        }
-
-        this._fixContrast(webColor, initialDelta, "R");
-        this._fixContrast(webColor, initialDelta, "G");
-        this._fixContrast(webColor, initialDelta, "B");
-
-        // if(!this.fixes || this.fixes.length == 0)
-        //     this.fixContrastBruteForce(webColor);
-    },
-
-    _fixContrast: function(webColor, initialDelta, component) {
-        var playColor = this.clone();
-        var d = 1;
-        switch(component) {
-            case "R" : playColor.addToR(d); break;
-            case "G" : playColor.addToG(d); break;
-            case "B" : playColor.addToB(d); break;
-        }
-        if(this.equals(playColor)) {
-            playColor = this.clone();
-            d = -d;
-            switch(component) {
-                case "R" : playColor.addToR(d); break;
-                case "G" : playColor.addToG(d); break;
-                case "B" : playColor.addToB(d); break;
-            }
-
-            if(this.equals(playColor)) return;
-        }
-
-        var contrast = playColor.contrastTo(webColor);
-        var delta = this.target - contrast;
-        if(delta >= initialDelta) d = -d;
-
-        var h = playColor.toHex();
-        do {
-            switch(component) {
-                case "R" : playColor.addToR(d); break;
-                case "G" : playColor.addToG(d); break;
-                case "B" : playColor.addToB(d); break;
-            }
-            var h1 = playColor.toHex();
-            if(h == h1) {
-                return;
-            }
-            h = h1;
-            contrast = playColor.contrastTo(webColor);
-            delta = this.target - contrast;
-        } while (delta>0);
-        this.fixes.push({hex:h, bgHex:webColor.toHex(), contrast:contrast, bruteForce: false});
-    },
-
-    fixContrastBruteForce: function(webColor, restrictTime) {
-        if(restrictTime) {
-            var startTime = new Date();
-        }
-        var initialDelta = this.target - this.contrastTo(webColor);
-        
-        var playColorR = new WebColor(this);
-        var dR = 1;
-        playColorR.addToR(dR); 
-        if(this.equals(playColorR)) {
-            dR = -dR;
-            playColorR.addToR(dR);
-            if(this.equals(playColorR)) dR=0;
-        }
-        if(dR != 0 && this.target - playColorR.contrastTo(webColor) >= initialDelta) dR = -dR;
-
-        var playColorG = new WebColor(this);
-        var dG = 1;
-        playColorG.addToG(dG); 
-        if(this.equals(playColorG)) {
-            dG = -dG;
-            playColorG.addToG(dG);
-            if(this.equals(playColorG)) dG=0;
-        }
-        if(dG != 0 && this.target - playColorG.contrastTo(webColor) >= initialDelta) dG = -dG;
-
-        var playColorB = new WebColor(this);
-        var dB = 1;
-        playColorB.addToB(dB); 
-        if(this.equals(playColorB)) {
-            dB = -dB;
-            playColorB.addToB(dB);
-            if(this.equals(playColorB)) dB=0;
-        }
-        if(dB != 0 && this.target - playColorB.contrastTo(webColor) >= initialDelta) dB = -dB;
-        //console.log(dR+' '+dG+' '+dB);
-
-        hp = this.toHex();
-        for(var r = this.r+dR; r>=0 && r<=255; r+=dR) {
-            for(var g = this.g+dG; g>=0 && g<=255; g+=dG) {
-                for(var b = this.b+dB; b>=0 && b<=255; b+=dB) {
-
-                    if(restrictTime) {
-                        var endTime = new Date();
-                        var timeDiff = (endTime - startTime);
-                        if(timeDiff > restrictTime*1000) return;
-                    }
-                    var playColor = new WebColor({r:r,g:g,b:b});
-                    h = playColor.toHex();
-                    if(hp == h) {
-                        break;
-                    } 
-                    hp = h;
-                    contrast = playColor.contrastTo(webColor);
-                    delta = this.target - contrast;
-                    if(delta <= 0) {
-                        this.fixes.push({hex:h, bgHex:webColor.toHex(), contrast:contrast, bruteForce:true});
-                        return;
-                    }
-                }
-            }
-        }
-    }
 };
 
 WebColor.hexToColorName = function(hex) {

@@ -1,23 +1,19 @@
 // https://en.wikipedia.org/wiki/YCbCr
 
+// Copyright 2015 Horia Tudosie
+
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
 //      http://www.apache.org/licenses/LICENSE-2.0
 //
+// This is a Derivative work of accessibility-developer-tools-master/src/js/color.js
+// Copyright 2015 Google Inc.
 
 function YCbCr(p) {
 	if(p.hasOwnProperty('r') && p.hasOwnProperty('g') && p.hasOwnProperty('b')) {
-	    var rSRGB = p.r / 255;
-	    var gSRGB = p.g / 255;
-	    var bSRGB = p.b / 255;
-
-	    var r = rSRGB <= 0.03928 ? rSRGB / 12.92 : Math.pow(((rSRGB + 0.055)/1.055), 2.4);
-	    var g = gSRGB <= 0.03928 ? gSRGB / 12.92 : Math.pow(((gSRGB + 0.055)/1.055), 2.4);
-	    var b = bSRGB <= 0.03928 ? bSRGB / 12.92 : Math.pow(((bSRGB + 0.055)/1.055), 2.4);
-
-	    var coords = YCbCr.multiplyMatrixVector(YCbCr.YCC_MATRIX, [r, g, b]);
+	    var coords = YCbCr.getCoords(p);
 
 	    this.luma = this.z = coords[0];
 	    this.Cb = this.x = coords[1];
@@ -28,7 +24,14 @@ function YCbCr(p) {
 	    this.Cb = this.x = p[1];
 	    this.Cr = this.y = p[2];
 	} 
-}
+    else if(typeof(p) == 'string') {
+        var coords = YCbCr.getCoords(new WebColor(p));
+
+        this.luma = this.z = coords[0];
+        this.Cb = this.x = coords[1];
+        this.Cr = this.y = coords[2];
+    }
+};
 
 YCbCr.prototype = {
 	toWebColor: function() {
@@ -105,6 +108,18 @@ YCbCr.prototype = {
 
 // Statics 
 
+YCbCr.getCoords = function(p) {
+    var rSRGB = p.r / 255;
+    var gSRGB = p.g / 255;
+    var bSRGB = p.b / 255;
+
+    var r = rSRGB <= 0.03928 ? rSRGB / 12.92 : Math.pow(((rSRGB + 0.055)/1.055), 2.4);
+    var g = gSRGB <= 0.03928 ? gSRGB / 12.92 : Math.pow(((gSRGB + 0.055)/1.055), 2.4);
+    var b = bSRGB <= 0.03928 ? bSRGB / 12.92 : Math.pow(((bSRGB + 0.055)/1.055), 2.4);
+
+    return YCbCr.multiplyMatrixVector(YCbCr.YCC_MATRIX, [r, g, b]);
+};
+
 YCbCr.RGBToYCbCrMatrix = function(kR, kB) {
     return [
         [kR, (1 - kR - kB), kB],
@@ -167,34 +182,21 @@ YCbCr.scalarMultiplyMatrix = function(matrix, scalar) {
 };
 
 YCbCr.invert3x3Matrix = function(matrix) {
-    var a = matrix[0][0];
-    var b = matrix[0][1];
-    var c = matrix[0][2];
-    var d = matrix[1][0];
-    var e = matrix[1][1];
-    var f = matrix[1][2];
-    var g = matrix[2][0];
-    var h = matrix[2][1];
-    var k = matrix[2][2];
+    var m11 = matrix[0][0]; var m21 = matrix[1][0]; var m31 = matrix[2][0];
+    var m12 = matrix[0][1]; var m22 = matrix[1][1]; var m32 = matrix[2][1];
+    var m13 = matrix[0][2]; var m23 = matrix[1][2]; var m33 = matrix[2][2];
+    
+    var det = m11 * (m22*m33 - m23*m32) - m12 * (m33*m21 - m23*m31) + m13 * (m21*m32 - m22*m31);
 
-    var A = (e*k - f*h);
-    var B = (f*g - d*k);
-    var C = (d*h - e*g);
-    var D = (c*h - b*k);
-    var E = (a*k - c*g);
-    var F = (g*b - a*h);
-    var G = (b*f - c*e);
-    var H = (c*d - a*f);
-    var K = (a*e - b*d);
-
-    var det = a * (e*k - f*h) - b * (k*d - f*g) + c * (d*h - e*g);
-    var z = 1/det;
-
+    var I11 = (m22*m33 - m23*m32); var I21 = (m13*m32 - m12*m33); var I31 = (m12*m23 - m13*m22);
+    var I12 = (m23*m31 - m21*m33); var I22 = (m11*m33 - m13*m31); var I32 = (m13*m21 - m11*m23);
+    var I13 = (m21*m32 - m22*m31); var I23 = (m31*m12 - m11*m32); var I33 = (m11*m22 - m12*m21);
+   
     return YCbCr.scalarMultiplyMatrix([
-        [ A, D, G ],
-        [ B, E, H ],
-        [ C, F, K ]
-    ], z);
+        [ I11, I21, I31 ],
+        [ I12, I22, I32 ],
+        [ I13, I23, I33 ]
+    ], 1/det);
 };
 
 YCbCr.luminanceFromContrastRatio = function(luminance, contrast, higher) {
@@ -244,14 +246,14 @@ YCbCr.suggestColors = function(bgColor, fgColor, desiredContrasts) {
 YCbCr.YCC_MATRIX = YCbCr.RGBToYCbCrMatrix(0.2126, 0.0722);
 YCbCr.INVERTED_YCC_MATRIX = YCbCr.invert3x3Matrix(YCbCr.YCC_MATRIX);
 
-YCbCr.black = new YCbCr(new WebColor(WebColor.colorNameToHex('black'))); // console.log(YCbCr.black);
-YCbCr.white = new YCbCr(new WebColor(WebColor.colorNameToHex('white'))); // console.log(YCbCr.white);
-YCbCr.red = new YCbCr(new WebColor(WebColor.colorNameToHex('red'))); // console.log(YCbCr.red);
-YCbCr.green = new YCbCr(new WebColor(WebColor.colorNameToHex('green'))); // console.log(YCbCr.green);
-YCbCr.blue = new YCbCr(new WebColor(WebColor.colorNameToHex('blue'))); // console.log(YCbCr.blue);
-YCbCr.cyan = new YCbCr(new WebColor(WebColor.colorNameToHex('cyan'))); // console.log(YCbCr.cyan);
-YCbCr.magenta = new YCbCr(new WebColor(WebColor.colorNameToHex('magenta'))); // console.log(YCbCr.magenta);
-YCbCr.yellow = new YCbCr(new WebColor(WebColor.colorNameToHex('yellow'))); // console.log(YCbCr.yellow);
+YCbCr.black   = new YCbCr('black');   // console.log(YCbCr.black);
+YCbCr.white   = new YCbCr('white');   // console.log(YCbCr.white);
+YCbCr.red     = new YCbCr('red');     // console.log(YCbCr.red);
+YCbCr.green   = new YCbCr('green');   // console.log(YCbCr.green);
+YCbCr.blue    = new YCbCr('blue');    // console.log(YCbCr.blue);
+YCbCr.cyan    = new YCbCr('cyan');    // console.log(YCbCr.cyan);
+YCbCr.magenta = new YCbCr('magenta'); // console.log(YCbCr.magenta);
+YCbCr.yellow  = new YCbCr('yellow');  // console.log(YCbCr.yellow);
 
 YCbCr.CUBE_FACES_BLACK = [ { p0: YCbCr.black, p1: YCbCr.red, p2: YCbCr.green },
                            { p0: YCbCr.black, p1: YCbCr.green, p2: YCbCr.blue },

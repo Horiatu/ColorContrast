@@ -140,7 +140,10 @@ var ColorPicker = function() {
                     color: color,
                     reqColor: reqColor
                 });
-                _private.copyToClipboard(color);
+                if(options.autoCopy)
+                {
+                    _private.copyToClipboard(color);
+                }
             }
 
             _private.setSquareColor(color);
@@ -360,7 +363,7 @@ var ColorPicker = function() {
 
         MouseUp: function(event) {
             var reqColor = (event.button != 2) ? _private.reqColor : 'foreground';
-            _private.getAvgColor(event, 'select', reqColor).done(function() {
+            _private.getAvgColor(event, 'selected', reqColor).done(function() {
                 if(_private.showToolbar) {
                     if(_private.reqColor) {
                         var color = _private.colorTxt.innerHTML;
@@ -434,9 +437,11 @@ var ColorPicker = function() {
         removeMouseSupport: function() {
             $ColorPickerOvr = $('#ColorPickerOvr');
             //$ColorPickerOvr.unbind("click", _private.PageClick);
-            if(options.clickType) {
-                $ColorPickerOvr.unbind("contextmenu",_private.RightClick);
-            }
+            try {
+                if(options.clickType) {
+                    $ColorPickerOvr.unbind("contextmenu",_private.RightClick);
+                }
+            } catch (e) { /* options is not defined */ }
             $ColorPickerOvr.unbind("mousedown", _private.MouseDown);
             $ColorPickerOvr.unbind("mouseup", _private.MouseUp);
             $ColorPickerOvr.unbind("mousemove", _private.MouseMove);
@@ -860,7 +865,7 @@ var ColorPicker = function() {
                 case 70 : // F
                     _private.foregroundToClipboard();   
                     e.stopPropagation();
-                    e.preventDefault();
+                    e.preventDefault();c
                     break; 
                 case 66 : // B
                     _private.backgroundToClipboard();   

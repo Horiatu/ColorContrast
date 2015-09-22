@@ -29,15 +29,6 @@ $(document).ready(function() {
         $value = $(value);
         $value.attr('src', chrome.extension.getURL($value.attr('src'))).attr('alt', '');
     })
-    $('#timeLimitSlider').bind('input',function() {
-        $('#timeLimitVal').val($(this).val());
-        chrome.storage.sync.set({
-            'restrictSeconds': $(this).val(),
-        });
-    });
-    $('#timeLimitRestrict').change(function() {
-        restrictTimeLimit($(this).is(':checked'));
-    })
     restore_options($.Deferred());
 });
 
@@ -89,11 +80,6 @@ function restore_options(optionsDfr) {
         $('#gridSize').val(options.gridSize);
         showGrid(options.gridSize);
         $('#gridSize').css("display", "block");
-        
-        $('#timeLimitVal').val(options.restrictSeconds);
-        $('#timeLimitSlider').val(options.restrictSeconds);
-        $('#timeLimitRestrict').prop('checked', options.restrictBruteForce);
-        restrictTimeLimit(options.restrictBruteForce);
     });
 }
 
@@ -169,18 +155,5 @@ function showDirections(show) {
 function showAutoCopy(show) {
     chrome.storage.sync.set({
         'autoCopy': $('#autoCopy').is(':checked')
-    });
-}
-
-function restrictTimeLimit(restrict) {
-    if(restrict) {
-        $('#restrictSeconds').css('display','inherit');
-        $('#timeLimitSlider').show();
-    } else {
-        $('#restrictSeconds').css('display','none');
-        $('#timeLimitSlider').hide();
-    }
-    chrome.storage.sync.set({
-        'restrictBruteForce': $('#timeLimitRestrict').is(':checked'),
     });
 }
