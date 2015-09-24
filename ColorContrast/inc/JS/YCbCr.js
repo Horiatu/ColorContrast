@@ -19,11 +19,6 @@ function YCbCr(p) {
 	    this.Cb = this.x = coords[1];
 	    this.Cr = this.y = coords[2];
 	}
-	else if(p.length == 3) {
-		this.luma = this.z = p[0];
-	    this.Cb = this.x = p[1];
-	    this.Cr = this.y = p[2];
-	} 
     else if(typeof(p) == 'string') {
         var coords = YCbCr.getCoords(new WebColor(p));
 
@@ -31,6 +26,11 @@ function YCbCr(p) {
         this.Cb = this.x = coords[1];
         this.Cr = this.y = coords[2];
     }
+	else if(p.length == 3) {
+		this.luma = this.z = p[0];
+	    this.Cb = this.x = p[1];
+	    this.Cr = this.y = p[2];
+	} 
 };
 
 YCbCr.prototype = {
@@ -85,7 +85,7 @@ YCbCr.prototype = {
 	    }
         if (intersection.x != this.x || intersection.y != this.y) {
             // Should never happen
-            throw "Intersection has wrong Cb/Cr values.";
+            throw "Intersection has wrong Cb/Cr values.\n"+intersection.x+"\n"+this.x+"\n\n"+intersection.y+"\n"+this.y;
         }
 
 	    // If intersection.luma is closer to endpoint than desired luma, then luma is inside cube
@@ -224,7 +224,7 @@ YCbCr.suggestColors = function(bgColor, fgColor, desiredContrasts) {
 		        fgYCbCr.translateColor(desiredFgLuminance);
 		        results.push([fgYCbCr.toWebColor(), bgColor, desiredContrast]);
 		    }
-		} catch(e) {}
+		} catch(e) { console.log(e); }
 
 		try {
 		    var desiredBgLuminance = YCbCr.luminanceFromContrastRatio(fgLuminance, desiredContrast, !fgLuminanceIsHigher);
@@ -232,7 +232,7 @@ YCbCr.suggestColors = function(bgColor, fgColor, desiredContrasts) {
 		        bgYCbCr.translateColor(desiredBgLuminance);
 		        results.push([fgColor, bgYCbCr.toWebColor(), desiredContrast]);
 		    }
-		} catch(e) {}
+		} catch(e) { console.log(e); console.log(bgYCbCr); }
 	});
 
     return results;
