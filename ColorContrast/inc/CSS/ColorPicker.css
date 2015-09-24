@@ -265,7 +265,7 @@
 	filter: url(desaturate.svg#greyscale);
 }
 
-.InvertVision, .InvertVision img,
+.InvertVision, .InvertVision img, .InvertVision video,
 .InvertVision .dropit-open,
 .InvertVision #colorPickerViewer table
 {
@@ -277,15 +277,34 @@
 }
 
 .RotateColorsEffect {
-   -webkit-animation: adjustHue 1s infinite;
+   -webkit-animation: adjustHue 2s infinite;
 }
      
 @-webkit-keyframes adjustHue {
    0% { -webkit-filter: hue-rotate(0deg); }
-   20% { -webkit-filter: hue-rotate(52deg); }
-   40% { -webkit-filter: hue-rotate(104deg); }
-   60% { -webkit-filter: hue-rotate(156deg); }
-   80% { -webkit-filter: hue-rotate(308deg); }   
+
+   5% { -webkit-filter: hue-rotate(18deg); }
+   10% { -webkit-filter: hue-rotate(36deg); }
+   15% { -webkit-filter: hue-rotate(54deg); }
+   20% { -webkit-filter: hue-rotate(72deg); }
+   25% { -webkit-filter: hue-rotate(90deg); }
+
+   30% { -webkit-filter: hue-rotate(108deg); }
+   35% { -webkit-filter: hue-rotate(126deg); }
+   40% { -webkit-filter: hue-rotate(144deg); }
+   45% { -webkit-filter: hue-rotate(162deg); }
+   50% { -webkit-filter: hue-rotate(180deg); }
+
+   55% { -webkit-filter: hue-rotate(198deg); }
+   60% { -webkit-filter: hue-rotate(216deg); }
+   65% { -webkit-filter: hue-rotate(234deg); }
+   70% { -webkit-filter: hue-rotate(252deg); }
+   75% { -webkit-filter: hue-rotate(270deg); }
+
+   80% { -webkit-filter: hue-rotate(288deg); }
+   85% { -webkit-filter: hue-rotate(306deg); }
+   90% { -webkit-filter: hue-rotate(324deg); }
+   95% { -webkit-filter: hue-rotate(342deg); }
    100% { -webkit-filter: hue-rotate(360deg); }
 } 
 
