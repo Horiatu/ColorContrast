@@ -75,7 +75,8 @@ YCbCr.prototype = {
 	    for (var i = 0; i < cubeFaces.length; i++) {
 	        intersection = YCbCr.findIntersection(line, cubeFaces[i]);
 	        // If intersection within [0, 1] in Z axis, it is within the cube.
-	        if (intersection.z >= 0 && intersection.z <= 1)
+            var z = endpoint == YCbCr.white ? intersection.z : -intersection.z;
+	        if (z >= 0 && z <= 1)
 	            break;
 	    }
 	    if (!intersection) {
