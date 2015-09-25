@@ -73,8 +73,7 @@ YCbCr.prototype = {
 
 	    var intersection = null;
 	    for (var i = 0; i < cubeFaces.length; i++) {
-	        var cubeFace = cubeFaces[i];
-	        intersection = YCbCr.findIntersection(line, cubeFace);
+	        intersection = YCbCr.findIntersection(line, cubeFaces[i]);
 	        // If intersection within [0, 1] in Z axis, it is within the cube.
 	        if (intersection.z >= 0 && intersection.z <= 1)
 	            break;
@@ -232,7 +231,7 @@ YCbCr.suggestColors = function(bgColor, fgColor, desiredContrasts) {
 		        bgYCbCr.translateColor(desiredBgLuminance);
 		        results.push([fgColor, bgYCbCr.toWebColor(), desiredContrast]);
 		    }
-		} catch(e) { console.log(e); console.log(bgYCbCr); }
+		} catch(e) { console.log(e); }
 	});
 
     return results;
@@ -246,14 +245,14 @@ YCbCr.suggestColors = function(bgColor, fgColor, desiredContrasts) {
 YCbCr.YCC_MATRIX = YCbCr.RGBToYCbCrMatrix(0.2126, 0.0722);
 YCbCr.INVERTED_YCC_MATRIX = YCbCr.invert3x3Matrix(YCbCr.YCC_MATRIX);
 
-YCbCr.black   = new YCbCr('black');   // console.log(YCbCr.black);
-YCbCr.white   = new YCbCr('white');   // console.log(YCbCr.white);
-YCbCr.red     = new YCbCr('red');     // console.log(YCbCr.red);
-YCbCr.green   = new YCbCr('green');   // console.log(YCbCr.green);
-YCbCr.blue    = new YCbCr('blue');    // console.log(YCbCr.blue);
-YCbCr.cyan    = new YCbCr('cyan');    // console.log(YCbCr.cyan);
-YCbCr.magenta = new YCbCr('magenta'); // console.log(YCbCr.magenta);
-YCbCr.yellow  = new YCbCr('yellow');  // console.log(YCbCr.yellow);
+YCbCr.black   = new YCbCr('black');  
+YCbCr.white   = new YCbCr('white');  
+YCbCr.red     = new YCbCr('red');    
+YCbCr.green   = new YCbCr('lime');   
+YCbCr.blue    = new YCbCr('blue');   
+YCbCr.cyan    = new YCbCr('cyan');   
+YCbCr.magenta = new YCbCr('magenta');
+YCbCr.yellow  = new YCbCr('yellow'); 
 
 YCbCr.CUBE_FACES_BLACK = [ { p0: YCbCr.black, p1: YCbCr.red, p2: YCbCr.green },
                            { p0: YCbCr.black, p1: YCbCr.green, p2: YCbCr.blue },
