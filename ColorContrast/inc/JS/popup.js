@@ -152,7 +152,7 @@ $(document).ready(function() {
             } else {
                 $(".txInput").addClass("error");
             }
-            $("#contrast span").css("text-shadow", "2px 2px 2px transparent");
+            //$("#contrast span").css("text-shadow", "2px 2px 2px transparent");
         };
     };
 
@@ -160,7 +160,7 @@ $(document).ready(function() {
         $("#contrast span").html(parseFloat(cc).toFixed(2) + ":1");
 
         if (cc >= 7.0) {
-            $("#contrast span").css("text-shadow", "2px 2px 2px darkgreen");
+            //$("#contrast span").css("text-shadow", "2px 2px 2px darkgreen");
             $(".largeAAA").show();
             $(".smallAAA").show();
 
@@ -171,7 +171,7 @@ $(document).ready(function() {
             $(".small").hide();
         }
         else if (cc >= 4.5) {
-            $("#contrast span").css("text-shadow", "2px 2px 2px orange");
+            //$("#contrast span").css("text-shadow", "2px 2px 2px orange");
             $(".largeAAA").show();
             $(".smallAAA").hide();
 
@@ -181,7 +181,7 @@ $(document).ready(function() {
             $(".large").hide();
             $(".small").hide();
         } else if (cc >= 3.0) {
-            $("#contrast span").css("text-shadow", "2px 2px 2px orangered");
+            //$("#contrast span").css("text-shadow", "2px 2px 2px orangered");
             $(".largeAAA").hide();
             $(".smallAAA").hide();
 
@@ -191,7 +191,7 @@ $(document).ready(function() {
             $(".large").hide();
             $(".small").show();
         } else {
-            $("#contrast span").css("text-shadow", "2px 2px 2px red");
+            //$("#contrast span").css("text-shadow", "2px 2px 2px red");
             $(".largeAAA").hide();
             $(".smallAAA").hide();
 
@@ -295,7 +295,7 @@ $(document).ready(function() {
     // });
 
     $('#closeBtn').attr('src',chrome.extension.getURL('/images/close.png')).click(function(e) { window.close(); });
-    $('#optionsBtn').attr('src',chrome.extension.getURL('/images/DisabledEye.png')).click(openOptionsPage);
+    $('#optionsBtn').attr('src',chrome.extension.getURL('/images/Help.png')).click(openOptionsPage);
     $('#sampleBtn').attr('src',chrome.extension.getURL('/images/Sample.png')).click(openTestPage);
     $(".txInput")
         .on("input", function(e) {

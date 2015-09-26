@@ -68,10 +68,11 @@ h1 span {
   text-align: right;
 }
 #contrast span{
-  color: white;--rgb(69, 69, 69);
-  font-size: 42px;
+  color: rgb(69, 69, 69);
+  font-size: 60px;
+  font:bold;
   font-family: 'Poiret One';
-  text-shadow: 2px 2px 2px cornflowerblue;
+  --text-shadow: 2px 2px 2px cornflowerblue;
 }
 .contextMenu li,
 #jqContextMenu li {
