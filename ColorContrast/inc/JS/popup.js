@@ -263,7 +263,7 @@ $(document).ready(function() {
     },
 
     loadScripts = function(tabid, scripts, dfr) {
-        options = scriptDesc(scripts.shift());
+        var options = scriptDesc(scripts.shift());
         chrome.tabs.executeScript(tabid, options, function() {
             if (scripts.length != 0)
                 loadScripts(tabid, scripts, dfr);
@@ -283,7 +283,19 @@ $(document).ready(function() {
     }
 
     openTestPage = function(e) {
-        window.open(chrome.extension.getURL('/inc/html/test.html'),'_blank');
+        getTestPageUrl().done(function(testPageUrl) {window.open(testPageUrl);});
+    };
+
+    getTestPageUrl = function() {
+        var dfr = $.Deferred();
+        var testPageUrl = 'http://pages.pathcom.com/~horiatu/TestPage/test.htm';
+        chrome.storage.sync.get(['testPageUrl'], function(a) {
+            if(a['testPageUrl'] == undefined || a['testPageUrl'] != '') {
+                testPageUrl = a['testPageUrl'];
+            }
+            dfr.resolve(testPageUrl);
+        });
+        return dfr.promise();
     };
 
     openOptionsPage = function(e) {
@@ -318,8 +330,6 @@ $(document).ready(function() {
             $('.pickOne').show();
             $('.pick').on('click', pickAction);
         }
-        // $('#testPage').click(openTestPage);
-        // $('#optionsPage').click(openOptionsPage);
     });
     
     //$('.code').on('click', copyCode);

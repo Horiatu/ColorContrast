@@ -107,10 +107,6 @@ h1 span {
   cursor: pointer;
   opacity: 0.25;
 }
-#sampleBtn{
-  opacity: 0.05;
-}
-
 #closeBtn{
   margin-left:4px;
 }

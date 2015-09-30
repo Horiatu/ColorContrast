@@ -46,7 +46,7 @@ Background.getOptionOrDefault = function(a, option, value) {
 
 Background.getDefaults = function() {
     var gdDfr = $.Deferred();
-    chrome.storage.sync.get(['magnifierGlass', 'MapBg', 'clickType', 'autoCopy', 'toolbar', 'sample', 'position', 'gridSize', 'eyeType', 'restrictBruteForce', 'restrictSeconds'],
+    chrome.storage.sync.get(['magnifierGlass', 'MapBg', 'clickType', 'autoCopy', 'toolbar', 'sample', 'position', 'gridSize', 'eyeType', 'restrictBruteForce', 'restrictSeconds', 'testPageUrl'],
     function(a) {
         defaults = {
             type:'defaults',
@@ -61,6 +61,7 @@ Background.getDefaults = function() {
             eyeType : Background.getOptionOrDefault(a, 'eyeType', 'NormalVision'),
             restrictBruteForce : Background.getOptionOrDefault(a, 'restrictBruteForce', true),
             restrictSeconds : Background.getOptionOrDefault(a, 'restrictSeconds', 5),
+            testPageUrl : Background.getOptionOrDefault(a, 'testPageUrl', ''),
         };
         gdDfr.resolve(defaults);
     });

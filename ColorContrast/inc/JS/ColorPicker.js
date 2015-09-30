@@ -455,8 +455,8 @@ var ColorPicker = function() {
                 _private._injectCss('<link id="colorPickerCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('/inc/css/ColorPicker.css') + '" />');
             }
 
-            if(!contentDocument.getElementById("dropitrCss")) {
-                _private._injectCss('<link id="dropitrCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('/inc/css/dropit.css') + '" />');
+            if(!contentDocument.getElementById("dropitCss")) {
+                _private._injectCss('<link id="dropitCss" rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('/inc/css/dropit.css') + '" />');
             }
         },
 

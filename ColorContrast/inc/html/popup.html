@@ -17,15 +17,15 @@
     <script type="text/javascript" src="/inc/js/YCbCr.js"></script>
     <script type="text/javascript" src="/inc/js/popup.js"></script>
     <script type="text/javascript" src="/inc/js/jquery.autocomplete.js"></script>
-    <!-- <script type="text/javascript" src="/inc/js/jquery.undoable.js"></script> -->
+    <script type="text/javascript" src="/inc/js/jquery.undoable.js"></script>
 </head>
 
 <body>
     <div id='toolbar'>
         <img class='toolbarBtn' id='sampleBtn' alt='' title='Test Page'></img>
+        <img class='toolbarBtn' id='undoBtn' alt='' title='Undo [^z]' src="/images/undo.png"></img>
+        <img class='toolbarBtn' id='redoBtn' alt='' title='Redo [^y]' src="/images/redo.png"></img>
         <img class='toolbarBtn' id="toggle" src="/images/toggle.png" alt="toggle" title="Toggle Colors">
-        <!-- <img class='toolbarBtn' id='undoBtn' alt='' title='Undo [^z]' src="/images/undo.png"></img>
-        <img class='toolbarBtn' id='redoBtn' alt='' title='Redo [^y]' src="/images/redo.png"></img> -->
         <img class='toolbarBtn' id='optionsBtn' alt='' title='Options'></img>
         <img class='toolbarBtn' id='closeBtn' alt='' title='Close [esc]'></img>
     </div>
@@ -105,8 +105,6 @@
                             <img src="/images/pick-color.png" alt="pick color"></img>
                             <span>Pick Colors</span>
                         </button>
-                        <!-- <a href="#" id="testPage" style="display:none;">Open Test Page</a>
-                        <a href="#" id="optionsPage" style="margin-left: 110px;">Options Page</a> -->
                     </div>
                 </td>
                 <td width="75%" id="fixSamples" style="display: none;">

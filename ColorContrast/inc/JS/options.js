@@ -25,6 +25,13 @@ $(document).ready(function() {
     $('#autoCopy').change(function() {
         showAutoCopy($(this).is(':checked'))
     });
+    $('input[id="testPageUrl"]').on('input', function() {
+        testPageUrlChanged($(this).val())
+    })
+    $('#testPageTry').click(function() {
+        window.open($('#testPageUrl').val());
+    })
+
     $.each($('img'), function(index, value) {
         $value = $(value);
         $value.attr('src', chrome.extension.getURL($value.attr('src'))).attr('alt', '');
@@ -80,6 +87,8 @@ function restore_options(optionsDfr) {
         $('#gridSize').val(options.gridSize);
         showGrid(options.gridSize);
         $('#gridSize').css("display", "block");
+
+        $('#testPageUrl').val(options.testPageUrl);
     });
 }
 
@@ -88,6 +97,13 @@ function showGlass(val) {
         'magnifierGlass': val
     });
     $('#gridSettings').css('display',(val == 'none')?'none':'inherit');
+}
+
+function testPageUrlChanged(val) {
+    chrome.storage.sync.set({
+        'testPageUrl': val
+    });
+    $('#testPageTry').css('display',(val == '')?'none':'inherit');
 }
 
 function showMapBg(show) {
@@ -144,8 +160,7 @@ function showDirections(show) {
         '<li>Use the <img src="'+chrome.extension.getURL('/images/menu.png')+'"></img> menu button on the toolbar for more options. (Look for shortcuts.)</li>'+
         '<li>(You may display a text sample, or you may select some challenged visions and effects.)</li>'+
         '<li>Click again the extension button <img src="'+chrome.extension.getURL('/images/logos/16.png')+'"></img> to finish the selection and play with the results.</li>'+
-        '<li>When there are choices for foreground with AAA contrast, click an <kbd>OK</kbd> button to accept it.<br/>'+
-        '(You may toggle colors to get choices for the background color.)</li>');
+        '<li>When there are choices for A, AA or AAA compliance click an <kbd>OK</kbd> button to accept it.</li>');
 
     chrome.storage.sync.set({
         'clickType': $('#clickType').is(':checked')
