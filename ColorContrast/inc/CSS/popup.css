@@ -25,10 +25,18 @@ body {
   font-style: normal;
   font-size: inherit;
 }
-
+.header {
+    background-color: #eee;
+    display:block;
+    top: 0;
+    left: 0;
+    padding: 8px;
+    margin: -8px;
+    margin-bottom: 8px;
+}
 h1 {
   font-family: "Poiret One";
-  text-shadow: 2px 2px 2px darkgrey;
+  text-shadow: 2px 2px 2px gray;
   font-size: 22px;
   font-weight: bold;
   white-space: nowrap;
@@ -99,7 +107,7 @@ h1 span {
 #toolbar {
   position:absolute;
   right:8px;
-  top:2px;
+  top:50px;
 }
 .toolbarBtn {
   width:15px;
@@ -107,8 +115,11 @@ h1 span {
   cursor: pointer;
   opacity: 0.25;
 }
-#closeBtn{
-  margin-left:4px;
+#closeBtn {
+    right: 4px;
+    position: absolute;
+    display: inline-block;
+    top: 4px;
 }
 
 .btn img:hover, .toolbarBtn:hover, #sampleBtn:hover {

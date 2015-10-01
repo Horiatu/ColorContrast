@@ -26,7 +26,7 @@ $(document).ready(function() {
         showAutoCopy($(this).is(':checked'))
     });
     $('input[id="testPageUrl"]').on('input', function() {
-        testPageUrlChanged($(this).val())
+        testPageUrlChanged($(this).val());
     })
     $('#testPageTry').click(function() {
         window.open($('#testPageUrl').val());
@@ -89,6 +89,7 @@ function restore_options(optionsDfr) {
         $('#gridSize').css("display", "block");
 
         $('#testPageUrl').val(options.testPageUrl);
+        testPageUrlChanged(options.testPageUrl);
     });
 }
 

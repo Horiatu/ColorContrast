@@ -288,7 +288,7 @@ $(document).ready(function() {
 
     getTestPageUrl = function() {
         var dfr = $.Deferred();
-        var testPageUrl = 'http://pages.pathcom.com/~horiatu/TestPage/test.htm';
+        var testPageUrl = 'http://pages.pathcom.com/~horiatu/WCAG/test.htm';
         chrome.storage.sync.get(['testPageUrl'], function(a) {
             if(a['testPageUrl'] == undefined || a['testPageUrl'] != '') {
                 testPageUrl = a['testPageUrl'];
@@ -302,13 +302,22 @@ $(document).ready(function() {
         window.open(chrome.extension.getURL('/inc/html/options.html'),'_blank');
     };
 
+    openHomePage = function(e) {
+        window.open('http://pages.pathcom.com/~horiatu/WCAG/index.html','_blank');
+    };
+
+    openTestPage = function(e) {
+        window.open('http://pages.pathcom.com/~horiatu/WCAG/test.htm','_blank');
+    };
+
     // jQuery(function(){
     //     jQuery().enableUndo({ redoCtrlChar : 'y', redoShiftReq : false });
     // });
 
-    $('#closeBtn').attr('src',chrome.extension.getURL('/images/close.png')).click(function(e) { window.close(); });
+    $('#closeBtn').click(function(e) { window.close(); });
     $('#optionsBtn').attr('src',chrome.extension.getURL('/images/Help.png')).click(openOptionsPage);
-    $('#sampleBtn').attr('src',chrome.extension.getURL('/images/Sample.png')).click(openTestPage);
+    $('#homeBtn').click(openHomePage);
+    $('#sampleBtn').attr('src',chrome.extension.getURL('/images/DisabledEye.png')).click(openTestPage);
     $(".txInput")
         .on("input", function(e) {
             getContrast(e.currentTarget.id);

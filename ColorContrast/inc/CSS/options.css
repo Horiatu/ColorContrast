@@ -72,4 +72,11 @@ input[type=radio], input[type=checkbox] {
 kbd{
   background-color: #777;
 }
+#testPageTry {
+  white-space: nowrap; 
+  margin: 4px; 
+  height: 20px; 
+  font-size: 10px; 
+  margin-left: -40px;
+}
 
