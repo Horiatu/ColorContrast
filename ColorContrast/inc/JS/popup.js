@@ -88,6 +88,7 @@ $(document).ready(function() {
     },
 
     acceptSample = function(e) {
+        setUndo($("#background").val(),$("#foreground").val(), $(e.toElement).attr('data-bg'), $(e.toElement).attr('data-fr'));
         $("#foreground").val($(e.toElement).attr('data-fr'));
         $("#background").val($(e.toElement).attr('data-bg'));
         getContrast();
@@ -129,15 +130,6 @@ $(document).ready(function() {
                 addColorTitle('foreground');
             });
 
-            // $().undoable(
-            //     function(){ // redo
-            //         alert('redo ');
-            //     },
-            //     function(){ // undo
-            //         alert('undo ');
-            //     } 
-            // );
-
             $(".example").css("background-color", backgroundTxt);
             $(".example span").css("color", foregroundTxt);
 
@@ -155,6 +147,23 @@ $(document).ready(function() {
             //$("#contrast span").css("text-shadow", "2px 2px 2px transparent");
         };
     };
+
+    // bgOld = 'black';
+    // frOld = 'white';
+    setUndo = function(bgOld, frOld, bgNew, frNew) {
+        $().undoable(
+            function(){ // redo
+                $("#background").val(bgOld);
+                $("#foreground").val(frOld);
+                getContrast();
+            },
+            function(){ // undo
+                $("#background").val(bgNew);
+                $("#foreground").val(frNew);
+                getContrast();
+            } 
+        );
+    }
 
     analyseResults = function(cc) {
         $("#contrast span").html(parseFloat(cc).toFixed(2) + ":1");
@@ -310,14 +319,59 @@ $(document).ready(function() {
         window.open('http://pages.pathcom.com/~horiatu/WCAG/test.htm','_blank');
     };
 
-    // jQuery(function(){
-    //     jQuery().enableUndo({ redoCtrlChar : 'y', redoShiftReq : false });
-    // });
+    jQuery(function(){
+        jQuery().enableUndo({
+            onCanUndo : function(enabled) {
+                switch(enabled) {
+                    case true :
+                        $('#undoBtn').removeClass('disabled');
+                        break;
+                    case false :
+                        $('#undoBtn').addClass('disabled');
+                        break;
+                }
+            },
+            onCanRedo : function(enabled) {
+                switch(enabled) {
+                    case true :
+                        $('#redoBtn').removeClass('disabled');
+                        break;
+                    case false :
+                        $('#redoBtn').addClass('disabled');
+                        break;
+                }
+            },
+            onUndo : function() {
+                if(!$('#undoBtn').hasClass('disabled')) {
+                    var o = $('#undoBtn').css('opacity');
+                    $('#undoBtn').css('opacity', 1).animate({opacity: o}, 500, function() {$('#undoBtn').css('opacity','')});
+                }
+            },
+            onRedo : function() {
+                if(!$('#redoBtn').hasClass('disabled')) {
+                    var o = $('#redoBtn').css('opacity');
+                    $('#redoBtn').css('opacity', 1).animate({opacity: o}, 500, function() {$('#redoBtn').css('opacity','')});
+                }
+            }
+        });
+    });
+
+    simulateKeyPress = function(character) {
+        jQuery.event.trigger({ type : 'keydown', which : character.charCodeAt(0) });
+    };
 
     $('#closeBtn').click(function(e) { window.close(); });
     $('#optionsBtn').attr('src',chrome.extension.getURL('/images/Help.png')).click(openOptionsPage);
     $('#homeBtn').click(openHomePage);
     $('#sampleBtn').attr('src',chrome.extension.getURL('/images/DisabledEye.png')).click(openTestPage);
+    $("#undoBtn").click(function(e) {
+        if($(e.toElement).hasClass('disabled')) return;
+        simulateKeyPress(jQuery.fn.undoable.settings.undoCtrlChar.toUpperCase().charCodeAt());
+    });
+    $("#redoBtn").click(function(e) {
+        if($(e.toElement).hasClass('disabled')) return;
+        simulateKeyPress(jQuery.fn.undoable.settings.redoCtrlChar.toUpperCase().charCodeAt());
+    });
     $(".txInput")
         .on("input", function(e) {
             getContrast(e.currentTarget.id);
@@ -341,22 +395,20 @@ $(document).ready(function() {
         }
     });
     
-    //$('.code').on('click', copyCode);
-
     $('.pin').on('click', pinCode);
 
     $('#toggle').on('click', function(t) {
         var backgroundVal = $("#background").val().trim();
         var foregroundVal = $("#foreground").val().trim();
+        setUndo(backgroundVal, foregroundVal, foregroundVal, backgroundVal);
         $("#background").val(foregroundVal);
-        //getContrast("background"); // ???
         $("#foreground").val(backgroundVal);
         getContrast();
     });
 
     var backgroundPage = chrome.extension.getBackgroundPage().Background;
 
-    getSelectedTab().done(function(tab) { // ??? The extensions gallery cannot be scripted.
+    getSelectedTab().done(function(tab) { 
         chrome.tabs.executeScript(tab.id, {
             allFrames: false,
             "code":

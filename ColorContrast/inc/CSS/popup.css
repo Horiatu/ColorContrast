@@ -115,6 +115,9 @@ h1 span {
   cursor: pointer;
   opacity: 0.25;
 }
+.disabled {
+  opacity: 0.15;
+}
 #closeBtn {
     right: 4px;
     position: absolute;
@@ -122,7 +125,7 @@ h1 span {
     top: 4px;
 }
 
-.btn img:hover, .toolbarBtn:hover, #sampleBtn:hover {
+.btn img:hover, .toolbarBtn:not(.disabled):hover, #sampleBtn:hover {
   opacity: 1;
   
   filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=2, OffY=2, Color='#444')";
