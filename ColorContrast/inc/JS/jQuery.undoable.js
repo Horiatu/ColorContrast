@@ -26,6 +26,44 @@ jQuery.fn.undoable = function(redo) {
 
 jQuery.fn.undoable.settings = {};
 
+jQuery.fn.undoable.undo = function() {
+	var uf = jQuery('body').data('undoFunctions');
+	if (typeof uf == 'object') {
+		var lf = uf.pop();
+		jQuery('body').data('undoFunctions', uf);
+
+		if (lf) {
+			var rf = jQuery('body').data('redoFunctions');
+			if (rf) rf.push(lf); else rf = [lf];
+			jQuery('body').data('redoFunctions', rf);
+
+			lf[0](); // undo is index 1 (?!)
+		}
+		if(jQuery.fn.undoable.settings.onCanRedo) jQuery.fn.undoable.settings.onCanRedo(jQuery('body').data('undoEnabled'));
+		if(jQuery.fn.undoable.settings.onUndo) jQuery.fn.undoable.settings.onUndo();
+		if(uf.length == 0 && jQuery.fn.undoable.settings.onCanUndo) jQuery.fn.undoable.settings.onCanUndo(false);
+	}
+}
+
+jQuery.fn.undoable.redo = function() {
+	var rf = jQuery('body').data('redoFunctions');
+	if (typeof rf == 'object') {
+		var lf = rf.pop();
+		jQuery('body').data('redoFunctions', rf);
+
+		if (lf) {
+			var uf = jQuery('body').data('undoFunctions');
+			if (uf) uf.push(lf); else uf = [lf];
+			jQuery('body').data('undoFunctions', uf);
+
+			lf[1](); // redo is index 0 (?!)
+		}
+		if(jQuery.fn.undoable.settings.onCanUndo) jQuery.fn.undoable.settings.onCanUndo(jQuery('body').data('undoEnabled'));
+		if(jQuery.fn.undoable.settings.onRedo) jQuery.fn.undoable.settings.onRedo();
+		if(rf.length == 0 && jQuery.fn.undoable.settings.onCanRedo) jQuery.fn.undoable.settings.onCanRedo(false);
+	}
+}
+
 jQuery.fn.enableUndo = function(params){
 	var defaults = {
 		undoCtrlChar : 'z',
@@ -43,41 +81,11 @@ jQuery.fn.enableUndo = function(params){
 	jQuery(document).keydown(function(e){
 		// UNDO
 		if (e.ctrlKey && !e.shiftKey && e.which == undoChar) {
-			var uf = jQuery('body').data('undoFunctions');
-			if (typeof uf == 'object') {
-				var lf = uf.pop();
-				if(uf.length == 0 && jQuery.fn.undoable.settings.onCanUndo) jQuery.fn.undoable.settings.onCanUndo(false);
-				jQuery('body').data('undoFunctions', uf);
-
-				if (lf) {
-					var rf = jQuery('body').data('redoFunctions');
-					if (rf) rf.push(lf); else rf = [lf];
-					jQuery('body').data('redoFunctions', rf);
-
-					lf[1](); // undo is index 1
-				}
-				if(jQuery.fn.undoable.settings.onCanRedo) jQuery.fn.undoable.settings.onCanRedo(jQuery('body').data('undoEnabled'));
-				if(jQuery.fn.undoable.settings.onUndo) jQuery.fn.undoable.settings.onUndo();
-			}
+			jQuery.fn.undoable.undo();
 		}
 		// REDO
 		if (e.ctrlKey && (e.shiftKey || !jQuery.fn.undoable.settings.redoShiftReq) && e.which == redoChar) {
-			var rf = jQuery('body').data('redoFunctions');
-			if (typeof rf == 'object') {
-				var lf = rf.pop();
-				if(rf.length == 0 && jQuery.fn.undoable.settings.onCanRedo) jQuery.fn.undoable.settings.onCanRedo(false);
-				jQuery('body').data('redoFunctions', rf);
-
-				if (lf) {
-					var uf = jQuery('body').data('undoFunctions');
-					if (uf) uf.push(lf); else uf = [lf];
-					jQuery('body').data('undoFunctions', uf);
-
-					lf[0](); // redo is index 0
-				}
-				if(jQuery.fn.undoable.settings.onCanUndo) jQuery.fn.undoable.settings.onCanUndo(jQuery('body').data('undoEnabled'));
-				if(jQuery.fn.undoable.settings.onRedo) jQuery.fn.undoable.settings.onRedo();
-			}
+			jQuery.fn.undoable.redo();
 		}
 	});
 	jQuery('body').data('undoEnabled', true);

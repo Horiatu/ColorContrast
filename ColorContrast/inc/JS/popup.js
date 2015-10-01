@@ -357,7 +357,7 @@ $(document).ready(function() {
     });
 
     simulateKeyPress = function(character) {
-        jQuery.event.trigger({ type : 'keydown', which : character.charCodeAt(0) });
+        jQuery.event.trigger({ type : 'keydown', which : character });
     };
 
     $('#closeBtn').click(function(e) { window.close(); });
@@ -366,11 +366,11 @@ $(document).ready(function() {
     $('#sampleBtn').attr('src',chrome.extension.getURL('/images/DisabledEye.png')).click(openTestPage);
     $("#undoBtn").click(function(e) {
         if($(e.toElement).hasClass('disabled')) return;
-        simulateKeyPress(jQuery.fn.undoable.settings.undoCtrlChar.toUpperCase().charCodeAt());
+        $.fn.undoable.undo();
     });
     $("#redoBtn").click(function(e) {
         if($(e.toElement).hasClass('disabled')) return;
-        simulateKeyPress(jQuery.fn.undoable.settings.redoCtrlChar.toUpperCase().charCodeAt());
+        $.fn.undoable.redo();
     });
     $(".txInput")
         .on("input", function(e) {
