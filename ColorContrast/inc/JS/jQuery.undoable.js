@@ -14,7 +14,7 @@
 
 jQuery.fn.undoable = function(redo) {
 	var undo = (typeof arguments[1] == 'function') ? arguments[1] : redo;
-	redo();
+	//redo(); // ???
 	var uf = jQuery('body').data('undoFunctions');		
 	if (typeof uf == 'object') uf.push([redo,undo]); else uf = [[redo,undo]];
 	if (jQuery('body').data('undoEnabled') !== true) $().enableUndo();

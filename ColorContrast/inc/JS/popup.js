@@ -88,7 +88,7 @@ $(document).ready(function() {
     },
 
     acceptSample = function(e) {
-        setUndo($("#background").val(),$("#foreground").val(), $(e.toElement).attr('data-bg'), $(e.toElement).attr('data-fr'));
+        _setUndo($("#background").val(),$("#foreground").val(), $(e.toElement).attr('data-bg'), $(e.toElement).attr('data-fr'));
         $("#foreground").val($(e.toElement).attr('data-fr'));
         $("#background").val($(e.toElement).attr('data-bg'));
         getContrast();
@@ -150,7 +150,7 @@ $(document).ready(function() {
 
     // bgOld = 'black';
     // frOld = 'white';
-    setUndo = function(bgOld, frOld, bgNew, frNew) {
+    _setUndo = function(bgOld, frOld, bgNew, frNew) {
         $().undoable(
             function(){ // redo
                 $("#background").val(bgOld);
@@ -284,11 +284,17 @@ $(document).ready(function() {
 
     pinCode = function(t) {
         var id = t.currentTarget.id;
+        var bgOld = $('#background').val();
+        var frOld = $('#foreground').val();
         var val = $(id=='pinFr' ? '#foregroundValue' : '#backgroundValue').html();
         if(val.indexOf('close to ')==0) val = val.substring(9);
         if(val.indexOf(',')>=0) val = val.substring(0, val.indexOf(','));
         $(id=='pinFr' ? '#foreground' : '#background').val(val);
         getContrast(id=='pinFr' ? 'foreground' : 'background');
+
+        var bgNew = $('#background').val();
+        var frNew = $('#foreground').val();
+        _setUndo(bgOld, frOld, bgNew, frNew);
     }
 
     openTestPage = function(e) {
@@ -400,7 +406,7 @@ $(document).ready(function() {
     $('#toggle').on('click', function(t) {
         var backgroundVal = $("#background").val().trim();
         var foregroundVal = $("#foreground").val().trim();
-        setUndo(backgroundVal, foregroundVal, foregroundVal, backgroundVal);
+        _setUndo(backgroundVal, foregroundVal, foregroundVal, backgroundVal);
         $("#background").val(foregroundVal);
         $("#foreground").val(backgroundVal);
         getContrast();
