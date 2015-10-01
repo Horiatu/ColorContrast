@@ -88,7 +88,7 @@ $(document).ready(function() {
     },
 
     acceptSample = function(e) {
-        _setUndo($("#background").val(),$("#foreground").val(), $(e.toElement).attr('data-bg'), $(e.toElement).attr('data-fr'));
+        setUndo($("#background").val(),$("#foreground").val(), $(e.toElement).attr('data-bg'), $(e.toElement).attr('data-fr'));
         $("#foreground").val($(e.toElement).attr('data-fr'));
         $("#background").val($(e.toElement).attr('data-bg'));
         getContrast();
@@ -115,6 +115,17 @@ $(document).ready(function() {
         var backgroundTxt = c1.toHex();
         var foregroundTxt = c2.toHex();
         if (c1.isColor && c2.isColor) {
+            if(!_bgOld || !_frOld) {
+                _bgOld = backgroundVal;
+                _frOld = foregroundVal;
+            }
+            else 
+            {
+                if($(id ? ("#" + id) : ".txInput").hasClass("error")) {
+                    setUndo(_bgOld, _frOld, backgroundVal, foregroundVal);
+                }
+            }
+            
             $(id ? ("#" + id) : ".txInput").removeClass("error");
 
             chrome.storage.sync.set({
@@ -148,9 +159,9 @@ $(document).ready(function() {
         };
     };
 
-    // bgOld = 'black';
-    // frOld = 'white';
-    _setUndo = function(bgOld, frOld, bgNew, frNew) {
+    _bgOld = null;
+    _frOld = null;
+    setUndo = function(bgOld, frOld, bgNew, frNew) {
         $().undoable(
             function(){ // redo
                 $("#background").val(bgOld);
@@ -161,6 +172,8 @@ $(document).ready(function() {
                 $("#background").val(bgNew);
                 $("#foreground").val(frNew);
                 getContrast();
+                _bgOld = bgNew;
+                _frOld = frNew;
             } 
         );
     }
@@ -294,7 +307,7 @@ $(document).ready(function() {
 
         var bgNew = $('#background').val();
         var frNew = $('#foreground').val();
-        _setUndo(bgOld, frOld, bgNew, frNew);
+        setUndo(bgOld, frOld, bgNew, frNew);
     }
 
     openTestPage = function(e) {
@@ -323,47 +336,6 @@ $(document).ready(function() {
 
     openTestPage = function(e) {
         window.open('http://pages.pathcom.com/~horiatu/WCAG/test.htm','_blank');
-    };
-
-    jQuery(function(){
-        jQuery().enableUndo({
-            onCanUndo : function(enabled) {
-                switch(enabled) {
-                    case true :
-                        $('#undoBtn').removeClass('disabled');
-                        break;
-                    case false :
-                        $('#undoBtn').addClass('disabled');
-                        break;
-                }
-            },
-            onCanRedo : function(enabled) {
-                switch(enabled) {
-                    case true :
-                        $('#redoBtn').removeClass('disabled');
-                        break;
-                    case false :
-                        $('#redoBtn').addClass('disabled');
-                        break;
-                }
-            },
-            onUndo : function() {
-                if(!$('#undoBtn').hasClass('disabled')) {
-                    var o = $('#undoBtn').css('opacity');
-                    $('#undoBtn').css('opacity', 1).animate({opacity: o}, 500, function() {$('#undoBtn').css('opacity','')});
-                }
-            },
-            onRedo : function() {
-                if(!$('#redoBtn').hasClass('disabled')) {
-                    var o = $('#redoBtn').css('opacity');
-                    $('#redoBtn').css('opacity', 1).animate({opacity: o}, 500, function() {$('#redoBtn').css('opacity','')});
-                }
-            }
-        });
-    });
-
-    simulateKeyPress = function(character) {
-        jQuery.event.trigger({ type : 'keydown', which : character });
     };
 
     $('#closeBtn').click(function(e) { window.close(); });
@@ -406,7 +378,7 @@ $(document).ready(function() {
     $('#toggle').on('click', function(t) {
         var backgroundVal = $("#background").val().trim();
         var foregroundVal = $("#foreground").val().trim();
-        _setUndo(backgroundVal, foregroundVal, foregroundVal, backgroundVal);
+        setUndo(backgroundVal, foregroundVal, foregroundVal, backgroundVal);
         $("#background").val(foregroundVal);
         $("#foreground").val(backgroundVal);
         getContrast();
@@ -433,6 +405,41 @@ $(document).ready(function() {
                         $("#foreground").val(a['foreground']);
                     }
                     getContrast();
+
+                    $().enableUndo({
+                        onCanUndo : function(enabled) {
+                            switch(enabled) {
+                                case true :
+                                    $('#undoBtn').removeClass('disabled');
+                                    break;
+                                case false :
+                                    $('#undoBtn').addClass('disabled');
+                                    break;
+                            }
+                        },
+                        onCanRedo : function(enabled) {
+                            switch(enabled) {
+                                case true :
+                                    $('#redoBtn').removeClass('disabled');
+                                    break;
+                                case false :
+                                    $('#redoBtn').addClass('disabled');
+                                    break;
+                            }
+                        },
+                        onUndo : function() {
+                            if(!$('#undoBtn').hasClass('disabled')) {
+                                var o = $('#undoBtn').css('opacity');
+                                $('#undoBtn').css('opacity', 1).animate({opacity: o}, 200, function() {$('#undoBtn').css('opacity','')});
+                            }
+                        },
+                        onRedo : function() {
+                            if(!$('#redoBtn').hasClass('disabled')) {
+                                var o = $('#redoBtn').css('opacity');
+                                $('#redoBtn').css('opacity', 1).animate({opacity: o}, 200, function() {$('#redoBtn').css('opacity','')});
+                            }
+                        }
+                    });
                 });
             }
         )

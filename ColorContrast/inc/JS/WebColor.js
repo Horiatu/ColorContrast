@@ -213,7 +213,7 @@ WebColor.ColorNames = [
     {value: "greenyellow", data: "#adff2f"},
     {value: "honeydew", data: "#f0fff0"},
     {value: "hotpink", data: "#ff69b4"},
-    {value: "indianred ", data: "#cd5c5c"},
+    {value: "indianred", data: "#cd5c5c"},
     {value: "indigo", data: "#4b0082"},
     {value: "ivory", data: "#fffff0"},
     {value: "khaki", data: "#f0e68c"},

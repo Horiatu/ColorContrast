@@ -88,6 +88,8 @@ jQuery.fn.enableUndo = function(params){
 			jQuery.fn.undoable.redo();
 		}
 	});
+	if(jQuery.fn.undoable.settings.onCanUndo) jQuery.fn.undoable.settings.onCanUndo(false);
+	if(jQuery.fn.undoable.settings.onCanRedo) jQuery.fn.undoable.settings.onCanRedo(false);
 	jQuery('body').data('undoEnabled', true);
 };
 
