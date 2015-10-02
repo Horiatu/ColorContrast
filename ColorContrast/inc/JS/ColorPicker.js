@@ -95,20 +95,20 @@ var ColorPicker = function() {
                 return getColorDfr.promise();
             }
 
-            if(!_private.downZone) {
-                _private.downZone = {x:event.pageX, y:event.pageY, width:0, height:0};
-            }
-            if(!_private.downPoint) {
-                _private.downPoint = {x:event.pageX, y:event.pageY};
-            }
+            // if(!_private.downZone) {
+            //     _private.downZone = {x:event.pageX, y:event.pageY, width:0, height:0};
+            // }
+            // if(!_private.downPoint) {
+            //     _private.downPoint = {x:event.pageX, y:event.pageY};
+            // }
 
             var r = 0;
             var g = 0;
             var b = 0;
             var n = 0;
-            for(var x=_private.downZone.x; x<=_private.downZone.x+_private.downZone.width; x++)
+            for(var x=_private.downZone.x + (_private.downZone.width==0?0:1); x<=_private.downZone.x+_private.downZone.width; x++)
             {
-                for(var y=_private.downZone.y; y<=_private.downZone.y+_private.downZone.height; y++)
+                for(var y=_private.downZone.y + (_private.downZone.height==0?0:1); y<=_private.downZone.y+_private.downZone.height; y++)
                 {
                     var i = (x + y * _private.canvas.width) * 4;
 
@@ -358,7 +358,7 @@ var ColorPicker = function() {
         MouseDown: function(event) {
             if(event.button != 2 || options.clickType) {
                 _private.downPoint = {x:event.pageX, y:event.pageY};
-                _private.downZone = {x:event.pageX, y:event.pageY, width:1, height:1};
+                _private.downZone = {x:event.pageX, y:event.pageY, width:0, height:0};
                 $('#ColorPickerOvr').append('<canvas id="zone" style="position:absolute; border:1px solid red; display:none;"></canvas>');
                 _private.isMouseDown = true;
             }
