@@ -357,6 +357,9 @@ var ColorPicker = function() {
 
         MouseDown: function(event) {
             if(event.button != 2 || options.clickType) {
+                _private.downPoint = {x:event.pageX, y:event.pageY};
+                _private.downZone = {x:event.pageX, y:event.pageY, width:1, height:1};
+                $('#ColorPickerOvr').append('<canvas id="zone" style="position:absolute; border:1px solid red; display:none;"></canvas>');
                 _private.isMouseDown = true;
             }
         },
@@ -383,35 +386,28 @@ var ColorPicker = function() {
 
         MouseMove: function(event) {
             if(_private.isMouseDown) {
-                if(!_private.downZone) {
-                    _private.downPoint = {x:event.pageX, y:event.pageY};
-                    _private.downZone = {x:event.pageX, y:event.pageY, width:0, height:0};
-                    $('#ColorPickerOvr').append('<canvas id="zone" style="position:absolute; border:1px solid red;"></canvas>');
+                _private.downZone.x = _private.downPoint.x - 1;
+                _private.downZone.width = event.pageX - _private.downZone.x;
+                if(_private.downZone.width <= 0) {
+                    _private.downZone.width = -_private.downZone.width + 2; 
+                    _private.downZone.x = _private.downPoint.x - _private.downZone.width;
+                } 
 
-                } else {
-                    
-                    _private.downZone.x = _private.downPoint.x;
-                    _private.downZone.width = event.pageX - _private.downZone.x;
-                    if(_private.downZone.width < 0) {
-                        _private.downZone.width = -_private.downZone.width; 
-                        _private.downZone.x = _private.downPoint.x - _private.downZone.width;
-                    }
+                _private.downZone.y = _private.downPoint.y - 1;
+                _private.downZone.height = event.pageY - _private.downZone.y;
+                if(_private.downZone.height <= 0) {
+                    _private.downZone.height = -_private.downZone.height + 2; 
+                    _private.downZone.y = _private.downPoint.y - _private.downZone.height;
+                } 
 
-                    _private.downZone.y = _private.downPoint.y;
-                    _private.downZone.height = event.pageY - _private.downZone.y;
-                    if(_private.downZone.height < 0) {
-                        _private.downZone.height = -_private.downZone.height; 
-                        _private.downZone.y = _private.downPoint.y - _private.downZone.height;
-                    }
+                $('#zone')
+                    .css('left', (_private.downZone.x - _private.XOffset) + 'px')
+                    .css('top', (_private.downZone.y - _private.YOffset) + 'px')
+                    .css('width', _private.downZone.width+'px')
+                    .css('height', _private.downZone.height+'px')
+                    .css('display','');
 
-                    $('#zone')
-                        .css('left', (_private.downZone.x - _private.XOffset) + 'px')
-                        .css('top', (_private.downZone.y - _private.YOffset) + 'px')
-                        .css('width', _private.downZone.width+'px')
-                        .css('height', _private.downZone.height+'px');
-
-                    var color = _private.getAvgColor(event, 'hover', _private.reqColor);
-                }
+                var color = _private.getAvgColor(event, 'hover', _private.reqColor);
             } 
             else {
                 _private.getColor(event, "hover", null);
