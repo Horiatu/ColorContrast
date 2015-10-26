@@ -311,17 +311,19 @@ $(document).ready(function() {
     }
 
     openTestPage = function(e) {
-        getTestPageUrl().done(function(testPageUrl) {window.open(testPageUrl);});
+        getTestPageUrl().done(function(testPageUrl) {
+            window.open(testPageUrl);
+        });
     };
 
     getTestPageUrl = function() {
         var dfr = $.Deferred();
-        var testPageUrl = 'http://pages.pathcom.com/~horiatu/WCAG/test.htm';
-        chrome.storage.sync.get(['testPageUrl'], function(a) {
-            if(a['testPageUrl'] == undefined || a['testPageUrl'] != '') {
-                testPageUrl = a['testPageUrl'];
+        var tpu = 'http://pages.pathcom.com/~horiatu/WCAG/test.htm';
+        chrome.storage.sync.get('testPageUrl', function(a) {
+            if(a['testPageUrl'] && a['testPageUrl'] != undefined && a['testPageUrl'] != '') {
+                tpu = a['testPageUrl'];
             }
-            dfr.resolve(testPageUrl);
+            dfr.resolve(tpu);
         });
         return dfr.promise();
     };
@@ -332,10 +334,6 @@ $(document).ready(function() {
 
     openHomePage = function(e) {
         window.open('http://pages.pathcom.com/~horiatu/WCAG/index.html','_blank');
-    };
-
-    openTestPage = function(e) {
-        window.open('http://pages.pathcom.com/~horiatu/WCAG/test.htm','_blank');
     };
 
     $('#closeBtn').click(function(e) { window.close(); });
