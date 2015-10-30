@@ -13,7 +13,7 @@
 #colorPickerViewer {
 	position: fixed; 
 	padding:0px; 
-	z-index:10000;
+	z-index:2147483647;
     border: 0px solid gray; 
     overflow: hidden;
 }
@@ -89,6 +89,7 @@
 	margin:0; padding:0;
 	top:0; left:0;
 	height:100%; width:100%;
+	position: fixed;
 }
 #ColorPickerOvr{
 	position:relative;
@@ -99,7 +100,7 @@
 #ColorPickerLdr {
 	position: absolute; 
 	cursor:wait;
-	z-index: 5000;
+	z-index: 2147483647;
 }
 
 .Sample {
