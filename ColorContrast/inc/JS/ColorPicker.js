@@ -717,7 +717,7 @@ var ColorPicker = function() {
 
                             $('#effects-menu li ul li a').click(_private.menuLeftClick);
 
-                            $('#ChalengedVisions').click(function(e) {
+                            $('#ChallengedVisions').click(function(e) {
                                 $('#eye-menu').toggle();
                                 $('#effects-menu').hide();
                                 e.preventDefault();
