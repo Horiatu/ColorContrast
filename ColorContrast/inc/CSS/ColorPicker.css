@@ -230,6 +230,11 @@
 	left:0;
 }
 
+#menu1 img, #colorPickerSample img {
+	width:18px;
+	height:18px;
+}
+
 #menu1-trigger .btn img {
 	width:11px; height:11px;
 	opacity: 0.75;

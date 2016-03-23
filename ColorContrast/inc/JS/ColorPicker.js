@@ -621,7 +621,7 @@ var ColorPicker = function() {
                         
                         $('#colorPickerViewer')
                             .append(
-                                '<img alt="" width="100%" height="100%" style="position:absolute; top:0; left:0;" '+
+                                '<img alt="" width="100%" height="100%" style="width:100%; height:100%; position:absolute; top:0; left:0;" '+
                                 'src="'+chrome.extension.getURL('images/' + options.magnifierGlass + '.png')+'"></img>')
                             .append(
                                 '<canvas id="colorPickerViewerMarker" style="position:absolute; border:1px solid red;"></canvas>')
