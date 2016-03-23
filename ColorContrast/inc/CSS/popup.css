@@ -120,10 +120,10 @@ h1 span {
   width:15px;
   height:15px;
   cursor: pointer;
-  opacity: 0.25;
+  opacity: 0.5;
 }
 .disabled {
-  opacity: 0.15;
+  opacity: 0.25;
 }
 #closeBtn {
     right: 4px;
