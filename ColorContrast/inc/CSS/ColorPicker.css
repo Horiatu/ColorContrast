@@ -21,7 +21,9 @@
 #colorPickerViewer table{
 	border-collapse:collapse; 
 	margin: 0px -2px -2px 0px;
-	padding:0; 
+	padding:0 !important; 
+	border-collapse: separate !important; 
+	border-spacing: 0px !important;
 	box-sizing:content-box !important; 
 	-webkit-box-sizing:content-box !important;
 	background-color: indigo;

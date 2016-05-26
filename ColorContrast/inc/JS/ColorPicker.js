@@ -161,7 +161,7 @@ var ColorPicker = function() {
                     reqColor: reqColor
                 });
                 _private.copyToClipboard(color);
-            };
+            }
 
             _private.setSquareColor(color);
 
@@ -595,7 +595,7 @@ var ColorPicker = function() {
                         colorPickerViewer.setAttribute("style", "display:none;");
 
                         var t = contentDocument.createElement("Table");
-                        t.setAttribute("cellspacing", 1);
+                        // t.setAttribute("cellspacing", 1);
                         colorPickerViewer.appendChild(t);
 
                         _public.dotArray = Array();

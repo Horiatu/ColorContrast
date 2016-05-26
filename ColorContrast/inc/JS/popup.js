@@ -34,7 +34,7 @@ $(document).ready(function() {
             hash = str.charCodeAt(i) + ((hash << 5) - hash);
         }
         var colour = '#';
-        for (var i = 0; i < 3; i++) {
+        for (i = 0; i < 3; i++) {
             var value = (hash >> (i * 8)) & 0xFF;
             colour += ('00' + value.toString(16)).substr(-2);
         }
@@ -54,7 +54,7 @@ $(document).ready(function() {
             if(contrast < 7.0) desiredContrasts.push(7.0);
             if(contrast < 4.5) desiredContrasts.push(4.5);
             if(contrast < 3.0) desiredContrasts.push(3.0);
-            if(desiredContrasts.length == 0) return;
+            if(desiredContrasts.length === 0) return;
 
             var colors = YCbCr.suggestColors(bgColor, frColor, desiredContrasts);
 
@@ -156,11 +156,11 @@ $(document).ready(function() {
                 $(".txInput").addClass("error");
             }
             //$("#contrast span").css("text-shadow", "2px 2px 2px transparent");
-        };
-    };
+        }
+    },
 
-    _bgOld = null;
-    _frOld = null;
+    _bgOld = null,
+    _frOld = null,
     setUndo = function(bgOld, frOld, bgNew, frNew) {
         $().undoable(
             function(){ // redo
@@ -176,7 +176,7 @@ $(document).ready(function() {
                 _frOld = frNew;
             } 
         );
-    }
+    },
 
     analyseResults = function(cc) {
         $("#contrast span").html(parseFloat(cc).toFixed(2) + ":1");
@@ -222,8 +222,8 @@ $(document).ready(function() {
 
             $(".large").show();
             $(".small").show();
-        };
-    };
+        }
+    },
 
     pickAction = function(t) {
         //console.log(t.currentTarget);
@@ -270,7 +270,7 @@ $(document).ready(function() {
                     }
                 );
             });
-    };
+    },
 
     scriptDesc = function(script) {
         return (
@@ -281,26 +281,26 @@ $(document).ready(function() {
                 allFrames: script.allFrames,
                 "code": script.content
             }
-        )
+        );
     },
 
     loadScripts = function(tabid, scripts, dfr) {
         var options = scriptDesc(scripts.shift());
         chrome.tabs.executeScript(tabid, options, function() {
-            if (scripts.length != 0)
+            if (scripts.length !== 0)
                 loadScripts(tabid, scripts, dfr);
             else
                 dfr.resolve();
         });
         return dfr.promise();
-    }
+    },
 
     pinCode = function(t) {
         var id = t.currentTarget.id;
         var bgOld = $('#background').val();
         var frOld = $('#foreground').val();
         var val = $(id=='pinFr' ? '#foregroundValue' : '#backgroundValue').html();
-        if(val.indexOf('close to ')==0) val = val.substring(9);
+        if(val.indexOf('close to ')===0) val = val.substring(9);
         if(val.indexOf(',')>=0) val = val.substring(0, val.indexOf(','));
         $(id=='pinFr' ? '#foreground' : '#background').val(val);
         getContrast(id=='pinFr' ? 'foreground' : 'background');
@@ -308,33 +308,33 @@ $(document).ready(function() {
         var bgNew = $('#background').val();
         var frNew = $('#foreground').val();
         setUndo(bgOld, frOld, bgNew, frNew);
-    }
+    },
 
     openTestPage = function(e) {
         getTestPageUrl().done(function(testPageUrl) {
             window.open(testPageUrl);
         });
-    };
+    },
 
     getTestPageUrl = function() {
         var dfr = $.Deferred();
         var tpu = 'http://pages.pathcom.com/~horiatu/WCAG/test.htm';
         chrome.storage.sync.get('testPageUrl', function(a) {
-            if(a['testPageUrl'] && a['testPageUrl'] != undefined && a['testPageUrl'] != '') {
-                tpu = a['testPageUrl'];
+            if(a.testPageUrl && a.testPageUrl !== undefined && a.testPageUrl !== '') {
+                tpu = a.testPageUrl;
             }
             dfr.resolve(tpu);
         });
         return dfr.promise();
-    };
+    },
 
     openOptionsPage = function(e) {
         window.open(chrome.extension.getURL('/inc/html/options.html'),'_blank');
-    };
+    },
 
     openHomePage = function(e) {
-        window.open('http://pages.pathcom.com/~horiatu/WCAG/index.html','_blank');
-    };
+        window.open('https://docs.google.com/presentation/d/1ZAJ8dCCZ9mapb_cnZcRse5mJsihAnGhrQDLzso4su8Q/edit?usp=sharing','_blank');
+    },
 
     $('#closeBtn').click(function(e) { window.close(); });
     $('#optionsBtn').attr('src',chrome.extension.getURL('/images/Help.png')).click(openOptionsPage);
@@ -360,7 +360,7 @@ $(document).ready(function() {
         });
 
     chrome.storage.sync.get(['clickType'], function(a) {
-        if(a['clickType'] == undefined || a['clickType']) {
+        if(a.clickType === undefined || a.clickType) {
             $('.pickOne').hide();
             $('.pickAll button').show();
             $('.pick1').on('click', pickAction);
@@ -396,11 +396,11 @@ $(document).ready(function() {
             }, function() {
                 chrome.storage.sync.get(['background', 'foreground'], function(a) {
                     //console.log('Restore '+a['background']+' '+a['foreground']);
-                    if (a['background']) {
-                        $("#background").val(a['background']);
+                    if (a.background) {
+                        $("#background").val(a.background);
                     }
-                    if (a['foreground']) {
-                        $("#foreground").val(a['foreground']);
+                    if (a.foreground) {
+                        $("#foreground").val(a.foreground);
                     }
                     getContrast();
 
@@ -428,18 +428,18 @@ $(document).ready(function() {
                         onUndo : function() {
                             if(!$('#undoBtn').hasClass('disabled')) {
                                 var o = $('#undoBtn').css('opacity');
-                                $('#undoBtn').css('opacity', 1).animate({opacity: o}, 200, function() {$('#undoBtn').css('opacity','')});
+                                $('#undoBtn').css('opacity', 1).animate({opacity: o}, 200, function() {$('#undoBtn').css('opacity','');});
                             }
                         },
                         onRedo : function() {
                             if(!$('#redoBtn').hasClass('disabled')) {
                                 var o = $('#redoBtn').css('opacity');
-                                $('#redoBtn').css('opacity', 1).animate({opacity: o}, 200, function() {$('#redoBtn').css('opacity','')});
+                                $('#redoBtn').css('opacity', 1).animate({opacity: o}, 200, function() {$('#redoBtn').css('opacity','');});
                             }
                         }
                     });
                 });
             }
-        )
+        );
     });
 });

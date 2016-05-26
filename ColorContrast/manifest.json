@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "WCAG Luminosity Contrast Ratio Analyzer",
-  "version": "1.0.5.9",
+  "version": "1.0.5.11",
 
   "description": "Pick colors from your Web, compute contrast, get suggestions. Preview with challenged visions. Versatile Color Dev Extension Tool",
   "icons": { 
