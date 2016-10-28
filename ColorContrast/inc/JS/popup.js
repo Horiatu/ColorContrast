@@ -318,7 +318,7 @@ $(document).ready(function() {
 
     getTestPageUrl = function() {
         var dfr = $.Deferred();
-        var tpu = 'http://pages.pathcom.com/~horiatu/WCAG/test.htm';
+        var tpu = 'http://horiatu.atwebpages.com/index.htm';
         chrome.storage.sync.get('testPageUrl', function(a) {
             if(a.testPageUrl && a.testPageUrl !== undefined && a.testPageUrl !== '') {
                 tpu = a.testPageUrl;
