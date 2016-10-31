@@ -318,7 +318,7 @@ $(document).ready(function() {
 
     getTestPageUrl = function() {
         var dfr = $.Deferred();
-        var tpu = 'http://horiatu.atwebpages.com/index.htm';
+        var tpu = 'http://horiatu.atwebpages.com/WCAG/TestPage.htm';
         chrome.storage.sync.get('testPageUrl', function(a) {
             if(a.testPageUrl && a.testPageUrl !== undefined && a.testPageUrl !== '') {
                 tpu = a.testPageUrl;
@@ -336,7 +336,7 @@ $(document).ready(function() {
         window.open('https://docs.google.com/presentation/d/1ZAJ8dCCZ9mapb_cnZcRse5mJsihAnGhrQDLzso4su8Q/edit?usp=sharing','_blank');
     },
 
-    $('#closeBtn').click(function(e) { window.close(); });
+    $('#closeBtn').click(function(e) { window.close(); } );
     $('#optionsBtn').attr('src',chrome.extension.getURL('/images/Help.png')).click(openOptionsPage);
     $('#homeBtn').click(openHomePage);
     $('#sampleBtn').attr('src',chrome.extension.getURL('/images/DisabledEye.png')).click(openTestPage);
