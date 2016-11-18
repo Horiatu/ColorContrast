@@ -5,53 +5,53 @@ $(document).ready(function() {
     addCssClass('@font-face', 'font-family: "Poiret One";\n\t\tfont-weight: 400;\n\t\tsrc: url("'+chrome.extension.getURL("/fonts/Poiret One.woff2")+'") format("woff2");', 'fonts');
     
     $('input[name="magnifyGlass"]').on('change', function() {
-        showGlass($(this).val())
-    })
+        showGlass($(this).val());
+    });
     $('#mapbg').change(function() {
-        showMapBg($(this).is(':checked'))
+        showMapBg($(this).is(':checked'));
     });
     $('#toolbar').change(function() {
-        showToolbar($(this).is(':checked'))
+        showToolbar($(this).is(':checked'));
     });
     $('#sample').change(function() {
-        showSample($(this).is(':checked'))
+        showSample($(this).is(':checked'));
     });
     $('#gridSize').bind('input',function() {
         showGrid($(this).val());
     });
     $('#clickType').change(function() {
-        showDirections($(this).is(':checked'))
+        showDirections($(this).is(':checked'));
     });
     $('#autoCopy').change(function() {
-        showAutoCopy($(this).is(':checked'))
+        showAutoCopy($(this).is(':checked'));
     });
     $('input[id="testPageUrl"]').on('input', function() {
         testPageUrlChanged($(this).val());
-    })
+    });
     $('#testPageTry').click(function() {
         window.open($('#testPageUrl').val());
-    })
+    });
 
     $.each($('img'), function(index, value) {
         $value = $(value);
         $value.attr('src', chrome.extension.getURL($value.attr('src'))).attr('alt', '');
-    })
+    });
     restore_options($.Deferred());
 });
 
 function addCssClass(className, classValue, styleId) {
     if(!styleId) styleId='css-modifier-container';
-    if ($('#'+styleId).length == 0) {
+    if ($('#'+styleId).length === 0) {
         $('head').prepend('<style id="'+styleId+'"></style>');
     }
 
     $('#'+styleId).append('\t'+className + "{\n\t\t" + classValue + "\n\t}\n");
-};
+}
 
 function getOptions(optionsDfr) {
     chrome.extension.connect().postMessage({type: 'get-defaults'});
     return optionsDfr.promise();
-};
+}
         
 
 // Restores select box state to saved value from localStorage.
@@ -104,12 +104,12 @@ function testPageUrlChanged(val) {
     chrome.storage.sync.set({
         'testPageUrl': val
     });
-    $('#testPageTry').css('display',(val == '')?'none':'inherit');
+    $('#testPageTry').css('display',(val === '')?'none':'inherit');
 }
 
 function showMapBg(show) {
     if (show) {
-        $('.glassBox').addClass('mapBg')
+        $('.glassBox').addClass('mapBg');
     } else {
         $('.glassBox').removeClass('mapBg');
     }

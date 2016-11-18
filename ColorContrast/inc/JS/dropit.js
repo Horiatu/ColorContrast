@@ -7,7 +7,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-;(function($) {
+(function($) {
 
     $.fn.dropit = function(method) {
 

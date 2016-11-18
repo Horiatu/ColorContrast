@@ -4,7 +4,6 @@ var ColorPicker = function() {
         colorPickerToolbar: null,
         colorDiv: null,
         colorTxt: null,
-        imageData: null,
 
         width: $(document).width(),
         height: $(document).height(),
@@ -31,7 +30,7 @@ var ColorPicker = function() {
         eyeType: 'NormalVision',
 
         rectInRect: function(A, B) {
-            return (A.x >= B.x && A.y >= B.y && (A.x + A.width) <= (B.x + B.width) && (A.y + A.height) <= (B.y + B.height))
+            return (A.x >= B.x && A.y >= B.y && (A.x + A.width) <= (B.x + B.width) && (A.y + A.height) <= (B.y + B.height));
         },
 
         // found out if two points and length overlaps
@@ -64,7 +63,7 @@ var ColorPicker = function() {
             if (A.x == B.x && A.width == B.width) {
                 t = _private.rectMergeGeneric(A.y, B.y, A.height);
 
-                if (t != false) {
+                if (t !== false) {
                     A.y = t.a;
                     A.height = length;
                     return A;
@@ -74,7 +73,7 @@ var ColorPicker = function() {
             } else if (A.y == B.y && A.height == B.height) {
                 t = _private.rectMergeGeneric(A.x, B.x, A.width);
 
-                if (t != false) {
+                if (t !== false) {
                     A.x = t.a;
                     A.width = length;
                     return A;
@@ -106,9 +105,9 @@ var ColorPicker = function() {
             var g = 0;
             var b = 0;
             var n = 0;
-            for(var x=_private.downZone.x + (_private.downZone.width==0?0:1); x<=_private.downZone.x+_private.downZone.width; x++)
+            for(var x=_private.downZone.x + (_private.downZone.width===0?0:1); x<=_private.downZone.x+_private.downZone.width; x++)
             {
-                for(var y=_private.downZone.y + (_private.downZone.height==0?0:1); y<=_private.downZone.y+_private.downZone.height; y++)
+                for(var y=_private.downZone.y + (_private.downZone.height===0?0:1); y<=_private.downZone.y+_private.downZone.height; y++)
                 {
                     var i = (x + y * _private.canvas.width) * 4;
 
@@ -174,6 +173,8 @@ var ColorPicker = function() {
                 getColorDfr = $.Deferred();
             }
 
+            var w = 0;
+            var h = 0;
             var eventTarget = event.target;
             if (eventTarget) {
                 var tagName = eventTarget.tagName;
@@ -183,8 +184,8 @@ var ColorPicker = function() {
                     if (eventTarget != $('#colorPickerViewer') && !_private.isAncestor(eventTarget, $('#colorPickerViewer')) && tagName && tagName.toLowerCase() != "scrollbar") {
                         // place viewer
                         var size = _private.gridSize * 7;
-                        var w = window.innerWidth - size - 24;
-                        var h = window.innerHeight - size - 24;
+                        w = window.innerWidth - size - 24;
+                        h = window.innerHeight - size - 24;
                         if (event.clientX < w) {
                             $('#colorPickerViewer').css("left", (event.clientX + 4) + "px");
                         } else {
@@ -216,11 +217,11 @@ var ColorPicker = function() {
                         var p = _private.downPoint;
                         var m = {x:event.pageX, y:event.pageY};
 
-                        var w = _private.downZone.width; 
-                        var h = _private.downZone.height; 
+                        w = _private.downZone.width; 
+                        h = _private.downZone.height; 
 
-                        if(w==0) w++;
-                        if(h==0) h++;
+                        if(w===0) w++;
+                        if(h===0) h++;
 
                         var x = (m.x > p.x) ? 1-w : 0;
                         var y = (m.y > p.y) ? 1-h : 0;
@@ -457,7 +458,7 @@ var ColorPicker = function() {
         },
 
         _injectCss : function(css) {
-            if ($("head").length == 0) {
+            if ($("head").length === 0) {
                     $("body").before(css);
                 } else {
                     $("head").append(css);
@@ -496,7 +497,7 @@ var ColorPicker = function() {
                 });
                 s.html(c);
             }
-            v = n != 0 ? (n) : '';
+            v = n !== 0 ? (n) : '';
             $('#BlurPx').html(v).attr('title', v);
         },
 
@@ -589,7 +590,7 @@ var ColorPicker = function() {
                 if(options.magnifierGlass != 'none') {
                     if (!contentDocument.getElementById('colorPickerViewer')) {
                         _private.gridSize = options.gridSize;
-                        _private.eyeType = (options.eyeType == "" || !options.eyeType) ? "NormalVision" : options.eyeType;
+                        _private.eyeType = (options.eyeType === "" || !options.eyeType) ? "NormalVision" : options.eyeType;
                         colorPickerViewer = contentDocument.createElement("Div");
                         colorPickerViewer.setAttribute("id", "colorPickerViewer");
                         colorPickerViewer.setAttribute("style", "display:none;");
@@ -631,7 +632,7 @@ var ColorPicker = function() {
                     }
 
                     _private.showMagnifier = true;
-                };
+                }
 
                 if(options.toolbar) {
                     if (!contentDocument.getElementById("colorPickerToolbar")) {
@@ -722,14 +723,14 @@ var ColorPicker = function() {
                                 $('#effects-menu').hide();
                                 e.preventDefault();
                                 e.stopPropagation();
-                            })
+                            });
 
                             $('#Effects').click(function(e) {
                                 $('#effects-menu').toggle();
                                 $('#eye-menu').hide();
                                 e.preventDefault();
                                 e.stopPropagation();
-                            })
+                            });
 
                             _private.setVisionEffect();
 
@@ -748,8 +749,8 @@ var ColorPicker = function() {
 
                             _private.showToolbar = true;
                         });
-                    };
-                };
+                    }
+                }
 
                 chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
                     switch (req.type) {
@@ -861,7 +862,7 @@ var ColorPicker = function() {
                 case 70 : // F
                     _private.foregroundToClipboard();   
                     e.stopPropagation();
-                    e.preventDefault();c
+                    e.preventDefault();
                     break; 
                 case 66 : // B
                     _private.backgroundToClipboard();   
@@ -881,8 +882,8 @@ var ColorPicker = function() {
                         _private.addToEffect(_private.eyeType, -1);
                     e.stopPropagation();
                     e.preventDefault();
-                    break
-            };
+                    break;
+            }
         },
 
         ShowContrastSample:function(showAnyway){
@@ -1062,7 +1063,7 @@ var ColorPicker = function() {
 
         setSampleColors: function(colors) {
             //$Sample = $('.smallSample').parent();
-            if(colors == undefined) colors = _private.getColors();
+            if(colors === undefined) colors = _private.getColors();
             // $colorPickerSample = $('.bodyNew');
             $colorPickerSample = $('#colorPickerSample');
 
@@ -1077,7 +1078,7 @@ var ColorPicker = function() {
                 chrome.storage.sync.set({
                     'position': pos
                 });
-            };
+            }
             $('#colorPickerToolbar').addClass('up');
             if(pos.left) {
                 $('#colorPickerToolbar').removeClass('right').addClass('left');
@@ -1110,7 +1111,7 @@ var ColorPicker = function() {
             else 
             {
                 chrome.extension.connect().postMessage({type: 'get-defaults'});
-            };
+            }
             return optionsDfr.promise();
         },
         
@@ -1126,12 +1127,12 @@ var ColorPicker = function() {
 
         colorToClipboard: function(what) {
             var color = _private.rgbToColor($('#smallSample').parent().css(what));
-            _private.copyToClipboard(color)
+            _private.copyToClipboard(color);
             return color;
         },
 
         copyToClipboard: function(txt) {
-            var copyBox = $('#CopyBox')
+            var copyBox = $('#CopyBox');
             copyBox.val(txt);
             copyBox.show();
             copyBox.focus();
@@ -1169,7 +1170,7 @@ var ColorPicker = function() {
 
             // don't screenshot if we already have this one
             if (!force && _private.rects.length > 0) {
-                for (index in _private.rects) {
+                for (var index in _private.rects) {
                     if (_private.rectInRect(rect, _private.rects[index])) {
                         return;
                     }
@@ -1222,10 +1223,10 @@ var ColorPicker = function() {
                 // if there are already any rectangles
                 if (_private.rects.length > 0) {
                     // try to merge shot with others
-                    for (index in _private.rects) {
+                    for (var index in _private.rects) {
                         var t = _private.rectMerge(rect, _private.rects[index]);
 
-                        if (t != false) {
+                        if (t !== false) {
                             //console.log('merging');
                             merged = true;
                             _private.rects[index] = t;
@@ -1241,9 +1242,9 @@ var ColorPicker = function() {
                 _private.canvasData = _private.canvasContext.getImageData(0, 0, _private.canvas.width, _private.canvas.height).data;
 
                 $("#ColorPickerOvr").show(100, function() {
-                    _private.screenshotDfr.resolve()
+                    _private.screenshotDfr.resolve();
                 });
-            }
+            };
             if (_private.imageData) {
                 image.src = _private.imageData;
             } else {
@@ -1266,7 +1267,7 @@ var ColorPicker = function() {
             $("#lighterEffect").remove();
         },
 
-    }
+    };
 
     var _public = {
         rdotArray: null,
@@ -1283,7 +1284,7 @@ var ColorPicker = function() {
                 $(window).unbind('keyup', _private.Shortcuts).unbind("mousewheel", _private.effectMouseWheel);
             } catch (err) {
                 console.log(err);
-            };
+            }
         },
 
         refresh: function() {
@@ -1291,7 +1292,7 @@ var ColorPicker = function() {
             _private.normalVision();
             _private.setEyeType('NormalVision');
         },
-    }
+    };
 
     return _public;
 

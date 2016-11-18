@@ -39,7 +39,8 @@ legend {
 }
 .radio, .checkbox {
   padding-left: 0px;
-  padding-right: 20px;
+  padding-right: 5px;
+  margin-top: 0;
 }
 #gridSettings td {
   vertical-align: top;
@@ -78,5 +79,19 @@ kbd{
   height: 20px; 
   font-size: 10px; 
   margin-left: -40px;
+}
+
+.glassBoxCheck {
+    padding: 5px;
+    background-color: transparent;
+    border-radius: 5px;
+}
+
+input[name="magnifyGlass"] {
+  display: none;
+}
+
+input[name="magnifyGlass"]:checked + label > div.glassBoxCheck {
+  background-color: gray;
 }
 

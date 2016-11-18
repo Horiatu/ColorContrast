@@ -270,7 +270,6 @@
 .BlackAndWhite{
 	-webkit-filter: grayscale(100%);
 	filter: grayscale(100%);
-	/*filter: url(desaturate.svg#greyscale);*/
 }
 
 .InvertVision, .InvertVision img, .InvertVision video,
