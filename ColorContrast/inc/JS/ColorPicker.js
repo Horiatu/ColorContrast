@@ -109,7 +109,7 @@ var ColorPicker = function() {
             {
                 for(var y=_private.downZone.y + (_private.downZone.height===0?0:1); y<=_private.downZone.y+_private.downZone.height; y++)
                 {
-                    var i = (x + y * _private.canvas.width) * 4;
+                    var i = ((x+1) + (y+1) * _private.canvas.width) * 4;
 
                     r += _private.canvasData[i++];
                     g += _private.canvasData[i++];
