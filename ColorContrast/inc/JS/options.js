@@ -48,21 +48,6 @@ function addCssClass(className, classValue, styleId) {
     $('#'+styleId).append('\t'+className + "{\n\t\t" + classValue + "\n\t}\n");
 }
 
-function getOptionAsync(option, defaultVal) {
-    var dfr = $.Deferred();
-    chrome.storage.sync.get(option, function(a) {
-        if(a[option] && a[option] !== undefined && a[option] !== '') {
-            result = a[option];
-        }
-        else
-        {
-            result = defaultVal;
-        }
-        dfr.resolve(result);
-    });
-    return dfr.promise();
-}
-
 function getOptions(optionsDfr) {
     chrome.extension.connect().postMessage({type: 'get-defaults'});
     return optionsDfr.promise();
@@ -102,6 +87,8 @@ function restore_options(optionsDfr) {
         $('#gridSize').val(options.gridSize);
         showGrid(options.gridSize);
         $('#grid').on('mousewheel', gridOnWheel);
+        $('#gridSize').on('mousewheel', gridOnWheel);
+        $('#gridSizeVal').on('mousewheel', gridOnWheel);
         $('#gridSize').css("display", "block");
 
         $('#testPageUrl').val(options.testPageUrl);
