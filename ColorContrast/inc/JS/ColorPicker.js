@@ -586,7 +586,7 @@ var ColorPicker = function() {
                 }
             });
 
-            _private.getOptions(optionsDfr).done(function() {
+            _private.getAllOptionsAsync(optionsDfr).done(function() {
 
                 _private.injectCss(contentDocument);
                 
@@ -1112,7 +1112,7 @@ var ColorPicker = function() {
             return contrastDfr.promise();
         },
 
-        getOptions: function(optionsDfr) {
+        getAllOptionsAsync: function(optionsDfr) {
             if(_private.options) {
                optionsDfr.resolve(_private.options); 
             } 
