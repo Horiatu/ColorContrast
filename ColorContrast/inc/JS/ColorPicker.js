@@ -215,7 +215,11 @@ var ColorPicker = function() {
                         var m = {x:event.pageX, y:event.pageY};
 
                         _private.setMarkerSize(p.x-m.x,p.y-m.y);
-                   }
+                    }
+                    var c = _private.getPixel(event.pageX, event.pageY, 0, 0);
+                    var l = _private.luminance(c);
+                    //console.log(c+' '+l);
+                    $('.marker').css('border-color', (l>0.17) ? 'black' : 'white');
                 }
                 getColorDfr.resolve();
             } else {
@@ -224,10 +228,23 @@ var ColorPicker = function() {
             return getColorDfr.promise();
         },
 
+        luminance: function(c) {
+            // http://www.w3.org/Graphics/Color/sRGB.html
+            var R = ('0x'+c.substring(2,3)) / 255.0;
+            var G = ('0x'+c.substring(3,5)) / 255.0;
+            var B = ('0x'+c.substring(5,7)) / 255.0;
+            R = R <= 0.03928 ? R / 12.92 : Math.pow((R + 0.055) / 1.055, 2.4);
+            G = G <= 0.03928 ? G / 12.92 : Math.pow((G + 0.055) / 1.055, 2.4);
+            B = B <= 0.03928 ? B / 12.92 : Math.pow((B + 0.055) / 1.055, 2.4);
+            var l = (0.2126 * R) + (0.7152 * G) + (0.0722 * B);
+            return l;
+        },
+
         setMarkerSize: function(dx, dy)
         {
             var w = Math.min(Math.abs(dx) + 1, _private.gridSize);
             var h = Math.min(Math.abs(dy) + 1, _private.gridSize);
+            var c = 'black';
             $('.marker')
                 .css('width', 7*w+'px')
                 .css('height', 7*h+'px')
@@ -250,8 +267,8 @@ var ColorPicker = function() {
             if (_private.canvasData === null)
                 return 'transparent';
 
-            var X = x0 + x;
-            var Y = y0 + y;
+            var X = x0 + x + 1;
+            var Y = y0 + y + 1;
 
             if (X < 0 || Y < 0 || X >= _private.width || Y >= _private.height) {
                 return 'indigo';
