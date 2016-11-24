@@ -48,12 +48,6 @@ function addCssClass(className, classValue, styleId) {
     $('#'+styleId).append('\t'+className + "{\n\t\t" + classValue + "\n\t}\n");
 }
 
-function saveOption(option, value){
-    chrome.storage.sync.set({
-        option: value
-    });
-}
-
 function getOptionAsync(option, defaultVal) {
     var dfr = $.Deferred();
     chrome.storage.sync.get(option, function(a) {
@@ -116,12 +110,12 @@ function restore_options(optionsDfr) {
 }
 
 function showGlass(val) {
-    saveOption('magnifierGlass', val);
+    chrome.storage.sync.set({'magnifierGlass': val});
     $('#gridSettings').css('display',(val == 'none')?'none':'inherit');
 }
 
 function testPageUrlChanged(val) {
-    saveOption('testPageUrl', val);
+    chrome.storage.sync.set({'testPageUrl': val});
     $('#testPageTry').css('display',(val === '')?'none':'inherit');
 }
 
@@ -132,15 +126,15 @@ function showMapBg(show) {
         $('.glassBox').removeClass('mapBg');
     }
 
-    saveOption('MapBg', $('#mapbg').is(':checked'));
+    chrome.storage.sync.set({'MapBg': $('#mapbg').is(':checked')});
 }
 
 function showToolbar(show) {
-    saveOption('toolbar', $('#toolbar').is(':checked'));
+    chrome.storage.sync.set({'toolbar': $('#toolbar').is(':checked')});
 }
 
 function showSample(show) {
-    saveOption('sample', $('#sample').is(':checked'));
+    chrome.storage.sync.set({'sample': $('#sample').is(':checked')});
 }
 
 function gridOnWheel() {
@@ -149,12 +143,7 @@ function gridOnWheel() {
     event.preventDefault();
     var gridSize = parseInt($('#gridSize').val());
     if(Math.abs(w)>=150 && (gridSize <= 23 || gridSize >= 9)) {
-        if(w>=150) {
-            gridSize += 2;
-        }
-        else if(w<=-150){
-            gridSize -= 2;
-        }
+        gridSize += Math.sign(w)*2;
         $('#gridSize').val(gridSize);
         showGrid(gridSize);
     }
@@ -178,23 +167,8 @@ function showGrid(val) {
         }
     }
 
-    saveOption('gridSize', $('#gridSize').val());
+    chrome.storage.sync.set({'gridSize': $('#gridSize').val()});
 }
-
-// function getGridSize() {
-//     var dfr = $.Deferred();
-//     chrome.storage.sync.get('gridSize', function(a) {
-//         if(a.gridSize && a.gridSize !== undefined && a.gridSize !== '') {
-//             gridSize = parseInt(a.gridSize);
-//         }
-//         else
-//         {
-//             gridSize = 15;
-//         }
-//         dfr.resolve(gridSize);
-//     });
-//     return dfr.promise();
-// }
 
 function showDirections(show) {
     $('#directionList').html(
@@ -207,9 +181,9 @@ function showDirections(show) {
         '<li>Click again the extension button <img src="'+chrome.extension.getURL('/images/logos/16.png')+'"></img> to finish the selection and play with the results.</li>'+
         '<li>When there are choices for A, AA or AAA compliance click an <kbd>OK</kbd> button to accept it.</li>');
 
-    saveOption('clickType', $('#clickType').is(':checked'));
+    chrome.storage.sync.set({'clickType': $('#clickType').is(':checked')});
 }
 
 function showAutoCopy(show) {
-    saveOption('autoCopy', $('#autoCopy').is(':checked'));
+    chrome.storage.sync.set({'autoCopy': $('#autoCopy').is(':checked')});
 }
