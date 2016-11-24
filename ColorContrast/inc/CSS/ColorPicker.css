@@ -76,10 +76,13 @@
 }
 
 .marker{
-	position:relative !important; 
-	margin-bottom:-2px; margin-right:-2px; 
-	margin-left: -1px; margin-top: -1px;
-	width:7px !important; height:7px !important; 
+	position: absolute !important; 
+	/*margin-bottom:-2px; 
+	margin-right:-2px; */
+	margin-left: -1px; 
+	margin-top: -4px;
+	width:7px; 
+	height:7px; 
 	border:1px solid red; 
 	background-color:transparent;
 }

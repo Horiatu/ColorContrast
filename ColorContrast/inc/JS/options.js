@@ -138,6 +138,22 @@ function showGrid(val) {
     var grid=$(document.createElement('table'));
     grid.attr("cellspacing", 1);
     $('#grid').append(grid);
+    $('#grid').on('mousewheel', function() {
+        var w = event.wheelDelta;
+        if(w>=150 || w<=150) {
+            getGridSize().done(function(gridSize) {
+                var $gridSize = $('#gridSize');
+                if(w>=150) {
+                    gridSize += 2;
+                }
+                else if(w<=-150){
+                    gridSize -= 2;
+                }
+                showGrid(gridSize);
+            });
+        }
+        return false;
+    });
     for(var i=0; i<val; i++) {
         var tr=$(document.createElement('tr'));
         grid.append(tr);
@@ -151,6 +167,17 @@ function showGrid(val) {
         'gridSize': $('#gridSize').val()
     });
 }
+
+   function getGridSize() {
+        var dfr = $.Deferred();
+        chrome.storage.sync.get('gridSize', function(a) {
+            if(a.gridSize && a.gridSize !== undefined && a.gridSize !== '') {
+                gridSize = a.gridSize;
+            }
+            dfr.resolve(gridSize);
+        });
+        return dfr.promise();
+    }
 
 function showDirections(show) {
     $('#directionList').html(

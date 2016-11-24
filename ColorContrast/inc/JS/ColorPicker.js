@@ -150,7 +150,7 @@ var ColorPicker = function() {
         },
 
         getColor: function(event, type, reqColor) {
-            color = _private.getPixel(event, 0, 0);
+            color = _private.getPixel(event.pageX, event.pageY, 0, 0);
             if (type == "selected") {
                 // ???
 
@@ -187,51 +187,34 @@ var ColorPicker = function() {
                         w = window.innerWidth - size - 24;
                         h = window.innerHeight - size - 24;
                         if (event.clientX < w) {
-                            $('#colorPickerViewer').css("left", (event.clientX + 4) + "px");
+                            $('#colorPickerViewer').css("left", (event.pageX + 4) + "px");
                         } else {
-                            $('#colorPickerViewer').css("left", (event.clientX - size - 4) + "px");
+                            $('#colorPickerViewer').css("left", (event.pageX - size - 4) + "px");
                         }
-                        if (event.clientY < h) {
-                            $('#colorPickerViewer').css("top", (event.clientY + 4) + "px");
+                        if (event.pageY < h) {
+                            $('#colorPickerViewer').css("top", (event.pageY + 4) + "px");
                         } else {
-                            $('#colorPickerViewer').css("top", (event.clientY - size - 4) + "px");
+                            $('#colorPickerViewer').css("top", (event.pageY - size - 4) + "px");
                         }
                     }
 
                     var deep = (_private.gridSize - 1) / 2;
                     for (i = -deep; i <= deep; i++) {
                         for (j = -deep; j <= deep; j++) {
-                            _public.dotArray[i + deep][j + deep].setAttribute("style", "background-color:" + _private.getPixel(event, j, i) + ";");
+                            _public.dotArray[i + deep][j + deep]
+                                .setAttribute("style", "background-color:" + 
+                                    _private.getPixel(event.pageX, event.pageY, j, i) + ";");
                         }
                     }
 
-                    var $marker = $('#colorPickerViewerMarker');
                     if(!_private.downZone) {
-                        $marker
-                            .css('width', 7+'px')
-                            .css('height', 7+'px')
-                            .css('left', deep*7-1+'px')
-                            .css('top', deep*7-1+'px');
+                        _private.setMarkerSize(0,0);
                     }
                     else {
                         var p = _private.downPoint;
                         var m = {x:event.pageX, y:event.pageY};
 
-                        w = _private.downZone.width; 
-                        h = _private.downZone.height; 
-
-                        if(w===0) w++;
-                        if(h===0) h++;
-
-                        var x = (m.x > p.x) ? 1-w : 0;
-                        var y = (m.y > p.y) ? 1-h : 0;
-
-                        //$('#debugTxt').css('left', (deep/2)*7+'px').html('w='+_private.downZone.width+' h='+_private.downZone.height);
-                        $marker
-                            .css('width', w*7+'px')
-                            .css('height', h*7+'px')
-                            .css('left', (x + deep)*7-1+'px')
-                            .css('top', (y + deep)*7-1+'px');
+                        _private.setMarkerSize(p.x-m.x,p.y-m.y);
                    }
                 }
                 getColorDfr.resolve();
@@ -239,6 +222,17 @@ var ColorPicker = function() {
                 getColorDfr.reject();
             }
             return getColorDfr.promise();
+        },
+
+        setMarkerSize: function(dx, dy)
+        {
+            var w = Math.min(Math.abs(dx) + 1, _private.gridSize);
+            var h = Math.min(Math.abs(dy) + 1, _private.gridSize);
+            $('.marker')
+                .css('width', 7*w+'px')
+                .css('height', 7*h+'px')
+                .css('margin-left', ((dx < 0 ? Math.max(dx, -_private.gridSize)*7 : 0) - 1) + 'px')
+                .css('margin-top', ((dy < 0 ? Math.max(dy, -_private.gridSize)*7 : 0) - 4) + 'px');
         },
 
         setSquareColor: function(color) {
@@ -252,11 +246,12 @@ var ColorPicker = function() {
             return (c === undefined) ? '00' : ('00'+parseInt(c).toString(16)).substr(-2);
         },
 
-        getPixel: function(e, x, y) {
+        getPixel: function(x0, y0, x, y) {
             if (_private.canvasData === null)
                 return 'transparent';
-            var X = e.pageX + x;
-            var Y = e.pageY + y;
+
+            var X = x0 + x;
+            var Y = y0 + y;
 
             if (X < 0 || Y < 0 || X >= _private.width || Y >= _private.height) {
                 return 'indigo';
@@ -609,11 +604,11 @@ var ColorPicker = function() {
                                 td = contentDocument.createElement("td");
                                 tr.appendChild(td);
                                 row.push(td);
-                                // if (i == 0 && j == 0) {
-                                //     marker = contentDocument.createElement("div");
-                                //     marker.setAttribute("class", "marker");
-                                //     td.appendChild(marker);
-                                // }
+                                if (i === 0 && j === 0) {
+                                    marker = contentDocument.createElement("div");
+                                    marker.setAttribute("class", "marker");
+                                    td.appendChild(marker);
+                                }
                             }
                             _public.dotArray.push(row);
                         }
@@ -624,11 +619,7 @@ var ColorPicker = function() {
                             .append(
                                 '<img alt="" width="100%" height="100%" style="width:100%; height:100%; position:absolute; top:0; left:0;" '+
                                 'src="'+chrome.extension.getURL('images/' + options.magnifierGlass + '.png')+'"></img>')
-                            .append(
-                                '<canvas id="colorPickerViewerMarker" style="position:absolute; border:1px solid red;"></canvas>')
                             .css('border-radius', '100%');
-
-                            //.append('<span id="debugTxt" style="position:absolute; top: 20px;"/>');
                     }
 
                     _private.showMagnifier = true;
