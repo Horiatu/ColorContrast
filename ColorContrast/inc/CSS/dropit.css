@@ -10,23 +10,26 @@
 /* These styles assume you are using ul and li */
 .dropit {
     list-style: none;
-	 padding: 0;
-	 margin: 0;
-   position:relative;
-   width:inherit;
+	  padding: 0;
+	  margin: 0;
+    position:relative;
+    width:inherit;
     -webkit-margin-before: 0;
     -webkit-margin-after: 0;
     -webkit-margin-start: 0px;
     -webkit-margin-end: 0px;
     -webkit-padding-start: 0;
-  }
+}
+
 .dropit .dropit-trigger { 
-  position: relative; 
-  opacity: 0.25;
+    position: relative; 
+    opacity: 0.25;
 }
+
 .dropit .dropit-trigger:hover { 
-  opacity: 1;
+    opacity: 1;
 }
+
 .dropit .dropit-submenu {
     position: absolute;
     top: 100%;
@@ -59,48 +62,55 @@
 }
 
 .Menu ul.dropit-submenu a {
-  display: block;
-  font-size: 14px;
-  line-height: 25px;
-  color: #3F4448;
-  padding: 0 18px;
-  text-decoration: none;
+    display: block;
+    font-size: 14px;
+    line-height: 25px;
+    color: #3F4448;
+    padding: 0 18px;
+    text-decoration: none;
 }
 
 .Menu ul.dropit-submenu a input {
-  margin-left: -10px;
+    margin-left: -10px;
 }
 
 .Menu ul.dropit-submenu a:hover {
-  background: #248fc1;
-  color: #fff;
-  text-decoration: none;
+    background: #248fc1;
+    color: #fff;
+    text-decoration: none;
 }
 
 .dropit .btn {
-  display: inline-block;
-  padding: 1px 3px;
-  margin: 0px;
-  text-align: center;
-  cursor: pointer;
-  background-color: #f5f5f5;
-  border: 1px solid #bbbbbb;
-  border-color: #e6e6e6 #e6e6e6 #bfbfbf;
-  border-bottom-color: #a2a2a2;
-  border-radius: 2px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-  text-decoration: none;
-  line-height: 22px;
-  width:auto;
-  height:auto;
+    display: inline-block;
+    padding: 1px 3px;
+    margin: 0px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #f5f5f5;
+    border: 1px solid #bbbbbb;
+    border-color: #e6e6e6 #e6e6e6 #bfbfbf;
+    border-bottom-color: #a2a2a2;
+    border-radius: 2px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+    text-decoration: none;
+    line-height: 22px;
+    width:auto;
+    height:auto;
+}
+
+.dropit li {
+    list-style-image: none;
+    line-height: inherit;
 }
 
 .dropit li hr {
-  margin: 2px;
+    margin: 2px;
+    display: block;
+    border: 1px inset;
 }
 
 .dropit .dropit-open {
-  opacity:1;
+    opacity:1;
 }
 
 .dropit .shortcut {
@@ -126,3 +136,8 @@
     position: absolute;
     right: 3px; top:4px;
 }
+
+.Menu ul.dropit-submenu li {
+    list-style-image: none;
+}
+
