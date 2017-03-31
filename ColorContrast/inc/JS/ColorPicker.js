@@ -590,7 +590,7 @@ var ColorPicker = function() {
 
                 _private.injectCss(contentDocument);
                 
-                if(!contentDocument.getElementById("#ColorPickerOvr")) {
+                if(!contentDocument.getElementById("ColorPickerOvr")) {
                     //$("body").wrapInner("<div id='bodyNew'></div>");
                     $("body").append('<div id="ColorPickerLdr"></div>');
                     $("#ColorPickerLdr").append('<div id="ColorPickerOvr" style="display:none; cursor: url(' + chrome.extension.getURL("images/cursors/pickColor.cur") + '), crosshair !important;"></div>');

@@ -336,9 +336,15 @@ $(document).ready(function() {
         window.open('https://docs.google.com/presentation/d/1ZAJ8dCCZ9mapb_cnZcRse5mJsihAnGhrQDLzso4su8Q/edit?usp=sharing','_blank');
     },
 
-    $('#closeBtn').click(function(e) { window.close(); } );
+    openSharePage = function(e) {
+        window.open('https://www.facebook.com/sharer?u=https%3A%2F%2Fchrome.google.com%2Fwebstore%2Fdetail%2Fwcag-luminosity-contrast%2Flllpnmpooomecmbmijbmbikaacgfdagi%3Fhl%3Den%26gl%3DCA','_blank');
+    },
+
+
+    $('#closeBtn').click(function(e) { window.close(); });
     $('#optionsBtn').attr('src',chrome.extension.getURL('/images/Help.png')).click(openOptionsPage);
     $('#homeBtn').click(openHomePage);
+    $('#Share').click(openSharePage);
     $('#sampleBtn').attr('src',chrome.extension.getURL('/images/DisabledEye.png')).click(openTestPage);
     $("#undoBtn").click(function(e) {
         if($(e.toElement).hasClass('disabled')) return;

@@ -117,7 +117,7 @@ h1 span {
     border-style: solid;
 }
 .toolbarBtn {
-  width:15px;
+  /*width:15px;*/
   height:15px;
   cursor: pointer;
   opacity: 0.5;
