@@ -38,7 +38,7 @@ Background.sendMessage = function(message, callback) {
 };
 
 Background.getOptionOrDefault = function(a, option, value) {
-    if(a[option] == undefined) {
+    if(a[option] === undefined) {
         a[option] = value;
     }
     return a[option];
@@ -110,6 +110,20 @@ chrome.tabs.getSelected(null, function(tab) {
             case 'get-contrast':
                 sendResponse({contrast: (new WebColor(msg.c1)).contrastTo(new WebColor(msg.c2))}); 
                 break;
+        }
+    });
+});
+
+chrome.runtime.onInstalled.addListener(function(details) {
+    chrome.runtime.openOptionsPage(function() {
+        var thisVersion = chrome.runtime.getManifest().version;
+        if(details.reason == "install" || thisVersion === details.previousVersion)
+        {
+            console.log("Installed version ", thisVersion);
+        }
+        else if(details.reason == "update")
+        {
+            console.log("Updated from " + details.previousVersion + " to " + thisVersion); 
         }
     });
 });
