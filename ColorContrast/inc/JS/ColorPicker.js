@@ -961,7 +961,7 @@ var ColorPicker = function() {
             _private.normalVision();
             var name = _private.eyeType;
             if(name != 'NormalVision') {
-                $('html').addClass(name);
+                $('body').addClass(name);
 
                 if($('#'+name).hasClass('effect'))
                     $('#'+name+' span').show();
@@ -1006,7 +1006,7 @@ var ColorPicker = function() {
         },
 
         addToEffect : function(id, delta) {
-            $('html').addClass(id);
+            $('body').addClass(id);
             if($('#'+id).hasClass('effect')) {
                 switch (id) {
                     case 'ContrastVision' :
@@ -1048,7 +1048,7 @@ var ColorPicker = function() {
 
         normalVision: function() {
             // $('#bodyNew, .bodyNew')
-            $('html')
+            $('body')
                 .removeClass('NormalVision') // !
                 .removeClass('ContrastVision').removeClass('LighterVision').removeClass('BlurVision')
                 .removeClass('BlackAndWhite').removeClass('InvertVision').removeClass('RotateColorsEffect')
