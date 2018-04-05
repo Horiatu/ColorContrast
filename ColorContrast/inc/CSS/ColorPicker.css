@@ -11,28 +11,28 @@
 }
 
 #colorPickerViewer {
-	position: fixed; 
-	padding:0px; 
+	position: fixed;
+	padding:0px;
 	z-index:2147483647;
-    border: 0px solid gray; 
+    border: 0px solid gray;
     overflow: hidden;
 }
 
 #colorPickerViewer table{
-	border-collapse:collapse; 
+	border-collapse:collapse;
 	margin: 0px -2px -2px 0px;
-	padding:0 !important; 
-	border-collapse: separate !important; 
+	padding:0 !important;
+	border-collapse: separate !important;
 	border-spacing: 0px !important;
-	box-sizing:content-box !important; 
+	box-sizing:content-box !important;
 	-webkit-box-sizing:content-box !important;
 	background-color: indigo;
 }
 
 #colorPickerViewer table td {
-	padding:0px; 
-	width:7px; 
-	height:7px; 
+	padding:0px;
+	width:7px;
+	height:7px;
 	border-radius: 1px;
 	border-width: 0;
 }
@@ -42,10 +42,10 @@
 }
 
 #colorPickerToolbar {
-    position: absolute; 
+    position: absolute;
     padding: 0px;
-    background-color:white; 
-    border-style:inset; 
+    background-color:white;
+    border-style:inset;
     border-width: 2px;
     visibility:visible;
     cursor: default;
@@ -60,12 +60,11 @@
     border-color: grey;
     margin:0;
     background-color: white;
-    display: block; 
+    display: block;
 }
 
 #colorDiv {
-	width: 22px;
-    border: 1px solid gray;
+	width: 22pt;
 }
 
 #colorTxt {
@@ -73,24 +72,25 @@
 	padding-right: 4px;
 	font-family: 'Source Code Pro';
     font-weight: bold;
+    font-size: 16pt;
 }
 
 .marker{
-	position: absolute !important; 
-	/*margin-bottom:-2px; 
+	position: absolute !important;
+	/*margin-bottom:-2px;
 	margin-right:-2px; */
-	margin-left: -1px; 
+	margin-left: -1px;
 	margin-top: -4px;
-	width:7px; 
-	height:7px; 
-	border:1px solid red; 
+	width:7px;
+	height:7px;
+	border:1px solid red;
 	background-color:transparent;
 }
 
 #ColorPickerOvr, #ColorPickerLdr {
-	opacity: 1; 
-	background: transparent; 
-	border: 0 none transparent; 
+	opacity: 1;
+	background: transparent;
+	border: 0 none transparent;
 	margin:0; padding:0;
 	top:0; left:0;
 	height:100%; width:100%;
@@ -103,7 +103,7 @@
 	cursor:crosshair;
 }
 #ColorPickerLdr {
-	position: absolute; 
+	position: absolute;
 	cursor:wait;
 	z-index: 2147483647;
 }
@@ -116,11 +116,14 @@
 	vertical-align: baseline;
 	line-height: 24px;
 }
+.small, .large {
+	padding-top: 2px;
+}
 .smallSample {
-  	font-size: 12px;
+  	font-size: 12pt;
 }
 .largeSample {
-  	font-size: 14px;
+  	font-size: 14pt;
   	font-weight: bold;
 }
 
@@ -138,7 +141,7 @@
   	padding-left: 8px;
   	padding-right: 8px;
   	font-family: 'Poiret One';
-  	font-size: 18px;
+  	font-size: 18pt;
   	font-weight: bold;
   	padding-bottom: 0px;
   	padding-top: 0px;
@@ -161,32 +164,32 @@
 	position: absolute;
 	bottom:10px;
 	cursor:help;
-    border-style:outset; 
+    border-style:outset;
     border-width: 2px;
     font-size: 12px;
 }
 
 #colorPickerSample h1, #colorPickerSample p {
 	margin: 20px;
-	font-family: sans-serif; 
+	font-family: sans-serif;
 	color: inherit;
 	background-color: inherit;
+	font-size: 12pt;
 }
 
 #colorPickerSample h1 {
-	font-size: 18px;
+	font-size: 18pt;
 	font-weight: normal;
 	margin-top: 40px;
 }
 
 #colorPickerSample strong {
-	font-size: 14px;
+	font-size: 14pt;
 	font-weight: bold;
 }
 
 #colorPickerSample li {
 	list-style-type: disc;
-	list-style-position: inside;
 	background: transparent none;
 }
 
@@ -219,11 +222,11 @@
 
 #PickerSampleEye {
 	left:28px;
-	position: absolute; 
+	position: absolute;
 }
 #PickerSampleEffects {
 	left:52px;
-	position: absolute; 
+	position: absolute;
 }
 #PickerSampleEye li, #PickerSampleEffects li {
 	list-style-type: none;
@@ -235,9 +238,16 @@
 	left:0;
 }
 
+img.toLeft {
+	width: 12pt !important;
+    height: 12pt !important;
+    padding-top: 0pt !important;
+}
+
 #menu1 img, #colorPickerSample img {
-	width:18px;
-	height:18px;
+	width: 18pt;
+    height: 18pt;
+    padding-top: 2pt;
 }
 
 #menu1-trigger .btn img {
@@ -289,7 +299,7 @@
 .RotateColorsEffect {
    -webkit-animation: adjustHue 2s infinite;
 }
-     
+
 @-webkit-keyframes adjustHue {
    0% { -webkit-filter: hue-rotate(0deg); }
 
@@ -316,7 +326,7 @@
    90% { -webkit-filter: hue-rotate(324deg); }
    95% { -webkit-filter: hue-rotate(342deg); }
    100% { -webkit-filter: hue-rotate(360deg); }
-} 
+}
 
 .Protanopia {
 	-webkit-filter: url(#protanopia);
