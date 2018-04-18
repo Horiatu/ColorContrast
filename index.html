@@ -49,7 +49,7 @@
 		for(i=0; i<16; i++) {
 			content += '<tr>';
 			for (var j = 0; j<16; j++) {
-				color = 
+				color =
 					hex(15-j) + hex(i) +
 					hex(i) + hex(i) +
 					hex(j) + hex(j);
@@ -101,9 +101,9 @@
 		</main>
 		<footer>
 			<div style="position:absolute; left:4px; display: -webkit-box;">
-				<div style="color:gray;">Low Contrast Text</div>
-				<div style="color:black; margin-left:10px;" role="BadRole">Bad Role</div>
-				<div style="color:black; margin-left:10px;" aria-XXX="BadRole">Bad Aria Attribute</div>
+				<div style="color:gray; display:inline;">Low Contrast Text</div>
+				<div style="color:black; display:inline; margin-left:10px;" role="BadRole">Bad Role</div>
+				<div style="color:black; display:inline; margin-left:10px;" aria-XXX="BadRole">Bad Aria Attribute</div>
 				<a href="" style="margin-left:10px;">&nbsp;</a>
 				<a href="" style="margin-left:10px;" title="Link with unclear purpose"></a>
 			</div>
