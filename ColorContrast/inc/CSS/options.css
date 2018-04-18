@@ -5,6 +5,8 @@
 }*/
 .jumbotron {
   margin-bottom:0;
+  padding-top: 20px;
+  padding-bottom: 10px;
 }
 
 .jumbotron h1, .jumbotron .h1 {
@@ -15,18 +17,27 @@
 
 .jumbotron h2, .jumbotron .h2, legend {
   font-family: "Poiret One";
-  --color: gray;
   font-weight: 600;
-  --border-bottom: 1px solid gray;
 }
+
+.jumbotron h3 {
+  font-family: "Poiret One";
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.jumbotron h3 span {
+  color: #5a0080;
+}
+
 
 .col-md-6 {
   padding-left: 30px;
 }
 
 legend {
-  border-bottom: 1px solid gray; 
-  margin-top: 30px; 
+  border-bottom: 1px solid gray;
+  margin-top: 30px;
 }
 
 .glassBox {
@@ -68,17 +79,17 @@ legend {
 input[type=radio], input[type=checkbox] {
   width: 18px;
   height: 18px;
-  margin: 2px; 
+  margin: 2px;
   vertical-align: top;
 }
 kbd{
   background-color: #777;
 }
 #testPageTry {
-  white-space: nowrap; 
-  margin: 4px; 
-  height: 20px; 
-  font-size: 10px; 
+  white-space: nowrap;
+  margin: 4px;
+  height: 20px;
+  font-size: 10px;
   margin-left: -40px;
 }
 
