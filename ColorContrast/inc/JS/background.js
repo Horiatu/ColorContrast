@@ -61,6 +61,8 @@ Background.getDefaults = function() {
     var gdDfr = $.Deferred();
     chrome.storage.sync.get(['magnifierGlass', 'MapBg', 'clickType', 'autoCopy', 'toolbar', 'sample', 'position', 'gridSize', 'eyeType', 'restrictBruteForce', 'restrictSeconds', 'testPageUrl'],
     function(a) {
+        var manifest = chrome.runtime.getManifest();
+        console.log(manifest.version);
         defaults = {
             type:'defaults',
             magnifierGlass : Background.getOptionOrDefault(a, 'magnifierGlass', 'magnifierGlass3'),
@@ -75,6 +77,7 @@ Background.getDefaults = function() {
             restrictBruteForce : Background.getOptionOrDefault(a, 'restrictBruteForce', true),
             restrictSeconds : Background.getOptionOrDefault(a, 'restrictSeconds', 5),
             testPageUrl : Background.getOptionOrDefault(a, 'testPageUrl', ''),
+            version: manifest.version
         };
         gdDfr.resolve(defaults);
     });
@@ -109,9 +112,7 @@ chrome.extension.onConnect.addListener(function(port) {
                 break;
             case 'get-defaults':
                 Background.getDefaults().done(function(defaults) {
-                    defaults.version=manifest.version;
                     Background.sendMessage(defaults);
-                    console.log(defaults);
                 });
                 break;
         }
