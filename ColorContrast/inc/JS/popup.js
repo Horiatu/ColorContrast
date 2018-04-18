@@ -85,7 +85,7 @@ $(document).ready(function() {
                     var frColor = color[0].toHex();
                     var bgColor = color[1].toHex();
                     var contrast = color[0].contrastTo(color[1]);
-                    if(contrast >= 3) 
+                    if(contrast >= 3)
                         $fixSamples.append(
                             '<div class="example" style="background-color: '+bgColor+'; '+
                             //'border: 2px solid '+frColor+'; '+
@@ -141,13 +141,13 @@ $(document).ready(function() {
                 _bgOld = backgroundVal;
                 _frOld = foregroundVal;
             }
-            else 
+            else
             {
                 if($(id ? ("#" + id) : ".txInput").hasClass("error")) {
                     setUndo(_bgOld, _frOld, backgroundVal, foregroundVal);
                 }
             }
-            
+
             $(id ? ("#" + id) : ".txInput").removeClass("error");
 
             chrome.storage.sync.set({
@@ -196,7 +196,7 @@ $(document).ready(function() {
                 getContrast();
                 _bgOld = bgNew;
                 _frOld = frNew;
-            } 
+            }
         );
     },
 
@@ -278,7 +278,7 @@ $(document).ready(function() {
                             }, {
                                 allFrames: false,
                                 file: false,
-                                content: 
+                                content:
                                     "ColorPicker.Hide(document);\n" +
                                     "ColorPicker.Show(document);\n" +
                                     "//ColorPicker.refresh();"
@@ -340,7 +340,7 @@ $(document).ready(function() {
 
     getTestPageUrl = function() {
         var dfr = $.Deferred();
-        var tpu = 'http://horiatu.atwebpages.com/WCAG/TestPage.htm';
+        var tpu = 'https://horiatu.github.io/ColorContrast/';
         chrome.storage.sync.get('testPageUrl', function(a) {
             if(a.testPageUrl && a.testPageUrl !== undefined && a.testPageUrl !== '') {
                 tpu = a.testPageUrl;
@@ -398,7 +398,7 @@ $(document).ready(function() {
             $('.pick').on('click', pickAction);
         }
     });
-    
+
     $('.pin').on('click', pinCode);
 
     $('#toggle').on('click', function(t) {
@@ -412,7 +412,7 @@ $(document).ready(function() {
 
     var backgroundPage = chrome.extension.getBackgroundPage().Background;
 
-    getSelectedTab().done(function(tab) { 
+    getSelectedTab().done(function(tab) {
         chrome.tabs.executeScript(tab.id, {
             allFrames: false,
             "code":
