@@ -111,7 +111,7 @@ chrome.extension.onConnect.addListener(function(port) {
                 Background.getDefaults().done(function(defaults) {
                     defaults.version=manifest.version;
                     Background.sendMessage(defaults);
-                    // console.log(defaults);
+                    console.log(defaults);
                 });
                 break;
         }
