@@ -61,8 +61,6 @@ Background.getDefaults = function() {
     var gdDfr = $.Deferred();
     chrome.storage.sync.get(['magnifierGlass', 'MapBg', 'clickType', 'autoCopy', 'toolbar', 'sample', 'position', 'gridSize', 'eyeType', 'restrictBruteForce', 'restrictSeconds', 'testPageUrl'],
     function(a) {
-        var manifest = chrome.runtime.getManifest();
-        console.log(manifest.version);
         defaults = {
             type:'defaults',
             magnifierGlass : Background.getOptionOrDefault(a, 'magnifierGlass', 'magnifierGlass3'),
@@ -77,7 +75,7 @@ Background.getDefaults = function() {
             restrictBruteForce : Background.getOptionOrDefault(a, 'restrictBruteForce', true),
             restrictSeconds : Background.getOptionOrDefault(a, 'restrictSeconds', 5),
             testPageUrl : Background.getOptionOrDefault(a, 'testPageUrl', ''),
-            version: manifest.version
+            version: chrome.runtime.getManifest().version
         };
         gdDfr.resolve(defaults);
     });

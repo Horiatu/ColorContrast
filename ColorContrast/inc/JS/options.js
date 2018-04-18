@@ -16,7 +16,7 @@ $(document).ready(function() {
     // show tabs
     addCssClass('.mapBg', 'background-image: url("'+chrome.extension.getURL("/images/mapbg.png")+'");', 'styles');
     addCssClass('@font-face', 'font-family: "Poiret One";\n\t\tfont-weight: 400;\n\t\tsrc: url("'+chrome.extension.getURL("/fonts/Poiret One.woff2")+'") format("woff2");', 'fonts');
-    
+
     $('input[name="magnifyGlass"]').on('change', function() {
         showGlass($(this).val());
     });
@@ -65,7 +65,7 @@ function getOptions(optionsDfr) {
     chrome.extension.connect().postMessage({type: 'get-defaults'});
     return optionsDfr.promise();
 }
-        
+
 
 // Restores select box state to saved value from localStorage.
 function restore_options(optionsDfr) {
@@ -106,6 +106,8 @@ function restore_options(optionsDfr) {
 
         $('#testPageUrl').val(options.testPageUrl);
         testPageUrlChanged(options.testPageUrl);
+
+        $('#version').html(options.version);
     });
 }
 
@@ -157,7 +159,7 @@ function showGrid(val) {
     var grid=$(document.createElement('table'));
     grid.attr("cellspacing", 1);
     $('#grid').append(grid);
-    
+
     for(var i=0; i<val; i++) {
         var tr=$(document.createElement('tr'));
         grid.append(tr);
