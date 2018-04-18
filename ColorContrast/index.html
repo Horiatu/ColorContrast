@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	<link rel='shortcut icon' type='image/x-icon' href='favicon.ico' />
+	<style type="text/css">
+		html, body {
+    		height: 100%;
+		}
+		.wrapper {
+			  height:100vh;
+			  display:flex;
+			  flex-direction: column;
+		}
+		.wrapperMain {
+		    display: table-cell;
+		    height: 100%;
+		    vertical-align: middle;
+		}
+		h1, h2 {
+			margin: 4px 12px;
+			font-family: helvetica, Verdana, Arial, sans-serif;
+			line-height: 141%;
+		}
+		h1 {
+			font-size: 18px;
+		}
+		h2 {
+			font-size: 12px;
+			font-weight: normal;
+		}
+		header, footer {
+		  height: auto;
+		}
+
+		main {
+		  flex:1;
+		}
+
+	</style>
+	<script type="text/javascript">
+	function hex(i) {
+		var hex = //'0123456789abcdef';
+					'f1d3456789abc2e0';
+		return hex[i];
+	}
+	function init() {
+		var table = document.getElementById('table');
+		var content = '';
+		for(i=0; i<16; i++) {
+			content += '<tr>';
+			for (var j = 0; j<16; j++) {
+				color =
+					hex(15-j) + hex(i) +
+					hex(i) + hex(i) +
+					hex(j) + hex(j);
+				content += '<td title="' + color + '" tabindex=0 style="width:36px; height:36px; background-color:#' + color + ';"/>';
+			};
+			content += '</tr>';
+		}
+		table.innerHTML = content;
+	}
+	</script>
+	</head>
+	<body onLoad="init()" style="margin:0">
+	<div class="wrapper">
+		<header>
+			<div style="background:navy; color:gold;" role="banner">
+			<table>
+				<tr>
+					<td>
+						<!-- <img src="48.png" style="alt=""></img> -->
+						<input style="margin:2px; margin-left:8px; width:48px; height:48px; background-image: url('48.png'); background-repeat: no-repeat; background-color:transparent; border:none;"/>
+					</td>
+					<td>
+						<h1>WCAG Luminosity Contrast Ratio Analyzer</h1>
+						<h2>Test page</h2>
+					</td>
+				</tr>
+			</table>
+		</div>
+		</header>
+		<main>
+			<div class="wrapperMain" role="main">
+				<table style="margin: 0 8px; position: absolute;top: 50%; transform: translate(0, -50%)">
+					<tr>
+						<td width="28%">
+							<img src="DifferentSpectrum.png" width="100%" alt="Challenged Visions"></img>
+							<img src="colorwheel.png" width="100%"></img>
+						</td>
+						<td rowspan="2">
+							<table id='table' cellspacing="0" align="center"></table>
+						</td>
+						<td width="15%" rowspan="3">
+							<img src="Y0.png" width="100%" alt="YCC Dark"></img>
+							<img src="YHalf.png" width="100%" alt="YCC Medium"></img>
+							<img src="Y1.png" width="100%" alt="YCC Light"></img>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</main>
+		<footer>
+			<div style="position:absolute; left:4px; display: -webkit-box;">
+				<div style="color:gray;display:inline;">Low Contrast Text</div>
+				<div style="color:black;display:inline; margin-left:10px;" role="BadRole">Bad Role</div>
+				<div style="color:black;display:inline; margin-left:10px;" aria-XXX="BadRole">Bad Aria Attribute</div>
+				<a href="" style="margin-left:10px;">&nbsp;</a>
+				<a href="" style="margin-left:10px;" title="Link with unclear purpose"></a>
+			</div>
+			<div style="position:absolute; right:4px;" role="navigation">
+				<a href="http://horiatu.atwebpages.com/WCAG/ColorContrastHome.html">home</a>,
+				<a href="https://chrome.google.com/webstore/detail/wcag-luminosity-contrast/lllpnmpooomecmbmijbmbikaacgfdagi">chrome web store</a>
+			</div>
+			<img src="Banner.png" width="100%" alt=""></img>
+		</footer>
+	</div>
+	</body>
+</html>
