@@ -64,12 +64,12 @@ Background.getDefaults = function() {
         defaults = {
             type:'defaults',
             magnifierGlass : Background.getOptionOrDefault(a, 'magnifierGlass', 'magnifierGlass3'),
-            MapBg : Background.getOptionOrDefault(a, 'MapBg', true), 
-            clickType : Background.getOptionOrDefault(a, 'clickType', true), 
-            autoCopy : Background.getOptionOrDefault(a, 'autoCopy', true), 
-            toolbar : Background.getOptionOrDefault(a, 'toolbar', true), 
-            sample : Background.getOptionOrDefault(a, 'sample', true), 
-            position : Background.getOptionOrDefault(a, 'position', {up:true, left:true}), 
+            MapBg : Background.getOptionOrDefault(a, 'MapBg', true),
+            clickType : Background.getOptionOrDefault(a, 'clickType', true),
+            autoCopy : Background.getOptionOrDefault(a, 'autoCopy', true),
+            toolbar : Background.getOptionOrDefault(a, 'toolbar', true),
+            sample : Background.getOptionOrDefault(a, 'sample', true),
+            position : Background.getOptionOrDefault(a, 'position', {up:true, left:true}),
             gridSize : Background.getOptionOrDefault(a, 'gridSize', 25),
             eyeType : /*Background.getOptionOrDefault(a, 'eyeType', */'NormalVision',
             restrictBruteForce : Background.getOptionOrDefault(a, 'restrictBruteForce', true),
@@ -109,8 +109,9 @@ chrome.extension.onConnect.addListener(function(port) {
                 break;
             case 'get-defaults':
                 Background.getDefaults().done(function(defaults) {
+                    defaults.version=manifest.version;
                     Background.sendMessage(defaults);
-                    //console.log(defaults);
+                    // console.log(defaults);
                 });
                 break;
         }
@@ -121,7 +122,7 @@ chrome.tabs.getSelected(null, function(tab) {
     chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
         switch (msg.type) {
             case 'get-contrast':
-                sendResponse({contrast: (new WebColor(msg.c1)).contrastTo(new WebColor(msg.c2))}); 
+                sendResponse({contrast: (new WebColor(msg.c1)).contrastTo(new WebColor(msg.c2))});
                 break;
         }
     });
@@ -136,7 +137,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
         }
         else if(details.reason == "update")
         {
-            console.log("Updated from " + details.previousVersion + " to " + thisVersion); 
+            console.log("Updated from " + details.previousVersion + " to " + thisVersion);
         }
     });
 });
