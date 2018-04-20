@@ -65,7 +65,12 @@
 		table.innerHTML = content;
 	}
 	function B_W(ev) {
-		console.log(ev);
+		console.log(ev.checked);
+		if(ev.checked) {
+			document.body.className = "BlackAndWhite";
+		} else {
+			document.body.className = "";
+		}
 	}
 	</script>
 	</head>
