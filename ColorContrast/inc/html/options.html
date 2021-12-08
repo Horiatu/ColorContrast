@@ -1,33 +1,34 @@
 <!doctype html>
 <html lang="en">
 
-    <head>
-        <title>WCAG Luminosity Contrast Ratio Analyzer - Options</title>
+<head>
+    <title>WCAG Luminosity Contrast Ratio Analyzer - Options</title>
 
-        <meta charset="utf-8"></meta>
-        <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+    <meta charset="utf-8"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
 
-        <link type="text/css" rel="stylesheet" href="/inc/bootstrap/css/bootstrap.min.css"></link>
-        <link rel="stylesheet" href="/inc/css/options.css" type="text/css"></link>
-    </head>
+    <link type="text/css" rel="stylesheet" href="/inc/bootstrap/css/bootstrap.min.css"></link>
+    <link rel="stylesheet" href="/inc/css/options.css" type="text/css"></link>
+</head>
 
-    <body>
-        <div class="jumbotron">
-            <h1>WCAG Luminosity Contrast Ratio Analyzer</h1>
-            <h2>Options page</h2>
-            <h3>Installed or Updated Version <span id="version"></span></h3>
-        </div>
+<body>
+    <div class="jumbotron">
+        <h1>WCAG Luminosity Contrast Ratio Analyzer</h1>
+        <h2>Options page</h2>
+        <h3>Installed or Updated Version <span id="version"></span></h3>
+        <h4><span style="color:red;">What's new: </span>Resolved deprecated jQuery methods affecting "Challenged Visions" selectors.</h4>
+    </div>
 
-        <div class="col-sm-6 col-md-6">
-            <legend>Magnify Look</legend>
-            <fieldset>
-                <div class="controls magnifyGlass">
-                    <table>
-                        <tr>
-                            <td>
+    <div class="col-sm-6 col-md-6">
+        <legend>Magnify Look</legend>
+        <fieldset>
+            <div class="controls magnifyGlass">
+                <table>
+                    <tr>
+                        <td>
                             <div class="checkbox">
                                 <input type="radio" name="magnifyGlass" value="magnifierGlass" id="magnifierGlass" />
-                                <label for="magnifierGlass" >
+                                <label for="magnifierGlass">
                                     <div class="glassBoxCheck">
                                         <div class="glassBox">
                                             <img src="/images/magnifierGlass.png" />
@@ -35,8 +36,8 @@
                                     </div>
                                 </label>
                             </div>
-                            </td>
-                            <td>
+                        </td>
+                        <td>
                             <div class="checkbox">
                                 <input type="radio" name="magnifyGlass" value="magnifierGlass2" id="magnifierGlass2" />
                                 <label for="magnifierGlass2">
@@ -47,8 +48,8 @@
                                     </div>
                                 </label>
                             </div>
-                            </td>
-                            <td>
+                        </td>
+                        <td>
                             <div class="checkbox">
                                 <input type="radio" name="magnifyGlass" value="magnifierGlass3" id="magnifierGlass3" />
                                 <label for="magnifierGlass3">
@@ -59,8 +60,8 @@
                                     </div>
                                 </label>
                             </div>
-                            </td>
-                            <td>
+                        </td>
+                        <td>
                             <div class="checkbox">
                                 <input type="radio" name="magnifyGlass" value="none" id="none" />
                                 <label for="none">
@@ -82,117 +83,117 @@
                                     </div>
                                 </label>
                             </div>
-                            </td>
-                        </tr>
+                        </td>
+                    </tr>
 
+                    <tr>
+                        <td colspan="4">
+                            <div>
+                                <input id="mapbg" type="checkbox" />
+                                <label for="mapbg" style="font-weight: 400;">Show glass on a map-like background</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <table id="gridSettings" style="padding-top:10px;">
+                                <tr>
+                                    <td style="width:80px;">
+                                        <label for="gridSize" style="font-weight: 400">Grid Size:</label>
+                                    </td>
+                                    <td>
+                                        <text id="gridSizeVal" style="font-weight: 400; "></text>
+                                    </td>
+                                    <td>
+                                        <div id="grid"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <div style="width:200px;">
+                                            <input id="gridSize" type="range" min="7" max="25" step="2" value="7" style="display:none;" />
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="col-sm-6 col-md-6">
+        <legend>Directions</legend>
+        <fieldset>
+            <div>
+                <table style="margin-bottom:10px;">
+                    <tbody>
                         <tr>
-                            <td colspan="4">
-                                <div>
-                                    <input id="mapbg" type="checkbox" />
-                                    <label for="mapbg" style="font-weight: 400;">Show glass on a map-like background</label>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4">
-                                <table id="gridSettings" style="padding-top:10px;">
-                                    <tr>
-                                        <td style="width:80px;">
-                                            <label for="gridSize" style="font-weight: 400">Grid Size:</label>
-                                        </td>
-                                        <td>
-                                            <text id="gridSizeVal" style="font-weight: 400; "></text>
-                                        </td>
-                                        <td>
-                                            <div id="grid"></div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                      <td colspan="2">
-                                          <div style="width:200px;">
-                                              <input id="gridSize" type="range" min="7" max="25" step="2" value="7" style="display:none;" />
-                                          </div>
-                                      </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </fieldset>
-        </div>
-
-        <div class="col-sm-6 col-md-6">
-            <legend>Directions</legend>
-            <fieldset>
-                <div>
-                    <table style="margin-bottom:10px;">
-                        <tbody>
-                            <tr>
-                                <td style="vertical-align: top;">
-                                    <input id="autoCopy" type="checkbox" style="margin-right:5px; vertical-aligh:top;"/>
-                                </td>
-                                <td>
-                                    <label for="autoCopy" style="font-weight: 400;">Automatically copy last picked color to clipboard.</label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="vertical-align: top;">
-                                    <input id="clickType" type="checkbox" style="margin-right:5px; vertical-aligh:top;"/>
-                                </td>
-                                <td>
-                                    <label for="clickType" style="font-weight: 400;">Use <kbd>left-click</kbd> for background, <kbd>right-click</kbd> for foreground.</label>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </fieldset>
-
-            <ol id="directionList"></ol>
-        </div>
-
-        <div class="col-sm-6 col-md-6">
-            <legend>Toolbars and Test Page</legend>
-            <fieldset>
-                <div class="controls">
-                    <input id="toolbar" type="checkbox" />
-                    <label for="toolbar" style="font-weight: 400;">Color-value panel visible</label>
-                </div>
-                <div class="controls">
-                    <input id="sample" type="checkbox" />
-                    <label for="sample" style="font-weight: 400;">Show text sample</label>
-                </div>
-                <div class="controls">
-                    <!-- <input id="testPage" type="checkbox" /> -->
-
-                    <table>
-                        <tr>
-                            <th nowrap="nowrap">
-                                <span id="testPageLabel" style="margin-right:4px;">Test Page Url:</span>
-                            </th>
-                            <td width="100%">
-                                <input id="testPageUrl" type="text" style="width:100%" placeholder="https://horiatu.github.io/ColorContrast/"/>
+                            <td style="vertical-align: top;">
+                                <input id="autoCopy" type="checkbox" style="margin-right:5px; vertical-aligh:top;" />
                             </td>
                             <td>
-                                <button id="testPageTry" style="display:none;">Try it</button>
+                                <label for="autoCopy" style="font-weight: 400;">Automatically copy last picked color to clipboard.</label>
                             </td>
                         </tr>
-                    </table>
-                </div>
-            </fieldset>
-        </div>
+                        <tr>
+                            <td style="vertical-align: top;">
+                                <input id="clickType" type="checkbox" style="margin-right:5px; vertical-aligh:top;" />
+                            </td>
+                            <td>
+                                <label for="clickType" style="font-weight: 400;">Use <kbd>left-click</kbd> for background, <kbd>right-click</kbd> for foreground.</label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
 
-        <div class="col-sm-6 col-md-6">
-            <legend>Thank you</legend>
-            <fieldset>
-                <span>If you like it, or just if you use it, please rate (and review) it on </span>
-                <a href="https://chrome.google.com/webstore/detail/wcag-luminosity-contrast/lllpnmpooomecmbmijbmbikaacgfdagi/reviews" target="blank">Chrome Web Store</a>
-                <span>.</span>
-            </fieldset>
-        </div>
-        <script type="text/javascript" src="/inc/js/jquery-2.1.4.min.js"></script>
-        <script type="text/javascript" src="/inc/js/options.js"></script>
-    </body>
+        <ol id="directionList"></ol>
+    </div>
+
+    <div class="col-sm-6 col-md-6">
+        <legend>Toolbars and Test Page</legend>
+        <fieldset>
+            <div class="controls">
+                <input id="toolbar" type="checkbox" />
+                <label for="toolbar" style="font-weight: 400;">Color-value panel visible</label>
+            </div>
+            <div class="controls">
+                <input id="sample" type="checkbox" />
+                <label for="sample" style="font-weight: 400;">Show text sample</label>
+            </div>
+            <div class="controls">
+                <!-- <input id="testPage" type="checkbox" /> -->
+
+                <table>
+                    <tr>
+                        <th nowrap="nowrap">
+                            <span id="testPageLabel" style="margin-right:4px;">Test Page Url:</span>
+                        </th>
+                        <td width="100%">
+                            <input id="testPageUrl" type="text" style="width:100%" placeholder="https://horiatu.github.io/ColorContrast/" />
+                        </td>
+                        <td>
+                            <button id="testPageTry" style="display:none;">Try it</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="col-sm-6 col-md-6">
+        <legend>Thank you</legend>
+        <fieldset>
+            <span>If you like it, or just if you use it, please rate (and review) it on </span>
+            <a href="https://chrome.google.com/webstore/detail/wcag-luminosity-contrast/lllpnmpooomecmbmijbmbikaacgfdagi/reviews" target="blank">Chrome Web Store</a>
+            <span>.</span>
+        </fieldset>
+    </div>
+    <script type="text/javascript" src="/inc/js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="/inc/js/options.js"></script>
+</body>
 
 </html>
