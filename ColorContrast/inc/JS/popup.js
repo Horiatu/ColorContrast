@@ -98,7 +98,7 @@ $(document).ready(function() {
                                 '   <img src="' + chrome.extension.getURL('/images/btnOK.png') + '" data-fr="' + frColor + '" data-bg="' + bgColor + '" class="btn btnOK"></img>' +
                                 '</div>');
                     });
-                    $('#fixSamples img').click(acceptSample);
+                    $('#fixSamples img').on("click", acceptSample);
                     $fixSamples.show();
                 }
             }
@@ -359,16 +359,16 @@ $(document).ready(function() {
         },
 
 
-        $('#closeBtn').click(function(e) { window.close(); });
-    $('#optionsBtn').attr('src', chrome.extension.getURL('/images/Help.png')).click(openOptionsPage);
-    $('#homeBtn').click(openHomePage);
-    $('#Share').click(openSharePage);
-    $('#sampleBtn').attr('src', chrome.extension.getURL('/images/DisabledEye.png')).click(openTestPage);
-    $("#undoBtn").click(function(e) {
+        $('#closeBtn').on("click", function(e) { window.close(); });
+    $('#optionsBtn').attr('src', chrome.extension.getURL('/images/Help.png')).on("click", openOptionsPage);
+    $('#homeBtn').on("click", openHomePage);
+    $('#Share').on("click", openSharePage);
+    $('#sampleBtn').attr('src', chrome.extension.getURL('/images/DisabledEye.png')).on("click", openTestPage);
+    $("#undoBtn").on("click", function(e) {
         if ($(e.target).hasClass('disabled')) return;
         $.fn.undoable.undo();
     });
-    $("#redoBtn").click(function(e) {
+    $("#redoBtn").on("click", function(e) {
         if ($(e.target).hasClass('disabled')) return;
         $.fn.undoable.redo();
     });

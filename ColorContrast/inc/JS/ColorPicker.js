@@ -648,31 +648,31 @@ var ColorPicker = function() {
                             _private.colorTxt = contentDocument.getElementById("colorTxt");
                             _private.colorDiv = contentDocument.getElementById("colorDiv");
 
-                            $('#CopyFr').click(function(e) {
+                            $('#CopyFr').on("click", function(e) {
                                 _private.foregroundToClipboard();
                             });
 
-                            $('#CopyBg').click(function(e) {
+                            $('#CopyBg').on("click", function(e) {
                                 _private.backgroundToClipboard();
                             });
 
-                            $('#ShowSample').click(function() {
+                            $('#ShowSample').on("click", function() {
                                 _private.ShowContrastSample(false);
                             });
 
-                            $('#ToggleColors').click(function(e) {
+                            $('#ToggleColors').on("click", function(e) {
                                 _private.toggleColors();
                             });
 
-                            $('#RefreshColorPicker').click(function(e) {
+                            $('#RefreshColorPicker').on("click", function(e) {
                                 _public.refresh();
                             });
 
-                            $('#ExitColorPicker').click(function(e) {
+                            $('#ExitColorPicker').on("click", function(e) {
                                 _public.Hide();
                             });
 
-                            $('#mNormalVision').click(function(e) {
+                            $('#mNormalVision').on("click", function(e) {
                                 _private.normalVision();
                                 _private.setEyeType('NormalVision');
                                 $(".effectPercent").remove();
@@ -702,7 +702,7 @@ var ColorPicker = function() {
                             $('img.toLeft').attr('src', chrome.extension.getURL('images/ToLeft.png'));
                             $('#eye-menu .yes').attr('src', yesSrc).hide();
 
-                            $('#eye-menu li ul li a').click(_private.menuLeftClick);
+                            $('#eye-menu li ul li a').on("click", _private.menuLeftClick);
 
                             $('#effects-menu li a img').attr('src', chrome.extension.getURL('images/Effects.png'));
                             $('#effects-menu .yes').attr('src', yesSrc).hide();
@@ -717,16 +717,16 @@ var ColorPicker = function() {
                                 $(this).unbind("contextmenu", _private.effectRightClick);
                             });
 
-                            $('#effects-menu li ul li a').click(_private.menuLeftClick);
+                            $('#effects-menu li ul li a').on("click", _private.menuLeftClick);
 
-                            $('#ChallengedVisions').click(function(e) {
+                            $('#ChallengedVisions').on("click", function(e) {
                                 $('#eye-menu').toggle();
                                 $('#effects-menu').hide();
                                 e.preventDefault();
                                 e.stopPropagation();
                             });
 
-                            $('#Effects').click(function(e) {
+                            $('#Effects').on("click", function(e) {
                                 $('#effects-menu').toggle();
                                 $('#eye-menu').hide();
                                 e.preventDefault();
@@ -738,11 +738,11 @@ var ColorPicker = function() {
 
                             $('#colorPickerToolbar').on('mouseenter', _private.removeMouseSupport).on('mouseleave', _private.addMouseSupport);
 
-                            $('#UpLeft').click(function(e) {
+                            $('#UpLeft').on("click", function(e) {
                                 _private.setToolbarPosition({ up: true, left: true }, true);
                             });
 
-                            $('#UpRight').click(function(e) {
+                            $('#UpRight').on("click", function(e) {
                                 _private.setToolbarPosition(pos = { up: true, left: false }, true);
                             });
 
@@ -909,7 +909,7 @@ var ColorPicker = function() {
                     });
                 $SampleContent.load(chrome.extension.getURL("/inc/html/TextSample.html"), function() {
                     $colorPickerSample.append("<div id='PickerSampleclose' class='PickerSampleBtn PickerSampleHover shadowed'><img src='" + chrome.extension.getURL("images/close.png") + "' title='close (image)'></img></div>");
-                    $('#PickerSampleclose').click(function(e) {
+                    $('#PickerSampleclose').on("click", function(e) {
                         $colorPickerSample.hide();
                         chrome.storage.sync.set({ 'sample': false });
                         $('#ShowSample').html("<span class='shortcut'>S</span>&nbsp;Show Sample");
@@ -918,12 +918,12 @@ var ColorPicker = function() {
                     });
 
                     $colorPickerSample.append("<div id='PickerSampleToggle' class='PickerSampleBtn PickerSampleHover shadowed'><img src='" + chrome.extension.getURL("images/toggle.png") + "' title='Toggle Colors'></img></div>");
-                    $colorPickerSample.click(function(e) {
+                    $colorPickerSample.on("click", function(e) {
                         e.stopPropagation();
                         e.preventDefault();
                     });
 
-                    $('#PickerSampleToggle').click(function(e) {
+                    $('#PickerSampleToggle').on("click", function(e) {
                         _private.toggleColors();
 
                         e.stopPropagation();
